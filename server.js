@@ -141,7 +141,8 @@ function pruneFeed() {
 }
 function openToday(person) {
   const now = push.localNow(TZ), wk = currentWeekKey();
-  return Object.values(DB.items).filter(it => !it.dropped && !it.done && it.week === wk && it.day === now.dow && (it.who === person || it.who === 'both')).map(it => it.title);
+  const mineDone = it => (it.area === 'workout' && it.who === 'both' && it.parts) ? !!it.parts[person] : !!it.done; // shared workouts are checked off per person
+  return Object.values(DB.items).filter(it => !it.dropped && it.week === wk && it.day === now.dow && (it.who === person || it.who === 'both') && !mineDone(it)).map(it => it.title);
 }
 async function scheduler() {
   if (!push.enabled) return;
