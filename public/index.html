@@ -249,6 +249,8 @@ main{flex:1;padding:4px 16px calc(104px + env(safe-area-inset-bottom))}
 .pick[disabled] .box{background:var(--ok-soft);border-color:transparent;color:var(--ok)}
 .sheet-wrap.open ~ .toast{bottom:auto;top:calc(14px + env(safe-area-inset-top));transform:translateX(-50%) translateY(-10px)}
 .sheet-wrap.open ~ .toast.show{transform:translateX(-50%)}
+.pick.off .t{color:var(--muted)}
+.pick.off .t > div{color:var(--warn)}
 .exn{width:22px;height:22px;border-radius:50%;background:var(--a-soft);color:var(--a-ink);font-size:12px;font-weight:800;display:inline-grid;place-items:center;flex:none;margin-top:1px}
 .minibars{display:flex;gap:6px;align-items:flex-end;height:44px}
 .minibars .mb{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:10px;color:var(--muted);white-space:nowrap}
@@ -1265,15 +1267,21 @@ function renderPlanner() {
   const onBoard = weekItems(wk);
   if (P.step === 0) {
     const pn = programOn() ? programWeekOf(wk) : null;
+    // each row mirrors the board: checked = on the board. Unchecking removes it on Next; finished workouts stay locked.
+    const boardFor = d => onBoard.filter(it => it.area === 'workout' && it.day === d);
+    const lockedDay = d => boardFor(d).some(it => it.done || partDone(it, 'a') || partDone(it, 'b'));
+    const rowHTML = (d, title, sub, who) => { const on = !!P.w[d], had = boardFor(d).length > 0, locked = lockedDay(d);
+      const state = locked ? ' \u00b7 done, stays on' : had && !on ? ' \u00b7 will be removed' : had ? ' \u00b7 on the board' : on ? ' \u00b7 will be added' : '';
+      return '<button type="button" class="pick' + (on ? ' on' : '') + (had && !on ? ' off' : '') + '" data-pw="' + d + '"' + (locked ? ' disabled' : '') + '><span class="box">' + ICON.check + '</span><span class="t">' + DAYS[d] + ' \u00b7 ' + esc(title) + '<div class="small muted">' + esc(sub) + state + '</div></span>' + whoChip(who, true) + '</button>'; };
     if (pn) {
       const ph = PROGRAM.phase(pn), rows = programWeekPlan(pn).filter(p => p.key !== 'rest');
-      if (!P.w) { P.w = {}; rows.forEach(p => { P.w[p.day] = !onBoard.some(it => it.area === 'workout' && it.day === p.day); }); }
-      h += '<p class="hint" style="margin:0 0 8px"><b>' + esc(PROGRAM.name) + ', week ' + pn + ' · ' + esc(ph.name) + '.</b> ' + esc(ph.note) + '</p>';
-      h += '<div class="list">' + rows.map(p => { const already = onBoard.some(it => it.area === 'workout' && it.day === p.day); return '<button type="button" class="pick' + (P.w[p.day] ? ' on' : '') + '" data-pw="' + p.day + '"' + (already ? ' disabled' : '') + '><span class="box">' + ICON.check + '</span><span class="t">' + DAYS[p.day] + ' · ' + esc(p.s.title) + '<div class="small muted">' + esc(p.meta || p.s.gear) + (already ? ' · already on' : '') + '</div></span>' + whoChip('both', true) + '</button>'; }).join('') + '</div>';
+      if (!P.w) { P.w = {}; const fresh = !onBoard.some(it => it.area === 'workout'); rows.forEach(p => { P.w[p.day] = fresh || boardFor(p.day).length > 0; }); }
+      h += '<p class="hint" style="margin:0 0 8px"><b>' + esc(PROGRAM.name) + ', week ' + pn + ' \u00b7 ' + esc(ph.name) + '.</b> ' + esc(ph.note) + '</p>';
+      h += '<div class="list">' + rows.map(p => rowHTML(p.day, p.s.title, p.meta || p.s.gear, 'both')).join('') + '</div><p class="hint">Uncheck a day to take it off the week. Checked days stay on or get added.</p>';
     } else {
-      const pl = plan(), rows = [0, 1, 2, 3, 4, 5, 6].filter(d => pl[d] && pl[d].title);
-      if (!P.w) { P.w = {}; rows.forEach(d => { P.w[d] = !onBoard.some(it => it.area === 'workout' && it.day === d); }); }
-      h += rows.length ? '<div class="list">' + rows.map(d => { const already = onBoard.some(it => it.area === 'workout' && it.day === d); return '<button type="button" class="pick' + (P.w[d] ? ' on' : '') + '" data-pw="' + d + '"' + (already ? ' disabled' : '') + '><span class="box">' + ICON.check + '</span><span class="t">' + DAYS[d] + ' · ' + esc(pl[d].title) + (already ? ' <span class="muted small">already on</span>' : '') + '</span>' + whoChip(pl[d].who || 'both', true) + '</button>'; }).join('') + '</div>' : '<div class="card empty">No standing plan yet. Set one on the Workouts tab, or skip for now.</div>';
+      const pl = plan(), rows = [0, 1, 2, 3, 4, 5, 6].filter(d => (pl[d] && pl[d].title) || boardFor(d).length);
+      if (!P.w) { P.w = {}; const fresh = !onBoard.some(it => it.area === 'workout'); rows.forEach(d => { P.w[d] = fresh || boardFor(d).length > 0; }); }
+      h += rows.length ? '<div class="list">' + rows.map(d => { const it = boardFor(d)[0], t = it ? it.title : pl[d].title; return rowHTML(d, t, it ? (it.notes || 'Workout') : (pl[d].note || 'Workout'), it ? it.who : (pl[d].who || 'both')); }).join('') + '</div><p class="hint">Uncheck a day to take it off the week.</p>' : '<div class="card empty">No standing plan yet. Set one on the Workouts tab, or skip for now.</div>';
     }
   } else if (P.step === 1) {
     if (!P.m) { P.m = {}; [0, 1, 2, 3, 4, 5, 6].forEach(d => { const m = onBoard.find(it => it.area === 'meal' && it.day === d); P.m[d] = { title: m ? m.title : '', who: m ? m.who : (d % 2 ? 'b' : 'a'), id: m ? m.id : null }; }); }
@@ -1300,7 +1308,7 @@ function renderPlanner() {
     focus: false,
     onMount(root) {
       root.addEventListener('click', e => {
-        const pw = e.target.closest('[data-pw]'); if (pw && !pw.disabled) { P.w[pw.dataset.pw] = !P.w[pw.dataset.pw]; pw.classList.toggle('on'); return; }
+        const pw = e.target.closest('[data-pw]'); if (pw && !pw.disabled) { P.w[pw.dataset.pw] = !P.w[pw.dataset.pw]; const sc = root.scrollTop; renderPlanner(); $('#sheet').scrollTop = sc; return; }
         const pd = e.target.closest('[data-pd]'); if (pd) { P.d.idea = P.d.idea === pd.dataset.pd ? null : pd.dataset.pd; root.querySelectorAll('[data-pd]').forEach(x => x.classList.toggle('on', x.dataset.pd === P.d.idea)); return; }
         const ph = e.target.closest('[data-ph]'); if (ph) { const id = ph.dataset.ph; if (P.h[id] != null) delete P.h[id]; else P.h[id] = root.querySelector('[data-phd="' + id + '"]').value; ph.closest('.pick').classList.toggle('on', P.h[id] != null); return; }
         const fs = e.target.closest('[data-fill-stake]'); if (fs) { root.querySelector('#stakeInput').value = fs.dataset.fillStake; return; }
@@ -1313,10 +1321,16 @@ function renderPlanner() {
 function plannerCommit() {
   const root = $('#sheet'), wk = P.wk;
   if (P.step === 0 && P.w) {
-    const pn = programOn() ? programWeekOf(wk) : null, pl = plan(); let n = 0;
+    const pn = programOn() ? programWeekOf(wk) : null, pl = plan(); let n = 0, removed = 0;
     const onBoard = weekItems(wk).filter(it => it.area === 'workout');
-    if (pn) { const wplan = programWeekPlan(pn); Object.entries(P.w).forEach(([d, on]) => { const p = wplan[Number(d)]; if (!on || !p || p.key === 'rest' || onBoard.some(it => it.day === Number(d))) return; Store.write('items', uid(), programItem(p, pn, wk, n++)); }); }
-    else Object.entries(P.w).forEach(([d, on]) => { if (!on || !pl[d]) return; if (onBoard.some(it => it.day === Number(d))) return; Store.write('items', uid(), { area: 'workout', title: pl[d].title, who: pl[d].who || 'both', week: wk, day: Number(d), notes: pl[d].note || '', done: false, doneAt: null, doneBy: null, createdAt: nowStamp() + n++, createdBy: S.me || 'a' }); });
+    Object.entries(P.w).forEach(([dk, on]) => {
+      const d = Number(dk), here = onBoard.filter(it => it.day === d);
+      if (!on) { here.forEach(it => { if (it.done || partDone(it, 'a') || partDone(it, 'b')) return; Store.del('items', it.id); removed++; }); return; }
+      if (here.length) return;
+      if (pn) { const p = programWeekPlan(pn)[d]; if (p && p.key !== 'rest') Store.write('items', uid(), programItem(p, pn, wk, n++)); }
+      else if (pl[d]) Store.write('items', uid(), { area: 'workout', title: pl[d].title, who: pl[d].who || 'both', week: wk, day: d, notes: pl[d].note || '', done: false, doneAt: null, doneBy: null, createdAt: nowStamp() + n++, createdBy: S.me || 'a' });
+    });
+    if (removed) toast(removed + ' workout' + (removed > 1 ? 's' : '') + ' taken off the week');
   } else if (P.step === 1 && P.m) {
     root.querySelectorAll('[data-md]').forEach(inp => { P.m[inp.dataset.md].title = inp.value.trim(); });
     Object.entries(P.m).forEach(([d, m]) => {
