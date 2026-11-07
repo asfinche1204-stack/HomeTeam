@@ -1,0 +1,18 @@
+{
+  "name": "home-team",
+  "version": "1.0.0",
+  "description": "A shared weekly board for two people: workouts, dinners, dates and house projects, synced to a shared Google Calendar.",
+  "private": true,
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node test/calendar.test.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "pg": "^8.13.1",
+    "web-push": "^3.6.7"
+  }
+}

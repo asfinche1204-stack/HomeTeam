@@ -1,0 +1,33 @@
+# Render Blueprint for Home Team. New + Blueprint in the Render dashboard, point it at this repo.
+# Secrets marked sync: false are entered in the dashboard, never committed.
+services:
+  - type: web
+    name: home-team
+    runtime: node
+    plan: free            # starter ($7/mo) removes the cold start and lets you mount a disk at /data
+    buildCommand: npm install
+    startCommand: node server.js
+    healthCheckPath: /healthz
+    envVars:
+      - key: HOME_TEAM_KEY
+        sync: false       # the passphrase both phones enter once
+      - key: DATABASE_URL
+        sync: false       # Neon Postgres connection string; leave blank to use the JSON file instead
+      - key: HOME_TEAM_DATA_FILE
+        value: ./data/home-team.json   # with a disk mounted at /data use /data/home-team.json
+      - key: GOOGLE_SERVICE_ACCOUNT_JSON
+        sync: false       # contents of the service-account key file (raw JSON or base64)
+      - key: GOOGLE_CALENDAR_ID
+        sync: false       # the shared calendar's ID, from Settings and sharing > Integrate calendar
+      - key: HT_VAPID_PUBLIC
+        sync: false       # node server.js --vapid prints all three
+      - key: HT_VAPID_PRIVATE
+        sync: false
+      - key: HT_PUSH_SUBJECT
+        sync: false       # mailto:you@example.com
+      - key: APP_URL
+        value: https://home-team.onrender.com
+      - key: TZ
+        value: America/New_York
+      - key: NODE_OPTIONS
+        value: --dns-result-order=ipv4first
