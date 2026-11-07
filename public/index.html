@@ -247,6 +247,8 @@ main{flex:1;padding:4px 16px calc(104px + env(safe-area-inset-bottom))}
 .item.half .t{color:var(--ink)}
 .pick[disabled]{cursor:default}
 .pick[disabled] .box{background:var(--ok-soft);border-color:transparent;color:var(--ok)}
+.sheet-wrap.open ~ .toast{bottom:auto;top:calc(14px + env(safe-area-inset-top));transform:translateX(-50%) translateY(-10px)}
+.sheet-wrap.open ~ .toast.show{transform:translateX(-50%)}
 .exn{width:22px;height:22px;border-radius:50%;background:var(--a-soft);color:var(--a-ink);font-size:12px;font-weight:800;display:inline-grid;place-items:center;flex:none;margin-top:1px}
 .minibars{display:flex;gap:6px;align-items:flex-end;height:44px}
 .minibars .mb{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:10px;color:var(--muted);white-space:nowrap}
@@ -1099,8 +1101,8 @@ function demoViewer(img, name) {
 }
 function sessionSheet(key, n, id) {
   const s = PROGRAM.sessions[key]; if (!s) return;
-  const it = id ? Object.assign({ id }, S.items[id]) : null, ph = PROGRAM.phase(n), light = PROGRAM.isLight(n), me = S.me || 'a', N = names();
-  const log = (it && it.log && it.log[me]) || {}, last = lastLogFor(key, me, id) || {};
+  const it = id ? Object.assign({ id }, S.items[id]) : null, ph = PROGRAM.phase(n), light = PROGRAM.isLight(n), meP = S.me || 'a', N = names();
+  const log = (it && it.log && it.log[meP]) || {}, last = lastLogFor(key, meP, id) || {};
   let h = '<h2>' + esc(s.title) + '</h2><p class="lead">Week ' + n + ' · ' + esc(ph.name) + (light ? ' · lighter week' : '') + (s.gear ? ' · ' + esc(s.gear) : '') + '</p>';
   if (s.kind === 'strength') {
     const sets = light ? 2 : ph.sets, reps = light ? '10, easy' : ph.reps;
@@ -1109,7 +1111,7 @@ function sessionSheet(key, n, id) {
     h += '<div class="list">' + s.exercises.map((e, i) => {
       const spec = e.hold ? sets + ' × ' + (light ? '20 s' : ph.hold) + (e.side ? ' each side' : '') : sets + ' × ' + esc(e.reps || reps) + (e.side ? ' each side' : '');
       return '<div class="ex">' + demoHTML(e.img, e.n) + '<div class="row" style="align-items:flex-start"><span class="exn">' + (i + 1) + '</span><div class="grow"><div class="t">' + esc(e.n) + ' <span class="tag">' + esc(e.g) + '</span></div><div class="small muted">' + spec + (e.mus ? ' \u00b7 ' + esc(e.mus) : '') + '</div><div class="small" style="margin-top:2px">' + esc(e.c) + '</div></div></div>' +
-        (it && !e.hold ? '<div class="row" style="margin-top:8px;gap:8px"><input type="text" class="exlog" data-ex="' + i + '" value="' + esc(log[i] || '') + '" placeholder="' + (last[i] ? 'Last time: ' + esc(last[i]) : 'Weight or band used') + '" style="padding:8px 10px;font-size:14px"><span class="small muted" style="white-space:nowrap">' + esc(N[me]) + '</span></div>' : '') + '</div>';
+        (it && !e.hold ? '<div class="row" style="margin-top:8px;gap:8px"><input type="text" class="exlog" data-ex="' + i + '" value="' + esc(log[i] || '') + '" placeholder="' + (last[i] ? 'Last time: ' + esc(last[i]) : 'Weight or band used') + '" style="padding:8px 10px;font-size:14px"><span class="small muted" style="white-space:nowrap">' + esc(N[meP]) + '</span></div>' : '') + '</div>';
     }).join('') + '</div>';
     h += '<p class="small muted" style="margin:10px 0 0"><b>Finish.</b> ' + esc(PROGRAM.cooldown) + '</p>' + PHOTO_CREDIT;
   } else {
@@ -1118,9 +1120,10 @@ function sessionSheet(key, n, id) {
     if (s.kind === 'cardio') h += '<p class="hint">Easy means easy. The hard days are the strength days; the bike is there to get the legs moving and the two of you talking.</p>' + (s.img ? PHOTO_CREDIT : '');
   }
   if (it) {
-    const otherLog = it.log && it.log[me === 'a' ? 'b' : 'a'];
-    if (otherLog && Object.keys(otherLog).length) h += '<p class="small muted">' + esc(N[me === 'a' ? 'b' : 'a']) + ' logged: ' + esc(s.exercises.map((e, i) => otherLog[i] ? e.n + ' ' + otherLog[i] : null).filter(Boolean).join(' · ')) + '</p>';
-    h += '<div class="form-actions"><button type="button" class="btn ghost" data-act="edit" data-id="' + it.id + '">Edit</button>' + (s.kind === 'strength' ? '<button type="button" class="btn" data-act="session-save" data-id="' + it.id + '">Save weights</button>' : '') + '<button type="button" class="btn ' + (partDone(it, me()) ? 'ghost' : 'primary') + '" data-act="session-done" data-id="' + it.id + '">' + (partDone(it, me()) ? (isSplit(it) ? 'Undo my check-off' : 'Not done') : (isSplit(it) ? 'Mark my workout done' : 'Mark done')) + '</button></div>';
+    const otherLog = it.log && it.log[meP === 'a' ? 'b' : 'a'];
+    if (otherLog && Object.keys(otherLog).length) h += '<p class="small muted">' + esc(N[meP === 'a' ? 'b' : 'a']) + ' logged: ' + esc(s.exercises.map((e, i) => otherLog[i] ? e.n + ' ' + otherLog[i] : null).filter(Boolean).join(' · ')) + '</p>';
+    h += '<div class="form-actions">' + (s.kind === 'strength' ? '<button type="button" class="btn" data-act="session-save" data-id="' + it.id + '">Save weights</button>' : '') + '<button type="button" class="btn ' + (partDone(it, meP) ? 'ghost' : 'primary') + '" data-act="session-done" data-id="' + it.id + '">' + (partDone(it, meP) ? (isSplit(it) ? 'Undo mine' : 'Not done') : (isSplit(it) ? 'Mark mine done' : 'Mark done')) + '</button></div>';
+    h += '<div class="row" style="gap:8px;margin-top:8px"><button type="button" class="btn sm ghost grow" data-act="edit" data-id="' + it.id + '">Move day or edit</button><button type="button" class="btn sm danger grow" data-act="session-remove" data-id="' + it.id + '">Remove</button></div>';
   } else h += '<div class="form-actions"><button type="button" class="btn ghost" data-act="close-sheet">Close</button>' + (programOn() ? '<button type="button" class="btn primary" data-act="program-apply">Put the week on the board</button>' : '') + '</div>';
   openSheet(h, { focus: false, reopen: () => sessionSheet(key, n, id) });
 }
@@ -1551,6 +1554,7 @@ document.addEventListener('click', e => {
     case 'session': { const wkN = Number(el.dataset.week) || programWeekOf(S.viewWeek) || 1; sessionSheet(el.dataset.key, wkN, id || null); break; }
     case 'demo': { const inputs = {}; $('#sheet').querySelectorAll('.exlog').forEach(x => { inputs[x.dataset.ex] = x.value; }); const re = SHEET && SHEET.reopen; demoViewer(el.dataset.img, el.dataset.name); if (re) SHEET.reopen = () => { re(); $('#sheet').querySelectorAll('.exlog').forEach(x => { if (inputs[x.dataset.ex] != null) x.value = inputs[x.dataset.ex]; }); }; break; }
     case 'demo-back': { const re = SHEET && SHEET.reopen; if (re) re(); else closeSheet(); break; }
+    case 'session-remove': { if (el.dataset.sure !== '1') { el.dataset.sure = '1'; el.textContent = 'Tap again to remove'; break; } const it = S.items[id]; Store.del('items', id); Object.entries(S.feed).forEach(([fid, f]) => { if (f.itemId === id) Store.del('feed', fid); }); closeSheet(); toast((it ? it.title : 'Workout') + ' removed. Re-add it from the Workouts tab any time.'); break; }
     case 'session-save': saveSessionLog(id); toast('Saved'); break;
     case 'session-done': { const it = S.items[id]; if (!it) break; const mine = {}; $('#sheet').querySelectorAll('.exlog').forEach(inp => { const v = inp.value.trim(); if (v) mine[inp.dataset.ex] = v; }); const log = Object.assign({}, it.log || {}); if (Object.keys(mine).length) log[me()] = mine; closeSheet(); Store.patch('items', id, { log }); toggleItem(id, null); break; }
     case 'program-start': setProgram({ programStart: S.viewWeek, programPaused: false }); toast('Week 1 starts ' + weekLabel(S.viewWeek).toLowerCase()); break;
