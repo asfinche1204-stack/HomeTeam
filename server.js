@@ -98,7 +98,7 @@ function readJson(req, limit) {
     req.on('error', reject);
   });
 }
-const MIME = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.json': 'application/json; charset=utf-8', '.png': 'image/png', '.svg': 'image/svg+xml', '.webmanifest': 'application/manifest+json', '.ico': 'image/x-icon', '.css': 'text/css; charset=utf-8' };
+const MIME = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.json': 'application/json; charset=utf-8', '.png': 'image/png', '.webp': 'image/webp', '.jpg': 'image/jpeg', '.svg': 'image/svg+xml', '.webmanifest': 'application/manifest+json', '.ico': 'image/x-icon', '.css': 'text/css; charset=utf-8' };
 function serveStatic(req, res, p) {
   const file = path.join(PUBLIC, p === '/' ? 'index.html' : p);
   if (!file.startsWith(PUBLIC)) return send(res, 404, { error: 'not found' });
@@ -233,7 +233,7 @@ async function handle(req, res) {
     return send(res, 404, { error: 'not found' });
   }
   if (m !== 'GET' && m !== 'HEAD') return send(res, 405, { error: 'method' });
-  if (/^\/[A-Za-z0-9._-]*$/.test(p)) return serveStatic(req, res, p);
+  if (/^\/(ex\/)?[A-Za-z0-9._-]*$/.test(p) && !p.includes('..')) return serveStatic(req, res, p);
   return send(res, 404, { error: 'not found' });
 }
 

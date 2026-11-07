@@ -7,6 +7,7 @@ server.js            Node 20 web service: passphrase cookie, JSON doc API, live 
 calendar.js          Google Calendar sync via a service account (no OAuth screens)
 push.js              phone notifications (Web Push / VAPID)
 public/index.html    the app (single file)
+public/ex/            exercise photos (free-exercise-db, public domain), start + finish frame per exercise
 public/sw.js         service worker (installable, opens instantly, last copy offline)
 public/manifest.json, icons, og.png
 render.yaml          Render Blueprint
@@ -69,6 +70,8 @@ The Workouts tab carries a default program, **Full-body restart**, written for t
 - **C** (Marcy + bands): step-up, leg extension, pec fly, band glute bridge, triceps pressdown, preacher curl, side plank.
 - Saturday is a long walk together; Sunday is rest and planning the week.
 
+Every exercise has a photo demo: the start and finish positions alternate in the session view, and tapping a photo opens them side by side. Photos come from free-exercise-db (public domain); gym machines in them stand in for the matching Marcy station.
+
 "Plan the week" and the Workouts tab both put the week's sessions on the board. Tapping a workout on the board opens the session: warm-up, each exercise with sets, reps and a form cue, and a box per exercise for the weight you used, which shows as "Last time: …" the next time that session comes around. Each of you logs your own. Options on the Workouts tab: pause (falls back to a plan of your own), repeat the current week, or restart at week 1.
 
 ## 4. Points, the wager and the pot
@@ -85,7 +88,7 @@ The Workouts tab carries a default program, **Full-body restart**, written for t
 
 ## 5. Notifications
 
-Each phone opts in from Settings once the three `HT_VAPID_*` envs are set. On iPhone the app must be on the Home Screen first (iOS 16.4+). What's sent, each switchable per person: the other person finished something (with points), nudges, high fives, a 7:00 pm "still open today" list, and a Sunday 6:00 pm "plan the week." Settings has a "send a test" button.
+Each phone opts in with one tap once the three `HT_VAPID_*` envs are set: a "Turn on notifications" card sits at the top of the Week and Team tabs until the phone is set up, and the bell in the top bar shows the phone's status and turns them on or adjusts them any time. If the app isn't on the Home Screen yet, or the phone blocked notifications earlier, the card switches to step-by-step help for that. On iPhone the app must be on the Home Screen first (iOS 16.4+). What's sent, each switchable per person: the other person finished something (with points), nudges, high fives, a 7:00 pm "still open today" list, and a Sunday 6:00 pm "plan the week." Settings has a "send a test" button.
 
 ## 6. On the phones
 
