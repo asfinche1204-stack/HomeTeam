@@ -238,6 +238,15 @@ main{flex:1;padding:4px 16px calc(104px + env(safe-area-inset-bottom))}
 .brand,.me-pair{white-space:nowrap}
 .top-right{flex:none}
 @media (max-width:440px){.sync #syncText{display:none}.brand{font-size:18px}.top{gap:8px}.top-right{gap:6px}.icon-btn{width:36px;height:36px}}
+.who.duo{gap:3px}
+.who.duo .av{width:22px;height:22px;font-size:10px}
+.who.duo .av svg{width:12px;height:12px;stroke-width:3.4}
+.who.duo .av.wait{opacity:.38}
+.who.duo .av.fin{background:var(--ok)}
+.item.half .check{background:var(--ok);border-color:var(--ok);color:#fff}
+.item.half .t{color:var(--ink)}
+.pick[disabled]{cursor:default}
+.pick[disabled] .box{background:var(--ok-soft);border-color:transparent;color:var(--ok)}
 .exn{width:22px;height:22px;border-radius:50%;background:var(--a-soft);color:var(--a-ink);font-size:12px;font-weight:800;display:inline-grid;place-items:center;flex:none;margin-top:1px}
 .minibars{display:flex;gap:6px;align-items:flex-end;height:44px}
 .minibars .mb{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:10px;color:var(--muted);white-space:nowrap}
@@ -536,20 +545,25 @@ function pointsFor(it, doneAt) {
   return out;
 }
 function possibleFor(it, p) { return (it.who === p || it.who === 'both') ? (BASE[it.area] || 5) : 0; }
+/* Shared workouts are done per person: each of you checks off your own half. Other shared items are one joint check-off. */
+const isSplit = it => !!it && it.area === 'workout' && it.who === 'both';
+function partsOf(it) { if (it.parts) return it.parts; if (isSplit(it) && it.done) { const e = it.earned || {}; return { a: { at: it.doneAt, pts: e.a || 0, notes: e.notes || [] }, b: { at: it.doneAt, pts: e.b || 0, notes: e.notes || [] } }; } return {}; }
+function partDone(it, p) { if (it.who !== p && it.who !== 'both') return false; return isSplit(it) ? !!partsOf(it)[p] : !!it.done; }
+function partAt(it, p) { return isSplit(it) ? (partsOf(it)[p] || {}).at : it.doneAt; }
 function weekPoints(wk) {
   const items = weekItems(wk), r = { a: { pts: 0, possible: 0, pct: 0, done: 0, total: 0 }, b: { pts: 0, possible: 0, pct: 0, done: 0, total: 0 }, items: items.length };
-  items.forEach(it => ['a', 'b'].forEach(p => { const poss = possibleFor(it, p); if (!poss) return; r[p].possible += poss; r[p].total++; if (it.done) { r[p].done++; r[p].pts += (it.earned && it.earned[p]) || 0; } }));
+  items.forEach(it => ['a', 'b'].forEach(p => { const poss = possibleFor(it, p); if (!poss) return; r[p].possible += poss; r[p].total++; if (partDone(it, p)) { r[p].done++; r[p].pts += (it.earned && it.earned[p]) || 0; } }));
   ['a', 'b'].forEach(p => { r[p].pct = r[p].possible ? Math.min(100, Math.round(r[p].pts / r[p].possible * 100)) : 0; });
   return r;
 }
-function lifetimePoints() { const r = { a: 0, b: 0 }; live().forEach(it => { if (it.done && it.earned) { r.a += it.earned.a || 0; r.b += it.earned.b || 0; } }); return r; }
+function lifetimePoints() { const r = { a: 0, b: 0 }; live().forEach(it => { if (it.earned && (it.done || it.parts)) { r.a += it.earned.a || 0; r.b += it.earned.b || 0; } }); return r; }
 function rewards() { return (S.settings.main && S.settings.main.rewards) || []; }
 function potTotal() { const l = lifetimePoints(); return l.a + l.b - rewards().filter(r => r.claimedAt).reduce((s, r) => s + (Number(r.cost) || 0), 0); }
 const LEVELS = [[0, 'Rookie'], [100, 'Regular'], [300, 'Steady'], [600, 'Reliable'], [1000, 'Clutch'], [1500, 'Machine'], [2500, 'Legend']];
 function levelOf(pts) { let i = 0; for (let k = 0; k < LEVELS.length; k++) if (pts >= LEVELS[k][0]) i = k; const next = LEVELS[i + 1]; return { name: LEVELS[i][1], n: i + 1, floor: LEVELS[i][0], next: next ? next[0] : null, pct: next ? Math.round((pts - LEVELS[i][0]) / (next[0] - LEVELS[i][0]) * 100) : 100 }; }
 const TEAM_LEVELS = [[0, 'Roommates'], [200, 'Teammates'], [600, 'Home Team'], [1500, 'Franchise'], [3000, 'Dynasty']];
 function teamLevel() { const l = lifetimePoints(), t = l.a + l.b; let i = 0; for (let k = 0; k < TEAM_LEVELS.length; k++) if (t >= TEAM_LEVELS[k][0]) i = k; const next = TEAM_LEVELS[i + 1]; return { name: TEAM_LEVELS[i][1], total: t, next: next ? next[0] : null, pct: next ? Math.round((t - TEAM_LEVELS[i][0]) / (next[0] - TEAM_LEVELS[i][0]) * 100) : 100 }; }
-function doneDays(p) { const s = new Set(); live().forEach(it => { if (it.done && it.doneAt && (!p || it.who === p || it.who === 'both')) s.add(keyOf(new Date(it.doneAt))); }); return s; }
+function doneDays(p) { const s = new Set(); live().forEach(it => { (p ? [p] : ['a', 'b']).forEach(q => { if (partDone(it, q)) { const at = partAt(it, q); if (at) s.add(keyOf(new Date(at))); } }); }); return s; }
 function streakDays(p) { const s = doneDays(p); let n = 0, d = new Date(); if (!s.has(keyOf(d))) d = addDays(d, -1); while (s.has(keyOf(d)) && n < 400) { n++; d = addDays(d, -1); } return n; }
 function wagerOf(wk) { return S.weeks[wk] || {}; }
 function settleIfNeeded(wk) {
@@ -700,7 +714,7 @@ const whoChip = (who, sm) => '<span class="who' + (sm ? ' sm' : '') + '" title="
 const live = () => Object.entries(S.items).map(([id, it]) => Object.assign({ id }, it)).filter(it => !it.dropped);
 function weekItems(wk) { return live().filter(it => it.week === wk).sort((x, y) => (AREA_ORDER[x.area] - AREA_ORDER[y.area]) || (x.createdAt || 0) - (y.createdAt || 0)); }
 function carryOver() { const cur = currentWeekKey(); return live().filter(it => it.week && it.week < cur && !it.done && it.area !== 'meal').sort((x, y) => x.week < y.week ? -1 : 1); }
-function scoreOf(items) { const s = { d: 0, t: items.length, a: { d: 0, t: 0 }, b: { d: 0, t: 0 } }; items.forEach(it => { if (it.done) s.d++; ['a', 'b'].forEach(p => { if (it.who === p || it.who === 'both') { s[p].t++; if (it.done) s[p].d++; } }); }); return s; }
+function scoreOf(items) { const s = { d: 0, t: items.length, a: { d: 0, t: 0 }, b: { d: 0, t: 0 } }; items.forEach(it => { if (it.done) s.d++; ['a', 'b'].forEach(p => { if (it.who === p || it.who === 'both') { s[p].t++; if (partDone(it, p)) s[p].d++; } }); }); return s; }
 function weekStreak() { let n = 0, k = shiftWeek(currentWeekKey(), -1); for (let i = 0; i < 52; i++) { const s = scoreOf(weekItems(k)); if (s.t >= 3 && s.d / s.t >= .8) { n++; k = shiftWeek(k, -1); } else break; } return n; }
 const plan = () => (S.settings.plan && S.settings.plan.days) || {};
 const projName = id => (S.projects[id] && S.projects[id].name) || '';
@@ -731,11 +745,15 @@ function itemRow(it, opts) {
   if (opts.showWhen && it.week) meta.push(fmtWhen(it));
   if (it.notes) meta.push(it.notes);
   if (it.carried && !it.done) meta.push('carried over, half points');
-  const pts = it.done && it.earned ? '<span class="pts">+' + it.earned.pts + '</span>' : (!it.done ? '<span class="pts" style="color:var(--muted)">' + (BASE[it.area] || 5) + '</span>' : '');
-  return '<div class="item' + (it.done ? ' done' : '') + (opts.slipped ? ' slipped' : '') + '">' +
+  const split = isSplit(it), mineDone = split ? partDone(it, me()) : it.done, N = names();
+  if (split && !it.done) { const ps = partsOf(it), o = other(); if (ps[me()] && !ps[o]) meta.push('your half done \u00b7 waiting on ' + N[o]); else if (ps[o] && !ps[me()]) meta.push(N[o] + ' is done \u00b7 your turn'); else meta.push('each of you checks off your own'); }
+  const myPts = it.earned ? (split ? (it.earned[me()] || 0) : it.earned.pts) : 0;
+  const pts = mineDone && it.earned ? '<span class="pts">+' + myPts + '</span>' : (!mineDone ? '<span class="pts" style="color:var(--muted)">' + (BASE[it.area] || 5) + '</span>' : '');
+  const who = split ? '<span class="who sm duo">' + ['a', 'b'].map(p => '<span class="av ' + p + (partDone(it, p) ? ' fin' : ' wait') + '" title="' + esc(N[p]) + (partDone(it, p) ? ' done' : ' not yet') + '">' + (partDone(it, p) ? ICON.check : esc(initials(p))) + '</span>').join('') + '</span>' : whoChip(it.who, true);
+  return '<div class="item' + (it.done ? ' done' : '') + (split && mineDone && !it.done ? ' half' : '') + (opts.slipped && !mineDone ? ' slipped' : '') + '">' +
     '<button class="check" data-act="toggle" data-id="' + it.id + '" aria-label="Mark done">' + ICON.check + '</button>' +
     '<button class="body" ' + (it.session && PROGRAM.sessions[it.session] ? 'data-act="session" data-key="' + it.session + '" data-week="' + (it.programWeek || '') + '"' : 'data-act="edit"') + ' data-id="' + it.id + '"><div class="t">' + esc(it.title) + '</div>' + (meta.length ? '<div class="m">' + esc(meta.join(' · ')) + '</div>' : '') + '</button>' +
-    pts + whoChip(it.who, true) + '</div>';
+    pts + who + '</div>';
 }
 function ringHTML(done, total, size) {
   const r = 36, circ = 2 * Math.PI * r, off = circ * (1 - (total ? done / total : 0));
@@ -845,7 +863,7 @@ function renderTeam() {
     '<p class="small muted" style="margin:0 0 10px">Settles Sunday night on the share of your own board you kept, so a bigger board doesn’t win by volume. Ties carry the stake forward.</p>' +
     '<div class="row" style="gap:8px"><button class="btn sm ' + (w.stake ? 'ghost' : 'primary') + '" data-act="stake">' + (w.stake ? 'Change the stake' : 'Set the stake') + '</button><button class="btn sm ghost" data-act="review" data-week="' + shiftWeek(cur, -1) + '">Last week’s review</button></div></section>';
   // open today: accountability
-  const ti = todayIndex(), openA = weekItems(cur).filter(it => !it.done && it.day === ti && (it.who === 'a' || it.who === 'both')), openB = weekItems(cur).filter(it => !it.done && it.day === ti && (it.who === 'b' || it.who === 'both'));
+  const ti = todayIndex(), openA = weekItems(cur).filter(it => it.day === ti && (it.who === 'a' || it.who === 'both') && !partDone(it, 'a')), openB = weekItems(cur).filter(it => it.day === ti && (it.who === 'b' || it.who === 'both') && !partDone(it, 'b'));
   const oth = other(), openOther = oth === 'a' ? openA : openB, openMe = oth === 'a' ? openB : openA;
   h += '<div class="sec-h"><h2>Still open today</h2><span class="small muted">' + DAYS_LONG[ti] + '</span></div><section class="card">';
   h += '<div class="small muted" style="margin-bottom:4px">' + esc(N[oth]) + '</div>' + (openOther.length ? openOther.map(it => '<div class="open-row"><span class="t">' + esc(it.title) + '</span>' + whoChip(it.who, true) + '<button class="btn sm teal" data-act="nudge" data-id="' + it.id + '">' + ICON.bell + ' Nudge</button></div>').join('') : '<div class="small muted" style="padding:4px 0 8px">Nothing open. ' + (weekItems(cur).some(it => it.day === ti && (it.who === oth || it.who === 'both')) ? 'All done today.' : 'A rest day.') + '</div>');
@@ -893,7 +911,7 @@ function renderWorkouts() {
   } else {
     const wplan = programWeekPlan(n), onBoard = thisWeek;
     h += '<section class="card"><div style="font-family:var(--display);font-size:20px;font-weight:800">Week ' + n + ' · ' + esc(ph.name) + (PROGRAM.isLight(n) ? ' (lighter week)' : '') + '</div><div class="small muted">' + ph.sets + ' sets · ' + esc(ph.reps) + ' reps · effort ' + esc(ph.rpe) + ' of 10 · rest ' + esc(ph.rest) + '</div><p class="small" style="margin:10px 0 0">' + esc(ph.note) + '</p></section>';
-    h += '<div class="list">' + wplan.map(p => { const it = onBoard.find(x => x.day === p.day), rest = p.key === 'rest'; return '<button class="plan-row" data-act="session" data-key="' + p.key + '" data-week="' + n + '"' + (it ? ' data-id="' + it.id + '"' : '') + '><span class="d">' + DAYS[p.day] + '</span><span>' + (rest ? '<div class="rest">Rest</div>' : '<div class="t">' + esc(p.s.title) + (it && it.done ? ' <span class="pill ok" style="vertical-align:middle">Done</span>' : '') + '</div><div class="n">' + esc(p.s.gear) + (p.meta ? ' · ' + esc(p.meta) : '') + '</div>' + (p.s.exercises ? '<div class="strip">' + p.s.exercises.map(e => e.img ? '<img src="/ex/' + e.img + '-1.webp" alt="' + esc(e.n) + '" loading="lazy">' : '').join('') + '</div>' : '')) + '</span>' + (rest ? '<span></span>' : whoChip('both', true)) + '</button>'; }).join('') + '</div>';
+    h += '<div class="list">' + wplan.map(p => { const it = onBoard.find(x => x.day === p.day), rest = p.key === 'rest'; return '<button class="plan-row" data-act="session" data-key="' + p.key + '" data-week="' + n + '"' + (it ? ' data-id="' + it.id + '"' : '') + '><span class="d">' + DAYS[p.day] + '</span><span>' + (rest ? '<div class="rest">Rest</div>' : '<div class="t">' + esc(p.s.title) + (it && it.done ? ' <span class="pill ok" style="vertical-align:middle">Done</span>' : it && isSplit(it) && (partDone(it, 'a') || partDone(it, 'b')) ? ' <span class="pill b" style="vertical-align:middle">' + esc(names()[partDone(it, 'a') ? 'a' : 'b']) + ' done</span>' : '') + '</div><div class="n">' + esc(p.s.gear) + (p.meta ? ' · ' + esc(p.meta) : '') + '</div>' + (p.s.exercises ? '<div class="strip">' + p.s.exercises.map(e => e.img ? '<img src="/ex/' + e.img + '-1.webp" alt="' + esc(e.n) + '" loading="lazy">' : '').join('') + '</div>' : '')) + '</span>' + (rest ? '<span></span>' : whoChip('both', true)) + '</button>'; }).join('') + '</div>';
     const missing = wplan.filter(p => p.key !== 'rest' && !onBoard.some(x => x.day === p.day)).length;
     h += '<div style="margin-top:10px">' + (missing && !paused ? '<button class="btn primary block" data-act="program-apply">Put week ' + n + ' on ' + weekLabel(wk).toLowerCase() + '’s board</button>' : paused ? '<div class="small muted" style="text-align:center;padding:6px">Program paused. Your own plan below is what goes on the board.</div>' : '<div class="small muted" style="text-align:center;padding:6px">Week ' + n + ' is on the board. Tap a day to see the session.</div>') + '</div>';
     h += '<p class="hint">Same session for both of you, your own weights. Tap a workout on the Week board to see the exercises and write in what you used (+2 points for logging).</p>';
@@ -905,7 +923,7 @@ function renderWorkouts() {
     h += [0, 1, 2, 3, 4, 5, 6].map(d => { const p = pl[d] || {}; return '<button class="plan-row" data-act="plan-edit" data-day="' + d + '"><span class="d">' + DAYS[d] + '</span><span>' + (p.title ? '<div class="t">' + esc(p.title) + '</div>' + (p.note ? '<div class="n">' + esc(p.note) + '</div>' : '') : '<div class="rest">Rest</div>') + '</span>' + (p.title ? whoChip(p.who || 'both', true) : '<span></span>') + '</button>'; }).join('');
     h += '</div>' + (programOn() ? '' : '<div style="margin-top:10px"><button class="btn primary block" data-act="plan-apply">Put the plan on ' + weekLabel(wk).toLowerCase() + '’s board</button><p class="hint">Days already on the board are skipped. Change a single week from the Week tab.</p></div>');
   }
-  const logged = live().filter(it => it.area === 'workout' && it.done).sort((x, y) => (y.doneAt || 0) - (x.doneAt || 0)).slice(0, 12);
+  const logged = live().filter(it => it.area === 'workout' && (it.done || partDone(it, 'a') || partDone(it, 'b'))).sort((x, y) => (y.doneAt || partAt(y, 'a') || partAt(y, 'b') || 0) - (x.doneAt || partAt(x, 'a') || partAt(x, 'b') || 0)).slice(0, 12);
   h += '<div class="sec-h"><h2>Logged</h2><span class="small muted">Last ' + logged.length + '</span></div><div class="list">' + (logged.length ? logged.map(it => itemRow(it, { showArea: false, showWhen: true })).join('') : '<div class="empty">Nothing logged yet. Check off a workout on the Week tab and it lands here.</div>') + '</div>';
   return h;
 }
@@ -1102,7 +1120,7 @@ function sessionSheet(key, n, id) {
   if (it) {
     const otherLog = it.log && it.log[me === 'a' ? 'b' : 'a'];
     if (otherLog && Object.keys(otherLog).length) h += '<p class="small muted">' + esc(N[me === 'a' ? 'b' : 'a']) + ' logged: ' + esc(s.exercises.map((e, i) => otherLog[i] ? e.n + ' ' + otherLog[i] : null).filter(Boolean).join(' · ')) + '</p>';
-    h += '<div class="form-actions"><button type="button" class="btn ghost" data-act="edit" data-id="' + it.id + '">Edit</button>' + (s.kind === 'strength' ? '<button type="button" class="btn" data-act="session-save" data-id="' + it.id + '">Save weights</button>' : '') + '<button type="button" class="btn ' + (it.done ? 'ghost' : 'primary') + '" data-act="session-done" data-id="' + it.id + '">' + (it.done ? 'Not done' : 'Mark done') + '</button></div>';
+    h += '<div class="form-actions"><button type="button" class="btn ghost" data-act="edit" data-id="' + it.id + '">Edit</button>' + (s.kind === 'strength' ? '<button type="button" class="btn" data-act="session-save" data-id="' + it.id + '">Save weights</button>' : '') + '<button type="button" class="btn ' + (partDone(it, me()) ? 'ghost' : 'primary') + '" data-act="session-done" data-id="' + it.id + '">' + (partDone(it, me()) ? (isSplit(it) ? 'Undo my check-off' : 'Not done') : (isSplit(it) ? 'Mark my workout done' : 'Mark done')) + '</button></div>';
   } else h += '<div class="form-actions"><button type="button" class="btn ghost" data-act="close-sheet">Close</button>' + (programOn() ? '<button type="button" class="btn primary" data-act="program-apply">Put the week on the board</button>' : '') + '</div>';
   openSheet(h, { focus: false, reopen: () => sessionSheet(key, n, id) });
 }
@@ -1274,7 +1292,7 @@ function renderPlanner() {
     h += '<label class="f">The wager</label><input type="text" id="stakeInput" value="' + esc(wg.stake || '') + '" placeholder="e.g. Loser cooks Sunday dinner"><div class="chips" style="margin-top:8px">' + STAKES.map(x => '<button type="button" class="chip" data-fill-stake="' + esc(x) + '">' + esc(x) + '</button>').join('') + '</div>';
     h += '<p class="hint">Settles Sunday night on who kept more of their own board. Locking it means: this is the plan, and we check it off. Anything not done shows up next week to move or let go.</p>';
   }
-  h += '<div class="form-actions">' + (P.step > 0 ? '<button type="button" class="btn ghost" data-act="planner-back">Back</button>' : '<button type="button" class="btn ghost" data-act="close-sheet">Cancel</button>') + (P.step < 4 ? '<button type="button" class="btn primary" data-act="planner-next">' + (P.step === 0 && !Object.keys(plan()).length ? 'Skip' : 'Next') + '</button>' : '<button type="button" class="btn teal" data-act="planner-lock">Lock it in</button>') + '</div>';
+  h += '<div class="form-actions">' + (P.step > 0 ? '<button type="button" class="btn ghost" data-act="planner-back">Back</button>' : '<button type="button" class="btn ghost" data-act="close-sheet">Cancel</button>') + (P.step < 4 ? '<button type="button" class="btn primary" data-act="planner-next">' + (P.step === 0 && !(programOn() && programWeekOf(P.wk)) && !Object.keys(plan()).length ? 'Skip' : 'Next') + '</button>' : '<button type="button" class="btn teal" data-act="planner-lock">Lock it in</button>') + '</div>';
   openSheet(h, {
     focus: false,
     onMount(root) {
@@ -1451,7 +1469,7 @@ function lineFor(it, earned, leftToday, leftWeek) {
   const N = names(), both = it.who === 'both', mine = earned[me()] || earned.pts;
   const opts = [];
   if (earned.notes.includes('before 9')) opts.push('Before 9. That’s the early bird bonus.');
-  if (both) opts.push('Both of you on that one, so you both score.');
+  if (both && !isSplit(it)) opts.push('Both of you on that one, so you both score.');
   if (it.area === 'workout') opts.push(earned.notes.includes('weights logged') ? 'Logged and done. Next time, beat those numbers.' : 'Done. The hard part was starting.');
   if (it.area === 'date') opts.push('Date done. Add a line about it on the Dates tab.');
   if (it.area === 'house') opts.push('One less thing on the list.');
@@ -1462,20 +1480,42 @@ function lineFor(it, earned, leftToday, leftWeek) {
   return opts[Math.floor(Math.random() * opts.length)];
 }
 function toggleItem(id, el) {
-  const it = S.items[id]; if (!it) return; const done = !it.done;
+  const it = S.items[id]; if (!it) return;
+  if (isSplit(it)) return togglePart(id, el);
+  const done = !it.done;
   if (done) {
     const at = nowStamp(), earned = pointsFor(it, at);
     Store.patch('items', id, { done: true, doneAt: at, doneBy: me(), earned });
-    const wk = it.week || currentWeekKey(), leftToday = weekItems(wk).filter(x => !x.done && x.day === todayIndex() && x.id !== id).length;
-    const line = lineFor(it, earned, leftToday);
-    const mine = earned[me()] || earned.pts;
-    celebrate(mine, line, leftToday === 0 && wk === currentWeekKey() && weekItems(wk).some(x => x.day === todayIndex()), el);
-    Store.write('feed', uid(), { type: 'done', who: me(), title: it.title, itemId: id, pts: mine, area: it.area, line: earned.notes.length ? earned.notes.join(', ') : '', at });
+    afterCheck(it, id, earned[me()] || earned.pts, earned, at, el);
   } else {
     Store.patch('items', id, { done: false, doneAt: null, doneBy: null, earned: null });
     Object.entries(S.feed).forEach(([fid, f]) => { if (f.type === 'done' && f.itemId === id) Store.del('feed', fid); });
     toast('Marked not done');
   }
+}
+function togglePart(id, el) {
+  const it = S.items[id], m = me(), o = other(), N = names(), parts = Object.assign({}, partsOf(it));
+  if (parts[m]) {
+    delete parts[m];
+    const earned = { a: (parts.a || {}).pts || 0, b: (parts.b || {}).pts || 0, pts: (parts[o] || {}).pts || 0, notes: (parts[o] || {}).notes || [] };
+    Store.patch('items', id, { parts, done: false, doneAt: null, doneBy: parts[o] ? o : null, earned: parts[o] ? earned : null });
+    Object.entries(S.feed).forEach(([fid, f]) => { if (f.type === 'done' && f.itemId === id && f.who === m) Store.del('feed', fid); });
+    toast('Your check-off is undone' + (parts[o] ? '. ' + N[o] + '\u2019s still counts.' : '.'));
+    return;
+  }
+  const at = nowStamp(), full = pointsFor(it, at), mine = full[m] || full.pts;
+  parts[m] = { at, pts: mine, notes: full.notes };
+  const both = !!(parts.a && parts.b);
+  const earned = { a: (parts.a || {}).pts || 0, b: (parts.b || {}).pts || 0, pts: mine, notes: full.notes };
+  Store.patch('items', id, { parts, done: both, doneAt: both ? at : null, doneBy: both ? 'both' : m, earned });
+  afterCheck(it, id, mine, earned, at, el, both ? 'You both did it. Workout complete.' : 'Your workout\u2019s done. Waiting on ' + N[o] + '.');
+}
+function afterCheck(it, id, mine, earned, at, el, lineOverride) {
+  const wk = it.week || currentWeekKey(), ti = todayIndex();
+  const leftToday = weekItems(wk).filter(x => x.id !== id && x.day === ti && (x.who === me() || x.who === 'both') && !partDone(x, me())).length;
+  const line = lineOverride || lineFor(it, earned, leftToday);
+  celebrate(mine, line, leftToday === 0 && wk === currentWeekKey() && weekItems(wk).some(x => x.day === ti), el);
+  Store.write('feed', uid(), { type: 'done', who: me(), title: it.title, itemId: id, pts: mine, area: it.area, line: earned.notes && earned.notes.length ? earned.notes.join(', ') : '', at });
 }
 function toast(msg) { const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove('show'), 2400); }
 
