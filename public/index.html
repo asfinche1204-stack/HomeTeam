@@ -1810,10 +1810,21 @@ function daySeg(val, wk) { const isCur = wk === currentWeekKey(), ti = todayInde
 function segVal(root, name) { const b = root.querySelector('[data-seg="' + name + '"] .on'); return b ? b.dataset.v : null; }
 function weekSeg(val) { const c = currentWeekKey(), opts = [[c, 'This week'], [shiftWeek(c, 1), 'Next week']]; if (val && val !== c && val !== shiftWeek(c, 1)) opts.push([val, 'Week of ' + fmtDate(parseKey(val))]); return segHTML('week', val, opts); }
 
+/* the idea jar: just the idea. No week, no day, no time; pick a day later from the jar */
+function ideaSheet(it, d) {
+  const isNew = !it;
+  let h = '<h2>' + (isNew ? 'New date idea' : 'Date idea') + '</h2><p class="lead">It goes in the jar. Pick a day for it whenever you’re ready.</p>';
+  h += '<input type="hidden" id="fArea" value="date"><label class="f">The idea</label><input type="text" id="fTitle" value="' + esc(d.title) + '" placeholder="e.g. Arepas and a movie on the porch">';
+  h += extraFields('date', d, []);
+  h += '<label class="f">Note</label><input type="text" id="fNotes" value="' + esc(d.notes || '') + '" placeholder="Optional: a place, a link, a price">';
+  h += '<div class="form-actions">' + (isNew ? '<button type="button" class="btn ghost" data-act="close-sheet">Cancel</button>' : '<button type="button" class="btn danger" data-act="item-delete" data-id="' + it.id + '">Delete</button><button type="button" class="btn ghost" data-act="idea-pick" data-id="' + it.id + '">Pick a day</button>') + '<button type="button" class="btn primary" data-act="item-save" data-id="' + (it ? it.id : '') + '">' + (isNew ? 'Add to the jar' : 'Save') + '</button></div>';
+  openSheet(h, { onMount(root) { const i = root.querySelector('#fTitle'); i.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); saveItemFromSheet(it ? it.id : null); } }); } });
+}
 function itemSheet(it, defaults) {
   const isNew = !it, d = Object.assign({ area: 'workout', title: '', who: 'both', week: S.viewWeek, day: null, notes: '', projectId: '', tag: '' }, defaults || {}, it || {});
   const projects = Object.entries(S.projects).filter(([, p]) => p.status !== 'done');
   const area = d.area;
+  if (area === 'date' && !d.week && (!isNew || (defaults && defaults.jar))) return ideaSheet(it, d);
   let h = '<h2>' + (isNew ? 'Add to the board' : 'Edit') + '</h2>';
   if (isNew) h += '<label class="f">What kind</label>' + segHTML('area', area, [['workout', 'Workout'], ['house', 'House'], ['date', 'Date'], ['meal', 'Dinner']]);
   h += '<label class="f">' + (area === 'meal' ? 'What’s for dinner' : 'What') + '</label><input type="text" id="fTitle" value="' + esc(d.title) + '" placeholder="' + (area === 'date' ? 'e.g. Taco night on the porch' : area === 'house' ? 'e.g. Get two quotes for the fence' : area === 'meal' ? 'e.g. Chicken fajitas' : 'e.g. Leg day together') + '">';
@@ -1843,10 +1854,10 @@ function saveItemFromSheet(id) {
   const root = $('#sheet'), title = root.querySelector('#fTitle').value.trim();
   if (!title) { root.querySelector('#fTitle').focus(); return; }
   const cur = id ? S.items[id] : null;
-  const area = id ? cur.area : segVal(root, 'area');
+  const area = id ? cur.area : (segVal(root, 'area') || (root.querySelector('#fArea') || {}).value || 'workout');
   const dayV = segVal(root, 'day'), wkV = segVal(root, 'week');
   const it = Object.assign({}, cur || { createdAt: nowStamp(), createdBy: S.me || 'a', done: false, doneAt: null, doneBy: null }, {
-    area, title, who: segVal(root, 'who') || 'both', notes: root.querySelector('#fNotes').value.trim(), time: root.querySelector('#fTime').value || null,
+    area, title, who: segVal(root, 'who') || 'both', notes: root.querySelector('#fNotes').value.trim(), time: root.querySelector('#fTime') ? root.querySelector('#fTime').value || null : (cur ? cur.time || null : null),
     week: dayV == null ? null : wkV, day: dayV == null || dayV === 'any' ? null : Number(dayV),
     projectId: root.querySelector('#fProject') ? root.querySelector('#fProject').value || null : (cur ? cur.projectId || null : null),
     tag: root.querySelector('#fTag') ? root.querySelector('#fTag').value || null : (cur ? cur.tag || null : null)
@@ -2450,7 +2461,7 @@ document.addEventListener('click', e => {
     case 'task-save': saveTask(el.dataset.pid); break;
     case 'idea-starter': Store.write('items', uid(), { area: 'date', title: el.dataset.title, who: 'both', tag: el.dataset.tag || null, week: null, day: null, notes: '', time: null, createdAt: nowStamp(), createdBy: S.me || 'a', done: false, doneAt: null, doneBy: null }); toast('In the jar'); break;
     case 'welcome': if (SHEET) closeSheet(); Welcome.show('preview'); break;
-    case 'idea-new': itemSheet(null, { area: 'date', week: null, day: null, who: 'both' }); break;
+    case 'idea-new': itemSheet(null, { area: 'date', week: null, day: null, who: 'both', jar: true }); break;
     case 'idea-pick': pickSheet(id); break;
     case 'idea-surprise': { const jar = live().filter(it => it.area === 'date' && !it.week && !it.done); if (jar.length) pickSheet(jar[Math.floor(Math.random() * jar.length)].id); break; }
     case 'pick-save': { const root = $('#sheet'), dv = segVal(root, 'day'), wkV = segVal(root, 'week'); Store.patch('items', id, { week: wkV, day: dv === 'any' || dv == null ? null : Number(dv) }); closeSheet(); toast('On the board'); break; }
