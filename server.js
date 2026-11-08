@@ -28,13 +28,13 @@ const DATA_FILE = process.env.HOME_TEAM_DATA_FILE || path.join(__dirname, 'data'
 const APP_URL = (process.env.APP_URL || '').replace(/\/$/, '');
 const TZ = process.env.TZ || 'America/New_York';
 const PUBLIC = path.join(__dirname, 'public');
-const COLLS = ['items', 'projects', 'grocery', 'weeks', 'settings', 'feed', 'push'];
+const COLLS = ['items', 'projects', 'grocery', 'weeks', 'settings', 'feed', 'push', 'chores', 'cards', 'bounties', 'quests', 'seasons'];
 const ID_RE = /^[A-Za-z0-9_.:@+~-]{1,80}$/;
 const VERSION = '2.0.0';
 const FEED_CAP = 400;
 
 /* ---------- storage: memory mirror + Postgres or JSON file ---------- */
-const DB = { items: {}, projects: {}, grocery: {}, weeks: {}, settings: {}, feed: {}, push: {} };
+const DB = {}; COLLS.forEach(c => { DB[c] = {}; });
 let pool = null, fileTimer = null;
 
 async function storeInit() {
@@ -134,6 +134,9 @@ function onFeed(entry) {
   else if (entry.type === 'nudge' && entry.to) pushTo(entry.to, 'nudge', { title: N[entry.who] + ' nudged you', body: (entry.text || '') + (entry.title ? ' (' + entry.title + ')' : ''), url: '/#week' });
   else if (entry.type === 'highfive' && entry.to) pushTo(entry.to, 'highfive', { title: 'High five from ' + N[entry.who], body: entry.title ? 'For ' + entry.title : 'Nice one.', url: '/#team' });
   else if (entry.type === 'wager' && entry.text) ['a', 'b'].forEach(p => pushTo(p, 'sunday', { title: 'The wager is set', body: entry.text, url: '/#team' }));
+  else if (entry.type === 'card' && entry.text) pushTo(other, 'partner', { title: N[entry.who] + ' played a card', body: entry.text, url: '/#team' });
+  else if (entry.type === 'bounty' && entry.text) pushTo(other, 'partner', { title: 'New bounty from ' + N[entry.who], body: entry.text, url: '/#team' });
+  else if ((entry.type === 'quest' || entry.type === 'season') && entry.text) ['a', 'b'].forEach(p => pushTo(p, 'partner', { title: entry.type === 'quest' ? 'Quest complete' : 'Season over', body: entry.text, url: '/#team' }));
 }
 function pruneFeed() {
   const ids = Object.keys(DB.feed); if (ids.length <= FEED_CAP) return;
@@ -142,7 +145,28 @@ function pruneFeed() {
 function openToday(person) {
   const now = push.localNow(TZ), wk = currentWeekKey();
   const mineDone = it => (it.area === 'workout' && it.who === 'both' && it.parts) ? !!it.parts[person] : !!it.done; // shared workouts are checked off per person
-  return Object.values(DB.items).filter(it => !it.dropped && it.week === wk && it.day === now.dow && (it.who === person || it.who === 'both') && !mineDone(it)).map(it => it.title);
+  const items = Object.values(DB.items).filter(it => !it.dropped && it.week === wk && it.day === now.dow && (it.who === person || it.who === 'both') && !mineDone(it)).map(it => it.title);
+  const owner = ch => (ch.cover && ch.cover.due <= now.date) ? ch.cover.who : ch.who === 'rotate' ? (ch.nextWho || 'a') : ch.who;
+  const chores = Object.values(DB.chores).filter(ch => !ch.paused && choreDueBy(ch, now.date) && owner(ch) === person).map(ch => ch.name);
+  return items.concat(chores);
+}
+/* chores: is this chore due on or before the given local date (YYYY-MM-DD) and not done that day? Mirrors nextDue() in the app. */
+function dkey(d) { return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
+function localDateOf(ts) { return new Intl.DateTimeFormat('en-CA', { timeZone: TZ, year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date(ts)); }
+function choreDueBy(ch, todayKey) {
+  const p = k => { const [y, m, d] = k.split('-').map(Number); return new Date(y, m - 1, d); };
+  const lastKey = ch.last && ch.last.at ? localDateOf(ch.last.at) : null;
+  if (lastKey === todayKey) return false;
+  const created = p(localDateOf(ch.createdAt || Date.now()));
+  let due;
+  if (ch.mode === 'days' && ch.days && ch.days.length) {
+    let d = lastKey ? p(lastKey) : created; if (lastKey) d.setDate(d.getDate() + 1);
+    for (let i = 0; i < 15; i++) { if (ch.days.includes((d.getDay() + 6) % 7)) break; d.setDate(d.getDate() + 1); }
+    due = d;
+  } else {
+    if (!lastKey) due = ch.start ? p(ch.start) : created; else { due = p(lastKey); const n = Math.max(1, Number(ch.n) || 1), u = ch.mode === 'daily' ? 'day' : (ch.unit || 'week'); if (u === 'day') due.setDate(due.getDate() + n); else if (u === 'week') due.setDate(due.getDate() + 7 * n); else due.setMonth(due.getMonth() + n); }
+  }
+  return dkey(due) <= todayKey;
 }
 async function scheduler() {
   if (!push.enabled) return;
@@ -178,7 +202,7 @@ async function handle(req, res) {
   if (p === '/api/logout' && m === 'POST') return send(res, 200, { ok: true }, { 'set-cookie': 'ht=; Path=/; Max-Age=0' });
   if (p.startsWith('/api/')) {
     if (!cookieOk(req)) return send(res, 401, { error: 'locked', needsKey: !!KEY });
-    if (p === '/api/state' && m === 'GET') { const out = {}; ['items', 'projects', 'grocery', 'weeks', 'settings', 'feed'].forEach(c => { out[c] = DB[c]; }); out.pushDevices = Object.values(DB.push).map(r => ({ person: r.person, ua: r.ua || '', createdAt: r.createdAt })); out.push = { enabled: push.enabled, publicKey: push.status.publicKey }; out.calendar = calendar.status; out.locked = !!KEY; out.version = VERSION; return send(res, 200, out); }
+    if (p === '/api/state' && m === 'GET') { const out = {}; COLLS.filter(c => c !== 'push').forEach(c => { out[c] = DB[c]; }); out.pushDevices = Object.values(DB.push).map(r => ({ person: r.person, ua: r.ua || '', createdAt: r.createdAt })); out.push = { enabled: push.enabled, publicKey: push.status.publicKey }; out.calendar = calendar.status; out.locked = !!KEY; out.version = VERSION; return send(res, 200, out); }
     if (p === '/api/push/subscribe' && m === 'POST') {
       let body; try { body = await readJson(req, 16384); } catch (e) { return send(res, 400, { error: e.message }); }
       if (!push.enabled) return send(res, 200, { ok: false, reason: 'push not configured' });

@@ -74,7 +74,13 @@ Every exercise has a photo demo: the start and finish positions alternate in the
 
 "Plan the week" and the Workouts tab both put the week's sessions on the board. Tapping a workout on the board opens the session: warm-up, each exercise with sets, reps and a form cue, and a box per exercise for the weight you used, which shows as "Last time: …" the next time that session comes around. Each of you logs your own. Options on the Workouts tab: pause (falls back to a plan of your own), repeat the current week, or restart at week 1.
 
-## 4. Points, the wager and the pot
+## 4. Chores
+
+Home tab → **Chores**. Each chore repeats on its own schedule (every day, on certain weekdays, or every N days/weeks/months) and is assigned to one of you, **takes turns** (passes to the other person after each completion), or is **up for grabs**. It starts with eleven chores across kitchen, laundry, trash and cleaning; edit, pause or delete any of them, and set the trash chore to your actual pickup night.
+
+Due and overdue chores also appear on the Week board, in "Still open today" on the Team tab (with nudges), and in the 7pm reminder. They score points (2–8 each; late ones at ¾), which count toward the weekly wager, the pot and the Clean House badge. Doing the other person's turn earns you the points; the rotation still passes on. Tapping a chore you did today undoes it.
+
+## 5. Points, the wager and the pot
 
 **Points** reward keeping your word, not piling on tasks. Workout 10, house task 8, date 12, dinner 6. Full value on the planned day, ×0.75 if done later in the week, ×0.5 if carried over from last week. +2 before 9am, +2 for logging weights on a workout. Items you're both on pay both of you, so doing things together is the best play.
 
@@ -86,11 +92,19 @@ Every exercise has a photo demo: the start and finish positions alternate in the
 
 **Week in review**: from the Team tab, a card for any past week (winner, percentages, points, stake) that shares as an image.
 
-## 5. Notifications
+### Cards, bounties, seasons and quests (Team tab → Season / Shop)
+
+- **Balance.** Each of you has a balance: points earned minus what you've spent. The pot is both balances minus rewards claimed.
+- **Power-up cards** (2 of each per person per week): **Swap** (30) hands one of your open items, or this turn of a chore, to your partner. **Shield** (25) takes one of yours off the wager, or skips one chore occurrence. **Double Down** (10) doubles an item's points if it's done on its day; miss it and you lose its base points.
+- **Bounties.** Put 5–30 of your own points on any open item or chore. Whoever finishes it collects; finish it yourself and you get them back. Cancel an open one any time for a refund.
+- **Seasons.** 8-week seasons. Most weekly wager wins takes the trophy (points break ties), and week 8 counts double. Trophies stay in the trophy case.
+- **Quests.** Shared goals with a deadline: workouts together, dates, chores, dinners, house tasks, or your own with a +1 counter. Hit it in time and you each get the reward.
+
+## 6. Notifications
 
 Each phone opts in with one tap once the three `HT_VAPID_*` envs are set: a "Turn on notifications" card sits at the top of the Week and Team tabs until the phone is set up, and the bell in the top bar shows the phone's status and turns them on or adjusts them any time. If the app isn't on the Home Screen yet, or the phone blocked notifications earlier, the card switches to step-by-step help for that. On iPhone the app must be on the Home Screen first (iOS 16.4+). What's sent, each switchable per person: the other person finished something (with points), nudges, high fives, a 7:00 pm "still open today" list, and a Sunday 6:00 pm "plan the week." Settings has a "send a test" button.
 
-## 6. On the phones
+## 7. On the phones
 
 Open the URL, enter the passphrase, add both names, mark whose phone it is. Then **Add to Home Screen** (Safari: Share → Add to Home Screen; Chrome: menu → Install app). Both phones see each other's changes within a second while open; on reopen the app refreshes itself.
 
