@@ -785,9 +785,9 @@ const Store = {
     if (r && r.status === 401) { S.locked = true; setSync(); render(); loginSheet(); return; }
     if (!r || !r.ok) { S.stale = true; S.loaded = Object.keys(S.items).length > 0; setSync(); render(); setTimeout(() => this.init(), 8000); return; }
     this.apply(await r.json());
-    S.loaded = true; S.stale = false; saveLocal(); setSync(); render(); firstRun(); seedChoresIfNeeded(); seedGameIfNeeded(); housekeeping(); this.listen(); Push.init();
+    S.loaded = true; S.stale = false; saveLocal(); setSync(); render(); if (PENDING_LINK) { const pl = PENDING_LINK; PENDING_LINK = null; setTimeout(() => runLink(pl), 400); } firstRun(); seedChoresIfNeeded(); seedGameIfNeeded(); housekeeping(); this.listen(); Push.init();
   },
-  apply(j) { COLLS.forEach(c => { S[c] = j[c] || {}; }); S.calendar = j.calendar || { connected: false }; S.push = j.push || { enabled: false }; S.pushDevices = j.pushDevices || []; S.locked = !!j.locked; },
+  apply(j) { COLLS.forEach(c => { S[c] = j[c] || {}; }); S.version = j.version || ''; if (window.Updater && j.build && j.build !== APP_BUILD && !APP_BUILD.startsWith('__')) { Updater.pending = true; Updater.apply(); } S.calendar = j.calendar || { connected: false }; S.push = j.push || { enabled: false }; S.pushDevices = j.pushDevices || []; S.locked = !!j.locked; },
   listen() {
     if (this.es) return;
     const es = new EventSource('/api/events'); this.es = es;
@@ -1528,7 +1528,7 @@ function openSheet(html, handlers) {
   if (SHEET.onMount) SHEET.onMount(fresh);
   const f = fresh.querySelector('input[type=text],textarea'); if (f && SHEET.focus !== false) setTimeout(() => f.focus(), 60);
 }
-function closeSheet() { $('#sheetWrap').classList.remove('open'); $('#sheet').innerHTML = ''; SHEET = null; P = null; }
+function closeSheet() { $('#sheetWrap').classList.remove('open'); $('#sheet').innerHTML = ''; SHEET = null; P = null; if (typeof Updater !== 'undefined' && Updater.pending) setTimeout(() => Updater.banner(), 300); }
 function segHTML(name, val, opts, cls) { return '<div class="seg" data-seg="' + name + '">' + opts.map(([v, l, c]) => '<button type="button" class="' + (v === val ? 'on ' + (c || '') : '') + '" data-v="' + v + '">' + l + '</button>').join('') + '</div>'; }
 function whoSeg(val) { const N = names(); return segHTML('who', val, [['a', esc(N.a), 'a'], ['b', esc(N.b), 'b'], ['both', 'Both', '']]); }
 function daySeg(val, wk) { const isCur = wk === currentWeekKey(), ti = todayIndex(); return '<div class="daychips" data-seg="day">' + [0, 1, 2, 3, 4, 5, 6].map(d => '<button type="button" class="' + (String(d) === String(val) ? 'on' : '') + (isCur && d === ti ? ' today' : '') + '" data-v="' + d + '">' + DAYS[d] + '</button>').join('') + '<button type="button" class="' + (val === 'any' ? 'on' : '') + '" data-v="any" style="flex:1.4">Any</button></div>'; }
@@ -1765,7 +1765,7 @@ function settingsSheet() {
   } else h += '<div class="kv"><span>Status</span><b>Not connected</b></div><p class="hint" style="margin-bottom:0">Set GOOGLE_SERVICE_ACCOUNT_JSON and GOOGLE_CALENDAR_ID on the server (README).</p>';
   h += '</div>';
   h += '<label class="f">Points</label><div class="card flat" style="margin:0"><div class="kv"><span>Workout · House · Date · Dinner</span><b class="num">10 · 8 · 12 · 6</b></div><div class="kv"><span>On the planned day</span><b>Full</b></div><div class="kv"><span>Later in the week</span><b>× 0.75</b></div><div class="kv"><span>Carried over from last week</span><b>× 0.5</b></div><div class="kv"><span>Before 9am · weights logged</span><b>+2 · +2</b></div><div class="kv"><span>Items you’re both on</span><b>Pay both of you</b></div></div>';
-  h += '<label class="f">This board</label><div class="card flat" style="margin:0"><div class="kv"><span>Sync</span><b>' + (S.stale ? 'Reconnecting' : 'Live between phones') + '</b></div><div class="kv"><span>Access</span><span style="text-align:right">' + (S.locked ? 'Passphrase on each phone' : 'Anyone with the link (set HOME_TEAM_KEY)') + '</span></div></div>';
+  h += '<label class="f">This board</label><div class="card flat" style="margin:0"><div class="kv"><span>Sync</span><b>' + (S.stale ? 'Reconnecting' : 'Live between phones') + '</b></div><div class="kv"><span>Access</span><span style="text-align:right">' + (S.locked ? 'Passphrase on each phone' : 'Anyone with the link (set HOME_TEAM_KEY)') + '</span></div><div class="kv"><span>Version</span><b class="num">' + esc((S.version || '') + ' · ' + APP_BUILD) + '</b></div><div class="row" style="gap:8px;margin:8px 0 0"><button type="button" class="btn sm ghost" data-act="upd-check">Check for updates</button><button type="button" class="btn sm ghost" data-act="upd-force">Force refresh</button></div></div>';
   h += '<label class="f">Favorite dinners</label><div class="chips" id="favChips">' + (favorites().length ? favorites().map(f => '<button type="button" class="chip" data-unfav="' + esc(f) + '" title="Remove">' + esc(f) + ' ×</button>').join('') : '<span class="small muted">Save one from a dinner.</span>') + '</div>';
   h += '<div class="form-actions"><button type="button" class="btn ghost" data-act="backup">Copy backup</button><button type="button" class="btn primary" data-act="settings-save">Save</button></div>';
   openSheet(h, { focus: false, onMount(root) { root.addEventListener('click', e => {
@@ -1946,9 +1946,27 @@ function sendNudge(id, to) {
   closeSheet(); toast('Nudge sent');
 }
 function highFive(itemId, to, title) {
+  if (!me()) { toast('Pick who this phone belongs to in Settings first'); return; }
   if (highFives(itemId).some(f => f.who === me())) { toast('Already sent'); return; }
-  Store.write('feed', uid(), { type: 'highfive', who: me(), to, title, itemId, at: nowStamp() });
-  haptic(); toast('High five sent');
+  Store.write('feed', 'hf-' + itemId + '-' + me(), { type: 'highfive', who: me(), to, title, itemId, at: nowStamp() });
+  haptic(); if (typeof confetti === 'function' && lsGet('home-team-confetti') !== '0') try { confetti(); } catch (e) {}
+  toast('High five sent to ' + (names()[to] || 'them'));
+}
+/* deep links from a tapped notification: #hf-sent/<itemId>/<to> (already sent by the service
+   worker) or #hf-retry/... (it couldn't reach the server, so send it from here) */
+let PENDING_LINK = null;
+function handleLink(hash) {
+  const m = /^#?hf-(sent|retry)\/([^/]+)\/([ab])$/.exec(hash || '');
+  if (!m) return false;
+  S.tab = 'team'; S.teamTab = 'week'; history.replaceState(null, '', location.pathname + '#team');
+  if (!S.loaded) { PENDING_LINK = m; render(); return true; }
+  runLink(m); return true;
+}
+function runLink(m) {
+  const itemId = decodeURIComponent(m[2]), to = m[3], it = S.items[itemId] || {};
+  render();
+  if (m[1] === 'retry') highFive(itemId, to, it.title || '');
+  else { haptic(); toast('High five sent to ' + (names()[to] || 'them')); }
 }
 function reviewSheet(wk) {
   const N = names(), r = weekPoints(wk), w = wagerOf(wk), items = weekItems(wk), sc = scoreOf(items);
@@ -2179,6 +2197,8 @@ document.addEventListener('click', e => {
     case 'push-on': { const fromSettings = !!el.closest('#sheet'); Push.enable().then(() => { if (fromSettings && Push.state === 'on') settingsSheet(); }); break; }
     case 'push-off': Push.disable().then(() => settingsSheet()); break;
     case 'push-test': Push.test(); break;
+    case 'upd-check': Updater.check(true); break;
+    case 'upd-force': closeSheet(); Updater.pending = false; Updater.reload(true); break;
     case 'bell': bellSheet(); break;
     case 'push-off-quick': Push.disable().then(() => closeSheet()); break;
     case 'push-retry': closeSheet(); Push.init().then(() => { if (Push.state === 'ready') Push.enable(); else if (Push.state === 'denied') toast('Still blocked. Check the Home Team switch in Settings.'); }); break;
@@ -2202,11 +2222,58 @@ S.teamTab = lsGet('home-team-teamtab') || 'week'; if (!['week', 'season', 'shop'
 S.home = lsGet('home-team-home') || 'chores'; if (!['chores', 'projects', 'kitchen'].includes(S.home)) S.home = 'chores';
 if (!['week', 'team', 'workouts', 'home', 'dates'].includes(S.tab)) S.tab = 'week';
 const hashTab = (location.hash || '').replace('#', ''); if (['week', 'team', 'workouts', 'home', 'dates'].includes(hashTab)) S.tab = hashTab;
+handleLink(location.hash);
 setSync(); render();
 Store.init();
-if ('serviceWorker' in navigator && location.protocol.startsWith('http')) { window.addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); }); }
-document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && S.loaded) { Store.refresh(); if (S.tab === 'week') Cal.load(S.viewWeek, true); } });
-window.addEventListener('hashchange', () => { const t = (location.hash || '').replace('#', ''); if (['week', 'team', 'workouts', 'home', 'dates'].includes(t)) { S.tab = t; render(); } });
+/* ---------- self-update: the server stamps a build id into this page; when the server's id
+   changes (new deploy), reload so phones and open tabs never sit on an old copy. ---------- */
+var APP_BUILD = '__HT_BUILD__';
+var Updater = {
+  pending: false, checking: false, last: 0,
+  async check(force) {
+    if (this.checking || APP_BUILD.startsWith('__')) return;
+    if (!force && Date.now() - this.last < 60000) return;
+    this.checking = true; this.last = Date.now();
+    try {
+      if (navigator.serviceWorker) navigator.serviceWorker.getRegistration().then(r => r && r.update()).catch(() => {});
+      const r = await fetch('/healthz?t=' + Date.now(), { cache: 'no-store' }); const j = await r.json();
+      if (j.build && j.build !== APP_BUILD) { this.pending = true; this.apply(); } else if (force) toast('You’re on the latest version');
+    } catch (e) { if (force) toast('Couldn’t reach the server'); }
+    this.checking = false;
+  },
+  apply() {
+    // never yank the page while someone is typing in a sheet; show a bar instead
+    if (SHEET) { this.banner(); return; }
+    this.reload();
+  },
+  banner() {
+    if (document.getElementById('updBar')) return;
+    const b = document.createElement('button'); b.id = 'updBar'; b.type = 'button';
+    b.textContent = 'New version ready · tap to update';
+    b.style.cssText = 'position:fixed;left:50%;transform:translateX(-50%);top:calc(env(safe-area-inset-top,0px) + 10px);z-index:9999;border:0;border-radius:999px;padding:10px 16px;font:600 14px/1 inherit;background:#0f766e;color:#fff;box-shadow:0 6px 20px rgba(0,0,0,.25);cursor:pointer';
+    b.onclick = () => this.reload();
+    document.body.appendChild(b);
+  },
+  async reload(hard) {
+    try {
+      if (hard && navigator.serviceWorker) { const regs = await navigator.serviceWorker.getRegistrations(); await Promise.all(regs.map(r => r.unregister())); }
+      if (window.caches) { const keys = await caches.keys(); await Promise.all(keys.map(k => caches.delete(k))); }
+    } catch (e) {}
+    location.replace(location.pathname + '?v=' + Date.now() + location.hash);
+  }
+};
+if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+  window.addEventListener('load', () => { navigator.serviceWorker.register('/sw.js', { updateViaCache: 'none' }).catch(() => {}); });
+  let hadController = !!navigator.serviceWorker.controller;
+  navigator.serviceWorker.addEventListener('message', e => { const d = e.data || {}; if (d.t === 'open' && d.url) { const h = d.url.slice(d.url.indexOf('#')); if (!handleLink(h)) { const t = h.replace('#', ''); if (['week', 'team', 'workouts', 'home', 'dates'].includes(t)) { S.tab = t; render(); } } } });
+  navigator.serviceWorker.addEventListener('controllerchange', () => { if (hadController) Updater.apply(); hadController = true; });
+}
+if (/[?&]v=\d/.test(location.search)) history.replaceState(null, '', location.pathname + location.hash);
+setTimeout(() => Updater.check(), 1500);
+setInterval(() => Updater.check(), 30 * 60000);
+window.addEventListener('pageshow', e => { if (e.persisted) Updater.check(); });
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') { Updater.check(); if (S.loaded) { Store.refresh(); if (S.tab === 'week') Cal.load(S.viewWeek, true); } } });
+window.addEventListener('hashchange', () => { if (handleLink(location.hash)) return; const t = (location.hash || '').replace('#', ''); if (['week', 'team', 'workouts', 'home', 'dates'].includes(t)) { S.tab = t; render(); } });
 </script>
 </body>
 </html>
