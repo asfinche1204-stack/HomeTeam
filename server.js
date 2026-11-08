@@ -30,7 +30,7 @@ const TZ = process.env.TZ || 'America/New_York';
 const PUBLIC = path.join(__dirname, 'public');
 const COLLS = ['items', 'projects', 'grocery', 'weeks', 'settings', 'feed', 'push', 'chores', 'cards', 'bounties', 'quests', 'seasons'];
 const ID_RE = /^[A-Za-z0-9_.:@+~-]{1,80}$/;
-const VERSION = '2.1.0';
+const VERSION = '2.2.0';
 /* BUILD changes whenever index.html or sw.js changes; clients compare it to reload stale copies. */
 const BUILD = (() => { try { return crypto.createHash('sha1').update(fs.readFileSync(path.join(PUBLIC, 'index.html'))).update(fs.readFileSync(path.join(PUBLIC, 'sw.js'))).digest('hex').slice(0, 8); } catch (e) { return 'dev'; } })();
 const FEED_CAP = 400;

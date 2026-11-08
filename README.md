@@ -114,3 +114,14 @@ Open the URL, enter the passphrase, add both names, mark whose phone it is. Then
 HOME_TEAM_KEY=test node server.js      # http://localhost:3000, data in ./data/home-team.json
 npm test                                # calendar.js unit test with a generated key and a mocked Google API
 ```
+
+## Updates on phones
+
+Every deploy gets a build id (shown in Settings → This board → Version). When the app opens or comes back to the foreground it checks the server; if there's a newer build it reloads itself, or shows a "New version ready · tap to update" bar if you're in the middle of editing something. Settings also has **Check for updates** and **Force refresh** (clears the app's offline cache and reloads) if a phone ever looks out of date.
+
+## The look (v2.2)
+
+- **Phone:** a living background behind the board: drifting light, the Andes rolling by with the wax palms of the Cocora valley, pollen by day and stars and fireflies at night (follows the phone's light/dark setting; turns itself off with Reduce Motion).
+- **Laptop/desktop (1024px and up):** a sidebar with the tabs and this week's score and pot, a greeting, sections laid out in balanced columns (the week becomes a day grid), and editing opens as a centered dialog instead of a bottom sheet.
+- **Welcome page:** what you see before entering the passphrase, with an animated phone demo. Open it any time from Settings → Welcome page, the sidebar, or `/#welcome`. The link-preview image (`public/og.png`) is a snapshot of it, regenerated from `/?og`.
+- **Un toque colombiano:** Spanish greetings and check-off cheers (¡Eso!, ¡Qué chimba!, ¡Berraco!…), confetti in the colors of the Colombian flag, a tricolor thread in the logo, and one-tap Colombian date-night ideas under the idea jar.
