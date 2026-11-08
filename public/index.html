@@ -14,8 +14,8 @@
 <meta name="twitter:description" content="Our shared board for the week, with points, a weekly wager and a pot we fill together.">
 <meta name="twitter:image" content="/og.png">
 <link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#EEF2F7" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#0B1222" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#F7F8FA" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0A0E15" media="(prefers-color-scheme: dark)">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Home Team">
@@ -23,7 +23,7 @@
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@500;600&display=swap" rel="stylesheet">
 <style>
 :root{
   /* Palette: navy (Alan) and teal (her) on a cool mesh ground; glass cards, a gradient hero, a floating tab bar.
@@ -251,6 +251,12 @@ main{flex:1;padding:4px 16px calc(104px + env(safe-area-inset-bottom))}
 .sheet-wrap.open ~ .toast.show{transform:translateX(-50%)}
 .pick.off .t{color:var(--muted)}
 .pick.off .t > div{color:var(--warn)}
+.av.grab{background:var(--surface-2);color:var(--muted);border:1.5px dashed var(--line-strong)}
+.who .rot{width:14px;height:14px;margin-left:-6px;margin-top:14px;border-radius:50%;background:var(--surface-solid);color:var(--muted);display:inline-grid;place-items:center;box-shadow:0 0 0 1.5px var(--line)}
+.who .rot svg{width:9px;height:9px;stroke-width:2.4}
+.warn-t{color:var(--warn)}
+.subnav .cnt{display:inline-grid;place-items:center;min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:var(--warn);color:#fff;font-size:11px;font-weight:800;margin-left:4px;vertical-align:1px}
+.daychips.multi button.on{background:var(--b);color:#fff}
 .exn{width:22px;height:22px;border-radius:50%;background:var(--a-soft);color:var(--a-ink);font-size:12px;font-weight:800;display:inline-grid;place-items:center;flex:none;margin-top:1px}
 .minibars{display:flex;gap:6px;align-items:flex-end;height:44px}
 .minibars .mb{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:10px;color:var(--muted);white-space:nowrap}
@@ -394,6 +400,162 @@ textarea{min-height:72px;resize:vertical}
 @keyframes fly{0%{transform:translateY(0) scale(.8);opacity:0}15%{opacity:1;transform:translateY(-10px) scale(1.15)}100%{transform:translateY(-70px) scale(1);opacity:0}}
 .share-card{display:none}
 @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}.mesh i{animation:none!important}}
+
+/* ===== v3 skin: modern professional. Solid surfaces, hairline borders, one typeface, navy + teal as accents only.
+   Layout: docked tab bar, flat cards, stat panels instead of gradient banners; gradient kept for the brand mark and rings. ===== */
+:root{
+  --bg:#F7F8FA; --surface:#FFFFFF; --surface-solid:#FFFFFF; --surface-2:#F1F3F6; --ink:#0E1726; --muted:#667085; --line:#E6E9EE; --line-strong:#D0D5DD;
+  --a:#1F3B70; --a-soft:#EAF0FA; --a-ink:#1F3B70; --b:#0E9384; --b-soft:#E3F6F3; --b-ink:#0B7468;
+  --ok:#12805C; --ok-soft:#E6F5EE; --warn:#B54708; --warn-soft:#FEF3E8; --gold:#B88A1B;
+  --grad:linear-gradient(135deg,#1F3B70 0%,#0E9384 100%);
+  --shadow:0 1px 2px rgba(16,24,40,.05); --shadow-lg:0 12px 32px rgba(16,24,40,.12);
+  --display:'Geist',ui-sans-serif,system-ui,-apple-system,'Segoe UI',sans-serif; --body:'Geist',ui-sans-serif,system-ui,-apple-system,'Segoe UI',sans-serif; --mono:'Geist Mono',ui-monospace,'SF Mono',Menlo,monospace;
+  --r:14px; --r-s:10px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0A0E15; --surface:#111722; --surface-solid:#111722; --surface-2:#18202E; --ink:#E7EBF2; --muted:#8B95A7; --line:#1E2633; --line-strong:#2B3545;
+  --a:#86A9EC; --a-soft:#17233A; --a-ink:#B9CDF5; --b:#2DD4BF; --b-soft:#0F2A29; --b-ink:#7EEADB;
+  --ok:#3CCB8B; --ok-soft:#0F2A1F; --warn:#F2A33A; --warn-soft:#2B1E0E; --gold:#E2B84D;
+  --grad:linear-gradient(135deg,#3B5FA8 0%,#14B8A6 100%); --shadow:0 1px 2px rgba(0,0,0,.4); --shadow-lg:0 16px 40px rgba(0,0,0,.55);
+}}
+:root[data-theme="dark"]{
+  --bg:#0A0E15; --surface:#111722; --surface-solid:#111722; --surface-2:#18202E; --ink:#E7EBF2; --muted:#8B95A7; --line:#1E2633; --line-strong:#2B3545;
+  --a:#86A9EC; --a-soft:#17233A; --a-ink:#B9CDF5; --b:#2DD4BF; --b-soft:#0F2A29; --b-ink:#7EEADB;
+  --ok:#3CCB8B; --ok-soft:#0F2A1F; --warn:#F2A33A; --warn-soft:#2B1E0E; --gold:#E2B84D;
+  --grad:linear-gradient(135deg,#3B5FA8 0%,#14B8A6 100%); --shadow:0 1px 2px rgba(0,0,0,.4); --shadow-lg:0 16px 40px rgba(0,0,0,.55);
+}
+body{font-feature-settings:"ss01","cv11";letter-spacing:-.005em}
+.mesh{display:none}
+h1,h2,h3{font-weight:650;letter-spacing:-.02em}
+.num,.pts,.v,.pct,.sc .v,.ring .lbl{font-family:var(--mono);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+/* top bar */
+.top{background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:saturate(1.4) blur(12px);-webkit-backdrop-filter:saturate(1.4) blur(12px);border-bottom:1px solid var(--line)}
+.brand{font-weight:700;font-size:17px;letter-spacing:-.02em}
+.brand .mark{width:22px;height:22px;border-radius:6px}
+.icon-btn{border-radius:10px;background:var(--surface);box-shadow:var(--shadow);backdrop-filter:none}
+.me-pair{border-radius:10px;background:var(--surface);box-shadow:var(--shadow);font-family:var(--mono);font-size:12px}
+/* docked tab bar */
+main{padding-top:12px;padding-bottom:calc(88px + env(safe-area-inset-bottom))}
+.tabs{left:0;right:0;bottom:0;background:color-mix(in srgb,var(--surface) 92%,transparent);border-top:1px solid var(--line);backdrop-filter:saturate(1.4) blur(14px);-webkit-backdrop-filter:saturate(1.4) blur(14px);padding-bottom:env(safe-area-inset-bottom);pointer-events:auto}
+.tabs .in{background:none;border:0;box-shadow:none;border-radius:0;padding:4px 6px;backdrop-filter:none;-webkit-backdrop-filter:none;max-width:600px}
+.tab{border-radius:10px;padding:8px 2px 6px;font-weight:600;position:relative}
+.tab.on{background:none;color:var(--a-ink)}
+.tab.on::before{content:"";position:absolute;top:-5px;left:30%;right:30%;height:2px;border-radius:2px;background:var(--a)}
+.tab svg{width:21px;height:21px}
+/* surfaces */
+.card,.list,.proj,.wager,.notif{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);backdrop-filter:none;-webkit-backdrop-filter:none}
+.sc,.badge,.summary .box{background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow)}
+.sec-h{margin:22px 2px 8px}
+.sec-h h2{font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.sec-h h2.warn-t{color:var(--warn)}
+.sec-h .link,.link{color:var(--b-ink);font-weight:600}
+/* hero becomes a stat panel with an accent rule */
+.hero{background:var(--surface);color:var(--ink);border:1px solid var(--line);box-shadow:var(--shadow);border-radius:var(--r);padding:16px 16px 14px;overflow:hidden}
+.hero::after{display:none}
+.hero::before{content:"";position:absolute;left:0;top:0;right:0;height:3px;background:var(--grad)}
+.hero .eyebrow{color:var(--muted);opacity:1;font-size:11px;font-weight:600;letter-spacing:.08em}
+.hero h1{color:var(--ink);font-size:26px;font-weight:700;letter-spacing:-.03em}
+.hero .sub{color:var(--muted);opacity:1}
+.hero .sub b{color:var(--ink)}
+.hero .pill{background:var(--surface-2);color:var(--muted)}
+.hero-link{color:var(--b-ink);font-weight:600;text-decoration:none}
+.tug .bar{height:8px;border-radius:5px;background:var(--surface-2);gap:2px}
+.tug .bar .ia{background:var(--a);border-radius:5px 0 0 5px}
+.tug .bar .ib{background:var(--b);border-radius:0 5px 5px 0}
+.tug .lab{color:var(--ink);font-weight:600;font-size:12.5px}
+.tug .lab .num{font-weight:600}
+.hero .small{color:var(--muted)}
+/* the pot: the one dark accent panel */
+.pot{background:#0E1726;color:#fff;border:1px solid #0E1726;box-shadow:var(--shadow);border-radius:var(--r)}
+:root[data-theme="dark"] .pot{background:#16243E;border-color:#22345A}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .pot{background:#16243E;border-color:#22345A}}
+.pot .track{height:6px;background:rgba(255,255,255,.14)}
+.pot .track i{background:#2DD4BF}
+/* buttons + controls */
+.btn{border-radius:10px;font-weight:600;font-size:14.5px;padding:11px 15px}
+.btn.primary{background:var(--a);color:#fff;box-shadow:none}
+:root[data-theme="dark"] .btn.primary{color:#0A0E15}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .btn.primary{color:#0A0E15}}
+.btn.teal{background:var(--b);color:#fff}
+.btn.ghost{border-color:var(--line-strong);background:var(--surface)}
+.btn.sm{border-radius:8px;padding:7px 11px;font-size:13px}
+.pill{border-radius:6px;font-weight:600}
+.tag{border-radius:5px}
+.subnav{background:var(--surface-2);border:0;border-radius:10px;padding:3px}
+.subnav button{border-radius:8px;font-weight:600;font-size:13.5px;padding:8px}
+.subnav button.on{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(16,24,40,.08),0 0 0 1px var(--line)}
+.seg{border-radius:10px}.seg button{border-radius:8px;font-weight:600}
+.daychips button{border-radius:8px;font-weight:600}
+input[type=text],input[type=number],input[type=time],input[type=password],select,textarea{border-radius:10px;border-color:var(--line-strong);background:var(--surface)}
+label.f{font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.06em}
+/* rows */
+.item{padding:12px 14px;animation:none}
+.item .check{width:24px;height:24px;border-width:1.75px;border-radius:7px}
+.item .check svg{width:14px;height:14px}
+.item .t{font-weight:550;font-size:15px}
+.item .pts{font-size:12px;font-weight:600}
+.day-h{font-size:13px;font-weight:650;padding:10px 4px 6px}
+.day-h .date{font-family:var(--mono);font-size:12px}
+.plan-row,.meal-row{padding:12px 14px}
+.plan-row .d,.meal-row .d{font-family:var(--mono);font-size:12px;font-weight:600}
+.add-row{font-weight:600;font-size:13px;padding:10px 14px}
+.av{font-weight:700;font-size:10.5px}
+.ring .fg{stroke:url(#ringGrad)}
+.ring .bg{stroke:var(--surface-2)}
+.ring .lbl{font-size:22px;font-weight:600}
+.pp .bar,.lvl .bar,.prog{height:6px;border-radius:4px}
+.prog i,.lvl .bar i{background:var(--a)}
+.badge .ic{background:var(--a-soft);color:var(--a-ink)}
+.badge.locked .ic{background:var(--surface-2)}
+.vs .side .pct{font-size:30px;font-weight:600}
+.wager .stake{font-size:18px;font-weight:650}
+.carry{border-radius:var(--r);border:1px solid color-mix(in srgb,var(--warn) 25%,transparent)}
+.notif{border-left:3px solid var(--b)}
+/* sheets */
+.sheet{background:var(--bg);border-radius:20px 20px 0 0;border-top:1px solid var(--line)}
+.sheet h2{font-size:20px;font-weight:700}
+.sheet-wrap .dim{background:rgba(10,14,21,.45);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px)}
+.toast{border-radius:10px;font-weight:600;box-shadow:var(--shadow-lg)}
+.fly{font-family:var(--mono);font-weight:600}
+.demo{border-radius:10px}
+.sec-h h2[style*="font-size:22px"]{text-transform:none;letter-spacing:-.03em;color:var(--ink);font-size:24px!important;font-weight:700}
+.tab.on::before{top:-4px}
+.chip-g{display:inline-flex;align-items:center;gap:3px;height:22px;padding:0 7px;border-radius:6px;font-size:11.5px;font-weight:700;font-family:var(--mono);white-space:nowrap;flex:none}
+.chip-g svg{width:12px;height:12px;stroke-width:2.2}
+.chip-g.bounty{background:#FEF6E0;color:#9A6B00}
+.chip-g.bounty.paid{background:var(--surface-2);color:var(--muted)}
+.chip-g.dd{background:#F3E8FF;color:#6B21A8}
+.chip-g.shield{background:var(--a-soft);color:var(--a-ink);padding:0 5px}
+.chip-g.swap{background:var(--b-soft);color:var(--b-ink);padding:0 5px}
+:root[data-theme="dark"] .chip-g.bounty{background:#2E2410;color:#F0C65C}:root[data-theme="dark"] .chip-g.dd{background:#2A1840;color:#D8B4FE}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .chip-g.bounty{background:#2E2410;color:#F0C65C}:root:not([data-theme="light"]) .chip-g.dd{background:#2A1840;color:#D8B4FE}}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.pcard{display:flex;flex-direction:column;align-items:flex-start;gap:6px;text-align:left;padding:12px;border-radius:14px;background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow);min-height:168px;position:relative;overflow:hidden}
+.pcard::before{content:"";position:absolute;left:0;right:0;top:0;height:3px}
+.pcard.swap::before{background:var(--b)}.pcard.shield::before{background:var(--a)}.pcard.dd::before{background:#7C3AED}
+.pc-ic{width:32px;height:32px;border-radius:9px;display:grid;place-items:center;background:var(--surface-2)}
+.pcard.swap .pc-ic{color:var(--b-ink);background:var(--b-soft)}.pcard.shield .pc-ic{color:var(--a-ink);background:var(--a-soft)}.pcard.dd .pc-ic{color:#7C3AED;background:#F3E8FF}
+.pc-ic svg{width:17px;height:17px}
+.pc-n{font-weight:700;font-size:14px}
+.pc-d{font-size:11.5px;color:var(--muted);line-height:1.35;flex:1}
+.pc-c{font-size:12px;font-weight:600;color:var(--ink)}
+.pcard.dim{opacity:.55}
+@media (max-width:380px){.cards{grid-template-columns:1fr 1fr}}
+.season-score{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.ss{display:flex;align-items:center;gap:10px;padding:10px;border-radius:10px;background:var(--surface-2)}
+.ss.lead{box-shadow:inset 0 0 0 1.5px var(--ok)}
+.ss-n{font-size:22px;font-weight:600;line-height:1}
+.ss-n small{font-size:12px;color:var(--muted);font-family:var(--body);font-weight:500}
+.ss .small svg{width:12px;height:12px;vertical-align:-1px;color:var(--gold)}
+.season-strip{display:grid;grid-template-columns:repeat(8,1fr);gap:4px;margin-top:12px}
+.sw-w{height:26px;border-radius:6px;display:grid;place-items:center;font-size:11px;font-weight:700;font-family:var(--mono);background:var(--surface-2);color:var(--muted)}
+.sw-w.future{background:transparent;border:1px dashed var(--line-strong)}
+.sw-w.live{box-shadow:inset 0 0 0 1.5px var(--ink);color:var(--ink)}
+.sw-w.wa{background:var(--a);color:#fff}.sw-w.wb{background:var(--b);color:#fff}
+.sw-w.final{border-color:#7C3AED;color:#7C3AED}
+.quest .q-t{font-weight:650;font-size:15px}
+.q-bar{height:8px;border-radius:5px;background:var(--surface-2);overflow:hidden;margin-top:10px}
+.q-bar i{display:block;height:100%;background:var(--grad);border-radius:5px;transition:width .6s ease}
 </style>
 </head>
 <body>
@@ -546,9 +708,10 @@ function pointsFor(it, doneAt) {
   if (it.area === 'workout' && it.log && Object.values(it.log).some(l => l && Object.keys(l).length)) { pts += 2; notes.push('weights logged'); }
   const out = { a: 0, b: 0, pts, notes };
   if (it.who === 'both') { out.a = pts; out.b = pts; } else out[it.who] = pts;
+  if (it.dd && it.dd.p && out[it.dd.p] && !notes.some(n => n === 'late' || n === 'other week' || n === 'carried over')) { out[it.dd.p] *= 2; if (it.who !== 'both' || it.dd.p === me()) out.pts = out[it.dd.p]; notes.push('double down'); }
   return out;
 }
-function possibleFor(it, p) { return (it.who === p || it.who === 'both') ? (BASE[it.area] || 5) : 0; }
+function possibleFor(it, p) { if (it.shield && it.shield[p] && !partDone(it, p)) return 0; return (it.who === p || it.who === 'both') ? (BASE[it.area] || 5) : 0; }
 /* Shared workouts are done per person: each of you checks off your own half. Other shared items are one joint check-off. */
 const isSplit = it => !!it && it.area === 'workout' && it.who === 'both';
 function partsOf(it) { if (it.parts) return it.parts; if (isSplit(it) && it.done) { const e = it.earned || {}; return { a: { at: it.doneAt, pts: e.a || 0, notes: e.notes || [] }, b: { at: it.doneAt, pts: e.b || 0, notes: e.notes || [] } }; } return {}; }
@@ -557,12 +720,13 @@ function partAt(it, p) { return isSplit(it) ? (partsOf(it)[p] || {}).at : it.don
 function weekPoints(wk) {
   const items = weekItems(wk), r = { a: { pts: 0, possible: 0, pct: 0, done: 0, total: 0 }, b: { pts: 0, possible: 0, pct: 0, done: 0, total: 0 }, items: items.length };
   items.forEach(it => ['a', 'b'].forEach(p => { const poss = possibleFor(it, p); if (!poss) return; r[p].possible += poss; r[p].total++; if (partDone(it, p)) { r[p].done++; r[p].pts += (it.earned && it.earned[p]) || 0; } }));
+  const cp = choresPointsWeek(wk); ['a', 'b'].forEach(p => { ['pts', 'possible', 'done', 'total'].forEach(k => { r[p][k] += cp[p][k]; }); });
   ['a', 'b'].forEach(p => { r[p].pct = r[p].possible ? Math.min(100, Math.round(r[p].pts / r[p].possible * 100)) : 0; });
   return r;
 }
-function lifetimePoints() { const r = { a: 0, b: 0 }; live().forEach(it => { if (it.earned && (it.done || it.parts)) { r.a += it.earned.a || 0; r.b += it.earned.b || 0; } }); return r; }
+function lifetimePoints() { const r = { a: 0, b: 0 }; live().forEach(it => { if (it.earned && (it.done || it.parts)) { r.a += it.earned.a || 0; r.b += it.earned.b || 0; } }); const c = choresLifetime(), q = questRewards(), bi = bountyIncome(); r.a += c.a + q.a + bi.a; r.b += c.b + q.b + bi.b; return r; }
 function rewards() { return (S.settings.main && S.settings.main.rewards) || []; }
-function potTotal() { const l = lifetimePoints(); return l.a + l.b - rewards().filter(r => r.claimedAt).reduce((s, r) => s + (Number(r.cost) || 0), 0); }
+function potTotal() { const b = balances(); return b.a + b.b - rewards().filter(r => r.claimedAt).reduce((s, r) => s + (Number(r.cost) || 0), 0); }
 const LEVELS = [[0, 'Rookie'], [100, 'Regular'], [300, 'Steady'], [600, 'Reliable'], [1000, 'Clutch'], [1500, 'Machine'], [2500, 'Legend']];
 function levelOf(pts) { let i = 0; for (let k = 0; k < LEVELS.length; k++) if (pts >= LEVELS[k][0]) i = k; const next = LEVELS[i + 1]; return { name: LEVELS[i][1], n: i + 1, floor: LEVELS[i][0], next: next ? next[0] : null, pct: next ? Math.round((pts - LEVELS[i][0]) / (next[0] - LEVELS[i][0]) * 100) : 100 }; }
 const TEAM_LEVELS = [[0, 'Roommates'], [200, 'Teammates'], [600, 'Home Team'], [1500, 'Franchise'], [3000, 'Dynasty']];
@@ -588,6 +752,7 @@ const BADGES = [
   { id: 'dates', name: 'Three dates', desc: 'A date done three weeks running', icon: 'date', test: (p, ctx) => { let run = 0; for (const k of ctx.weekKeysAsc) { if (weekItems(k).some(it => it.area === 'date' && it.done)) { run++; if (run >= 3) return true; } else run = 0; } return false; } },
   { id: 'early', name: 'Early bird', desc: 'Five check-offs before 9am', icon: 'flame', test: (p, ctx) => ctx.mine.filter(it => it.done && it.earned && it.earned.notes && it.earned.notes.includes('before 9')).length >= 5 },
   { id: 'seven', name: 'Every day', desc: 'A 7-day streak', icon: 'trophy', test: (p, ctx) => { const s = doneDays(p); let best = 0; s.forEach(k => { let n = 0, d = parseKey(k); while (s.has(keyOf(d))) { n++; d = addDays(d, 1); } best = Math.max(best, n); }); return best >= 7; } },
+  { id: 'chores', name: 'Clean house', desc: '25 chores done', icon: 'house', test: (p, ctx) => choreList().reduce((n, c) => n + (c.history || []).filter(h => h.by === p).length, 0) >= 25 },
   { id: 'wagers', name: 'Three wagers', desc: 'Won three weekly wagers', icon: 'gift', test: (p, ctx) => Object.values(S.weeks).filter(w => w.settled && w.settled.winner === p).length >= 3 }
 ];
 function badgeCtx(p) {
@@ -600,12 +765,12 @@ function badgesFor(p) { const ctx = badgeCtx(p); return BADGES.map(b => ({ id: b
 /* ---------- state ---------- */
 const S = {
   items: {}, projects: {}, grocery: {}, weeks: {}, settings: {}, feed: {},
-  me: null, tab: 'week', viewWeek: currentWeekKey(), home: 'projects',
+  me: null, tab: 'week', viewWeek: currentWeekKey(), home: 'chores', chores: {}, cards: {}, bounties: {}, quests: {}, seasons: {}, teamTab: 'week',
   loaded: false, stale: false, locked: false, openProj: null, calendar: { connected: false }, push: { enabled: false }, pushDevices: []
 };
 let P = null; let SHEET = null;
 const LS = 'home-team-v2';
-const COLLS = ['items', 'projects', 'grocery', 'weeks', 'settings', 'feed'];
+const COLLS = ['items', 'projects', 'grocery', 'weeks', 'settings', 'feed', 'chores', 'cards', 'bounties', 'quests', 'seasons'];
 function loadLocal() { try { const raw = localStorage.getItem(LS); if (raw) { const d = JSON.parse(raw); COLLS.forEach(k => { if (d[k]) S[k] = d[k]; }); } } catch (e) {} }
 function saveLocal() { try { const o = {}; COLLS.forEach(k => { o[k] = S[k]; }); localStorage.setItem(LS, JSON.stringify(o)); } catch (e) {} }
 function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
@@ -620,7 +785,7 @@ const Store = {
     if (r && r.status === 401) { S.locked = true; setSync(); render(); loginSheet(); return; }
     if (!r || !r.ok) { S.stale = true; S.loaded = Object.keys(S.items).length > 0; setSync(); render(); setTimeout(() => this.init(), 8000); return; }
     this.apply(await r.json());
-    S.loaded = true; S.stale = false; saveLocal(); setSync(); render(); firstRun(); this.listen(); Push.init();
+    S.loaded = true; S.stale = false; saveLocal(); setSync(); render(); firstRun(); seedChoresIfNeeded(); seedGameIfNeeded(); housekeeping(); this.listen(); Push.init();
   },
   apply(j) { COLLS.forEach(c => { S[c] = j[c] || {}; }); S.calendar = j.calendar || { connected: false }; S.push = j.push || { enabled: false }; S.pushDevices = j.pushDevices || []; S.locked = !!j.locked; },
   listen() {
@@ -630,7 +795,7 @@ const Store = {
     es.onerror = () => { this.sseOk = false; S.stale = true; setSync(); };
     es.onmessage = ev => {
       let msg; try { msg = JSON.parse(ev.data); } catch (e) { return; }
-      if (msg.t === 'doc' && S[msg.coll]) { if (msg.data) S[msg.coll][msg.id] = msg.data; else delete S[msg.coll][msg.id]; saveLocal(); render(); }
+      if (msg.t === 'doc' && S[msg.coll]) { if (msg.data) S[msg.coll][msg.id] = msg.data; else delete S[msg.coll][msg.id]; saveLocal(); render(); housekeeping(); }
       else if (msg.t === 'calendar') { Cal.invalidate(msg.week); if (S.tab === 'week') Cal.load(S.viewWeek, true); }
     };
   },
@@ -757,7 +922,7 @@ function itemRow(it, opts) {
   return '<div class="item' + (it.done ? ' done' : '') + (split && mineDone && !it.done ? ' half' : '') + (opts.slipped && !mineDone ? ' slipped' : '') + '">' +
     '<button class="check" data-act="toggle" data-id="' + it.id + '" aria-label="Mark done">' + ICON.check + '</button>' +
     '<button class="body" ' + (it.session && PROGRAM.sessions[it.session] ? 'data-act="session" data-key="' + it.session + '" data-week="' + (it.programWeek || '') + '"' : 'data-act="edit"') + ' data-id="' + it.id + '"><div class="t">' + esc(it.title) + '</div>' + (meta.length ? '<div class="m">' + esc(meta.join(' · ')) + '</div>' : '') + '</button>' +
-    pts + who + '</div>';
+    gameChips('item', it) + pts + who + '</div>';
 }
 function ringHTML(done, total, size) {
   const r = 36, circ = 2 * Math.PI * r, off = circ * (1 - (total ? done / total : 0));
@@ -829,7 +994,7 @@ function renderWeek() {
   const todayItems = isCur ? items.filter(it => it.day === ti) : [], todayDone = todayItems.filter(it => it.done).length;
   const lead = wp.a.pct === wp.b.pct ? (wp.a.pts === wp.b.pts ? null : (wp.a.pts > wp.b.pts ? 'a' : 'b')) : (wp.a.pct > wp.b.pct ? 'a' : 'b');
   const leadLine = !sc.t ? 'Nothing on the board yet.' : lead ? (lead === me() ? 'You’re ahead' : esc(N[lead]) + ' is ahead') + ' on the wager (' + wp[lead].pct + '% vs ' + wp[lead === 'a' ? 'b' : 'a'].pct + '%).' : 'Dead even on the wager.';
-  h += '<section class="hero"><div class="eyebrow">' + (isCur ? DAYS_LONG[ti] + ' · ' + fmtDate(new Date()) : weekLabel(wk)) + '</div><h1>' + (isCur ? (todayItems.length ? todayDone + ' of ' + todayItems.length + ' done today' : (sc.t ? sc.d + ' of ' + sc.t + ' this week' : 'A clean slate')) : sc.d + ' of ' + sc.t + ' done') + '</h1><div class="sub">' + leadLine + (w.stake ? ' Stake: <b>' + esc(w.stake) + '</b>' : (sc.t ? ' <button class="link" data-act="stake" style="color:#fff;text-decoration:underline">Set a stake</button>' : '')) + '</div>' + tugHTML(wp) + '</section>';
+  h += '<section class="hero"><div class="eyebrow">' + (isCur ? DAYS_LONG[ti] + ' · ' + fmtDate(new Date()) : weekLabel(wk)) + '</div><h1>' + (isCur ? (todayItems.length ? todayDone + ' of ' + todayItems.length + ' done today' : (sc.t ? sc.d + ' of ' + sc.t + ' this week' : 'A clean slate')) : sc.d + ' of ' + sc.t + ' done') + '</h1><div class="sub">' + leadLine + (w.stake ? ' Stake: <b>' + esc(w.stake) + '</b>' : (sc.t ? ' <button class="link" data-act="stake" class="hero-link">Set a stake</button>' : '')) + '</div>' + tugHTML(wp) + '</section>';
   // score card
   h += '<section class="card"><div class="row" style="gap:16px">' + ringHTML(sc.d, sc.t) + '<div class="grow">' +
     ['a', 'b'].map(p => '<div class="pp ' + p + '"><span class="av ' + p + '">' + esc(initials(p)) + '</span><div><div class="lab"><span>' + esc(N[p]) + '</span><span class="num muted">' + sc[p].d + '/' + sc[p].t + ' · ' + wp[p].pts + ' pts</span></div><div class="bar"><i data-w="' + (sc[p].t ? Math.round(sc[p].d / sc[p].t * 100) : 0) + '"></i></div></div></div>').join('') +
@@ -846,10 +1011,11 @@ function renderWeek() {
   const calEvents = (calOn && Cal.get(wk)) || [], calByDate = {}; calEvents.forEach(ev => { if (!ev.board) (calByDate[ev.date] = calByDate[ev.date] || []).push(ev); });
   const order = isCur ? [ti, ...[0, 1, 2, 3, 4, 5, 6].filter(d => d !== ti)] : [0, 1, 2, 3, 4, 5, 6];
   const calRow = ev => '<div class="item cal"><span class="check cal-ic">' + ICON.week + '</span><button class="body" data-act="cal-add" data-title="' + esc(ev.title) + '" data-date="' + esc(ev.date) + '" data-start="' + esc(ev.start || '') + '"><div class="t">' + esc(ev.title) + '</div><div class="m">' + (ev.allDay ? 'All day' : esc(fmtIsoTime(ev.start) + (ev.end ? ' – ' + fmtIsoTime(ev.end) : ''))) + ' · On the calendar' + (ev.location ? ' · ' + esc(ev.location) : '') + '</div></button></div>';
+  const choresByDay = {}; if (isCur) choreList().filter(c => !c.paused).forEach(c => { const st = choreState(c); let d = null; if (st.doneToday || st.overdue || st.today) d = ti; else if (st.days > 0 && st.days <= 6 - ti) d = ti + st.days; if (d != null) (choresByDay[d] = choresByDay[d] || []).push(c); });
   const dayBlock = d => {
-    const past = isCur && d < ti, list = byDay[d] || [], dk = keyOf(dayDate(wk, d)), cal = calByDate[dk] || [];
+    const past = isCur && d < ti, list = byDay[d] || [], dk = keyOf(dayDate(wk, d)), cal = calByDate[dk] || [], chs = choresByDay[d] || [];
     return '<div class="day' + (past ? ' past' : '') + '"><div class="day-h">' + DAYS_LONG[d] + ' <span class="date">' + fmtDate(dayDate(wk, d)) + '</span>' + (isCur && d === ti ? '<span class="pill b" style="margin-left:auto">Today</span>' : '') + '</div><div class="list">' +
-      list.map(it => itemRow(it, { slipped: past && !it.done })).join('') + cal.map(calRow).join('') + '<button class="add-row" data-act="add" data-day="' + d + '">' + ICON.plus + ' Add</button></div></div>';
+      list.map(it => itemRow(it, { slipped: past && !it.done })).join('') + chs.map(c => choreRow(c, { board: true })).join('') + cal.map(calRow).join('') + '<button class="add-row" data-act="add" data-day="' + d + '">' + ICON.plus + ' Add</button></div></div>';
   };
   h += order.map(dayBlock).join('');
   const any = byDay.any || [];
@@ -858,30 +1024,29 @@ function renderWeek() {
 }
 
 function renderTeam() {
+  const sub = '<div class="subnav">' + [['week', 'This week'], ['season', 'Season'], ['shop', 'Shop']].map(([k, l]) => '<button class="' + (S.teamTab === k ? 'on' : '') + '" data-act="team-sub" data-sub="' + k + '">' + l + '</button>').join('') + '</div>';
+  if (S.teamTab === 'season') return notifCard() + sub + renderSeason();
+  if (S.teamTab === 'shop') return notifCard() + sub + renderShop();
+  return notifCard() + sub + renderTeamWeek();
+}
+function renderTeamWeek() {
   const N = names(), cur = currentWeekKey(), wp = weekPoints(cur), w = wagerOf(cur), lt = lifetimePoints(), tl = teamLevel(), pot = potTotal(), rw = rewards();
   Object.keys(S.weeks).forEach(k => { if (k < cur) settleIfNeeded(k); });
   const lead = wp.a.pct === wp.b.pct ? 'tie' : (wp.a.pct > wp.b.pct ? 'a' : 'b');
-  let h = notifCard() + '<div class="sec-h" style="margin-top:8px"><h2 style="font-size:22px">The wager</h2><span class="small muted">' + fmtWeekRange(cur) + '</span></div>';
+  let h = '<div class="sec-h" style="margin-top:8px"><h2 style="font-size:22px">The wager</h2><span class="small muted">' + fmtWeekRange(cur) + '</span></div>';
   h += '<section class="wager"><div class="small muted">This week’s stake</div><div class="stake">' + (w.stake ? esc(w.stake) : '<span class="muted">No stake yet</span>') + '</div>' +
     '<div class="vs"><div class="side' + (lead === 'a' ? ' lead' : '') + '"><span class="av a lg" style="margin:0 auto 6px">' + esc(initials('a')) + '</span><div class="pct num">' + wp.a.pct + '%</div><div class="pts num">' + wp.a.pts + ' of ' + wp.a.possible + ' pts · ' + wp.a.done + '/' + wp.a.total + '</div></div><div class="mid">VS</div><div class="side' + (lead === 'b' ? ' lead' : '') + '"><span class="av b lg" style="margin:0 auto 6px">' + esc(initials('b')) + '</span><div class="pct num">' + wp.b.pct + '%</div><div class="pts num">' + wp.b.pts + ' of ' + wp.b.possible + ' pts · ' + wp.b.done + '/' + wp.b.total + '</div></div></div>' +
     '<p class="small muted" style="margin:0 0 10px">Settles Sunday night on the share of your own board you kept, so a bigger board doesn’t win by volume. Ties carry the stake forward.</p>' +
     '<div class="row" style="gap:8px"><button class="btn sm ' + (w.stake ? 'ghost' : 'primary') + '" data-act="stake">' + (w.stake ? 'Change the stake' : 'Set the stake') + '</button><button class="btn sm ghost" data-act="review" data-week="' + shiftWeek(cur, -1) + '">Last week’s review</button></div></section>';
   // open today: accountability
   const ti = todayIndex(), openA = weekItems(cur).filter(it => it.day === ti && (it.who === 'a' || it.who === 'both') && !partDone(it, 'a')), openB = weekItems(cur).filter(it => it.day === ti && (it.who === 'b' || it.who === 'both') && !partDone(it, 'b'));
+  const choreOpen = p => choreList().filter(c => !c.paused && (choreState(c).today || choreState(c).overdue) && (c.who === 'any' || choreTurn(c) === p)).map(c => ({ id: 'chore:' + c.id, title: c.name + (choreState(c).overdue ? ' (overdue)' : ''), who: c.who === 'any' ? 'both' : choreTurn(c), chore: c.id }));
+  const notAnyFor = p => x => !(S.chores[x.chore] && S.chores[x.chore].who === 'any') || p === me(); openA.push(...choreOpen('a').filter(notAnyFor('a'))); openB.push(...choreOpen('b').filter(notAnyFor('b')));
   const oth = other(), openOther = oth === 'a' ? openA : openB, openMe = oth === 'a' ? openB : openA;
   h += '<div class="sec-h"><h2>Still open today</h2><span class="small muted">' + DAYS_LONG[ti] + '</span></div><section class="card">';
   h += '<div class="small muted" style="margin-bottom:4px">' + esc(N[oth]) + '</div>' + (openOther.length ? openOther.map(it => '<div class="open-row"><span class="t">' + esc(it.title) + '</span>' + whoChip(it.who, true) + '<button class="btn sm teal" data-act="nudge" data-id="' + it.id + '">' + ICON.bell + ' Nudge</button></div>').join('') : '<div class="small muted" style="padding:4px 0 8px">Nothing open. ' + (weekItems(cur).some(it => it.day === ti && (it.who === oth || it.who === 'both')) ? 'All done today.' : 'A rest day.') + '</div>');
-  h += '<div class="small muted" style="margin:10px 0 4px">You</div>' + (openMe.length ? openMe.map(it => '<div class="open-row"><span class="t">' + esc(it.title) + '</span>' + whoChip(it.who, true) + '<button class="btn sm" data-act="toggle" data-id="' + it.id + '">Done</button></div>').join('') : '<div class="small muted" style="padding:4px 0 0">Clear. Nice.</div>');
+  h += '<div class="small muted" style="margin:10px 0 4px">You</div>' + (openMe.length ? openMe.map(it => '<div class="open-row"><span class="t">' + esc(it.title) + '</span>' + whoChip(it.who, true) + '<button class="btn sm" data-act="' + (it.chore ? 'chore-done' : 'toggle') + '" data-id="' + (it.chore || it.id) + '">Done</button></div>').join('') : '<div class="small muted" style="padding:4px 0 0">Clear. Nice.</div>');
   h += '</section>';
-  // pot
-  const nextR = rw.filter(r => !r.claimedAt).sort((x, y) => x.cost - y.cost)[0];
-  h += '<div class="sec-h"><h2>The pot</h2><button class="link" data-act="reward-new">+ Reward</button></div>';
-  h += '<section class="pot"><div class="row"><div class="grow"><div class="eyebrow" style="font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;opacity:.85">Points together</div><div class="v num">' + pot + '</div></div><div style="text-align:right"><div class="small" style="opacity:.9">' + esc(tl.name) + '</div><div class="small num" style="opacity:.8">' + tl.total + ' lifetime' + (tl.next ? ' · ' + tl.next + ' next' : '') + '</div></div></div>' +
-    (nextR ? '<div class="track"><i style="width:' + Math.min(100, Math.round(pot / nextR.cost * 100)) + '%"></i></div><div class="small" style="margin-top:6px;opacity:.92">Next up: <b>' + esc(nextR.name) + '</b> at ' + nextR.cost + (pot >= nextR.cost ? ' · ready to claim' : ' · ' + (nextR.cost - pot) + ' to go') + '</div>' : '<div class="small" style="margin-top:8px;opacity:.92">Add rewards you’d both want: takeout night, a massage, the trip fund. Points you each earn fill the pot; claim rewards from it.</div>') + '</section>';
-  if (rw.length) h += '<div class="list" style="margin-bottom:12px">' + rw.slice().sort((x, y) => (x.claimedAt ? 1 : 0) - (y.claimedAt ? 1 : 0) || x.cost - y.cost).map(r => '<div class="reward' + (!r.claimedAt && pot >= r.cost ? ' ready' : '') + '"><span class="av both" style="width:22px;height:22px"></span><span class="t">' + esc(r.name) + (r.claimedAt ? ' <span class="muted small">· claimed ' + fmtDate(new Date(r.claimedAt)) + '</span>' : '') + '</span><span class="cost num">' + r.cost + '</span>' + (r.claimedAt ? '' : (pot >= r.cost ? '<button class="btn sm primary" data-act="reward-claim" data-id="' + r.id + '">Claim</button>' : '<button class="btn sm ghost" data-act="reward-edit" data-id="' + r.id + '">Edit</button>')) + '</div>').join('') + '</div>';
-  // levels + badges
-  h += '<div class="sec-h"><h2>Badges</h2></div>';
-  ['a', 'b'].forEach(p => { const lv = levelOf(lt[p]), bs = badgesFor(p), on = bs.filter(b => b.on).length; h += '<section class="card"><div class="row" style="margin-bottom:10px"><span class="av ' + p + ' lg">' + esc(initials(p)) + '</span><div class="grow"><div style="font-weight:800">' + esc(N[p]) + ' · ' + esc(lv.name) + '</div><div class="lvl"><div class="bar"><i style="width:' + lv.pct + '%"></i></div><span class="small muted num">' + lt[p] + (lv.next ? ' / ' + lv.next : '') + '</span></div></div><span class="pill">' + on + '/' + bs.length + '</span></div><div class="badges">' + bs.map(b => '<div class="badge' + (b.on ? '' : ' locked') + '" title="' + esc(b.desc) + '"><div class="ic">' + ICON[b.icon] + '</div>' + esc(b.name) + (b.count > 1 ? ' ×' + b.count : '') + '<div class="n">' + esc(b.desc) + '</div></div>').join('') + '</div></section>'; });
   // ledger
   const feed = feedList().filter(f => f.type !== 'highfive').slice(0, 40);
   h += '<div class="sec-h"><h2>The ledger</h2><span class="small muted">Both of you, live</span></div><div class="list">' + (feed.length ? feed.map(f => {
@@ -932,9 +1097,388 @@ function renderWorkouts() {
   return h;
 }
 
+/* ---------- chores: repeating jobs with their own schedule, owner or rotation, points ---------- */
+const CHORE_BASE = 4;
+const CHORE_SEED = [
+  { id: 'seed-dishes', name: 'Dishes & dishwasher', group: 'Kitchen', mode: 'daily', who: 'rotate', pts: 3 },
+  { id: 'seed-counters', name: 'Wipe counters & stove', group: 'Kitchen', mode: 'every', n: 2, unit: 'day', who: 'any', pts: 2, startIn: 1 },
+  { id: 'seed-fridge', name: 'Clean out the fridge', group: 'Kitchen', mode: 'every', n: 1, unit: 'month', who: 'rotate', pts: 6, startIn: 12 },
+  { id: 'seed-laundry', name: 'Laundry (wash, dry, fold)', group: 'Laundry', mode: 'days', days: [0, 3], who: 'rotate', pts: 5 },
+  { id: 'seed-sheets', name: 'Change the sheets', group: 'Laundry', mode: 'every', n: 2, unit: 'week', who: 'rotate', pts: 4, startIn: 3 },
+  { id: 'seed-towels', name: 'Wash towels', group: 'Laundry', mode: 'days', days: [6], who: 'any', pts: 3 },
+  { id: 'seed-trash', name: 'Trash & recycling to the curb', group: 'Trash', mode: 'days', days: [1], who: 'rotate', pts: 3, note: 'Set this to your pickup night' },
+  { id: 'seed-cans', name: 'Empty the small trash cans', group: 'Trash', mode: 'days', days: [1], who: 'any', pts: 2 },
+  { id: 'seed-vacuum', name: 'Vacuum & mop', group: 'Cleaning', mode: 'days', days: [5], who: 'rotate', pts: 6 },
+  { id: 'seed-bathrooms', name: 'Clean the bathrooms', group: 'Cleaning', mode: 'days', days: [6], who: 'rotate', pts: 6 },
+  { id: 'seed-dust', name: 'Dust', group: 'Cleaning', mode: 'every', n: 2, unit: 'week', who: 'any', pts: 4, startIn: 6 }
+];
+const CHORE_GROUPS = ['Kitchen', 'Laundry', 'Trash', 'Cleaning', 'Outside', 'Other'];
+const dayOnly = ts => { const d = new Date(ts); d.setHours(0, 0, 0, 0); return d; };
+const today0 = () => dayOnly(Date.now());
+function choreList() { return Object.entries(S.chores || {}).map(([id, c]) => Object.assign({ id }, c)); }
+function nextDue(ch) {
+  const last = ch.last && ch.last.at ? dayOnly(ch.last.at) : null, created = dayOnly(ch.createdAt || Date.now());
+  if (ch.mode === 'days' && ch.days && ch.days.length) {
+    const d = last ? addDays(last, 1) : new Date(created);
+    for (let i = 0; i < 15; i++) { if (ch.days.includes((d.getDay() + 6) % 7)) return d; d.setDate(d.getDate() + 1); }
+    return d;
+  }
+  if (!last) return ch.start ? parseKey(ch.start) : created;
+  const n = Math.max(1, Number(ch.n) || 1), u = ch.mode === 'daily' ? 'day' : (ch.unit || 'week'), d = new Date(last);
+  if (u === 'day') d.setDate(d.getDate() + (ch.mode === 'daily' ? 1 : n)); else if (u === 'week') d.setDate(d.getDate() + 7 * n); else d.setMonth(d.getMonth() + n);
+  return d;
+}
+function choreState(ch) {
+  const due = nextDue(ch), t = today0(), days = Math.round((due - t) / 86400e3), doneToday = !!(ch.last && keyOf(dayOnly(ch.last.at)) === keyOf(t));
+  return { due, days, doneToday, overdue: !doneToday && days < 0, today: !doneToday && days === 0 };
+}
+const choreTurn = ch => (ch.cover && ch.cover.due === keyOf(nextDue(ch))) ? ch.cover.who : ch.who === 'rotate' ? (ch.nextWho || 'a') : ch.who;
+function freqLabel(ch) {
+  if (ch.mode === 'daily') return 'Every day';
+  if (ch.mode === 'days' && ch.days && ch.days.length) return ch.days.length === 7 ? 'Every day' : 'Every ' + ch.days.slice().sort().map(d => DAYS[d]).join(' & ');
+  const n = Math.max(1, Number(ch.n) || 1), u = ch.unit || 'week';
+  if (n === 1) return u === 'day' ? 'Every day' : u === 'week' ? 'Every week' : 'Every month';
+  return 'Every ' + n + ' ' + u + 's';
+}
+function whoLabel(ch) { const N = names(); if (ch.who === 'any') return 'Up for grabs'; if (ch.who === 'rotate') return N[choreTurn(ch)] + '’s turn'; return N[ch.who]; }
+function choreChip(ch) { if (ch.who === 'any') return '<span class="who sm" title="Up for grabs"><span class="av grab">?</span></span>'; const p = choreTurn(ch); return '<span class="who sm" title="' + esc(whoLabel(ch)) + '"><span class="av ' + p + '">' + esc(initials(p)) + '</span>' + (ch.who === 'rotate' ? '<span class="rot">' + ICON.shuffle + '</span>' : '') + '</span>'; }
+function dueLabel(st) { if (st.doneToday) return 'Done today'; if (st.overdue) return (-st.days) + (st.days === -1 ? ' day' : ' days') + ' overdue'; if (st.today) return 'Due today'; if (st.days === 1) return 'Tomorrow'; if (st.days < 7) return DAYS_LONG[(st.due.getDay() + 6) % 7]; return fmtDate(st.due); }
+function choreRow(ch, opts) {
+  opts = opts || {}; const st = choreState(ch), N = names();
+  const meta = [freqLabel(ch), whoLabel(ch)];
+  if (!opts.board) meta.unshift(dueLabel(st));
+  if (ch.last && !st.doneToday && !opts.board) meta.push('last: ' + N[ch.last.by] + ', ' + ago(ch.last.at));
+  if (st.doneToday) meta.push('by ' + N[ch.last.by]);
+  const pts = st.doneToday ? '<span class="pts">+' + (ch.last.pts || 0) + '</span>' : '<span class="pts" style="color:var(--muted)">' + (ch.pts || CHORE_BASE) + '</span>';
+  return '<div class="item chore' + (st.doneToday ? ' done' : '') + (st.overdue ? ' slipped' : '') + '">' +
+    '<button class="check" data-act="chore-done" data-id="' + ch.id + '" aria-label="' + (st.doneToday ? 'Undo' : 'Mark done') + '">' + ICON.check + '</button>' +
+    '<button class="body" data-act="chore-edit" data-id="' + ch.id + '"><div class="t">' + esc(ch.name) + '</div><div class="m">' + esc(meta.join(' · ')) + '</div></button>' + gameChips('chore', ch) + pts + choreChip(ch) + '</div>';
+}
+function choresPointsWeek(wk) {
+  const r = { a: { pts: 0, possible: 0, done: 0, total: 0 }, b: { pts: 0, possible: 0, done: 0, total: 0 } }, s = parseKey(wk), e = addDays(s, 7);
+  choreList().forEach(ch => {
+    (ch.history || []).forEach(hh => { const d = dayOnly(hh.at); if (d >= s && d < e && r[hh.by]) { r[hh.by].pts += hh.pts || 0; r[hh.by].possible += hh.base || ch.pts || CHORE_BASE; r[hh.by].done++; r[hh.by].total++; } });
+    if (ch.paused || ch.who === 'any') return;
+    const st = choreState(ch); if (st.doneToday) return;
+    const due = st.due, endCheck = wk < currentWeekKey() ? e : addDays(today0(), 1);
+    if (due >= s && due < e && due < endCheck) { const p = choreTurn(ch); r[p].possible += ch.pts || CHORE_BASE; r[p].total++; }
+  });
+  return r;
+}
+function choresLifetime() { const r = { a: 0, b: 0 }; choreList().forEach(ch => (ch.history || []).forEach(hh => { if (r[hh.by] != null) r[hh.by] += hh.pts || 0; })); return r; }
+function seedChoresIfNeeded() {
+  if (!S.loaded || (S.settings.main && S.settings.main.choresSeeded) || Object.keys(S.chores || {}).length) return;
+  const now = nowStamp();
+  CHORE_SEED.forEach((c, i) => { const o = Object.assign({}, c); delete o.id; delete o.startIn; o.createdAt = now + i; if (c.startIn) o.start = keyOf(addDays(today0(), c.startIn)); o.nextWho = i % 2 ? 'b' : 'a'; o.history = []; Store.write('chores', c.id, o); });
+  Store.write('settings', 'main', Object.assign({}, S.settings.main || {}, { choresSeeded: true }));
+}
+function toggleChore(id, el) {
+  const ch = S.chores[id]; if (!ch) return; const st = choreState(ch), m = me(), N = names();
+  if (st.doneToday) {
+    const hist = (ch.history || []).slice(); const undone = hist.pop();
+    const prev = hist.length ? hist[hist.length - 1] : null;
+    Store.write('chores', id, Object.assign({}, ch, { history: hist, last: prev ? { at: prev.at, by: prev.by, pts: prev.pts } : null, nextWho: ch.who === 'rotate' && undone ? undone.by : ch.nextWho }));
+    Object.entries(S.feed).forEach(([fid, f]) => { if (f.choreId === id && undone && f.at === undone.at) Store.del('feed', fid); });
+    unpayBounties('chore', id); toast('Undone'); return;
+  }
+  const at = nowStamp(), base = ch.pts || CHORE_BASE, late = st.overdue, pts = late ? Math.max(1, Math.round(base * 0.75)) : base;
+  const hist = (ch.history || []).concat([{ at, by: m, pts, base }]).slice(-40);
+  const nextWho = ch.who === 'rotate' ? (m === 'a' ? 'b' : 'a') : ch.nextWho;
+  Store.write('chores', id, Object.assign({}, ch, { last: { at, by: m, pts }, history: hist, nextWho, cover: null }));
+  const offTurn = ch.who !== 'any' && choreTurn(ch) !== m;
+  const line = offTurn ? 'You covered ' + N[choreTurn(ch)] + '’s turn. Nice.' : ch.who === 'rotate' ? 'Done. ' + N[nextWho] + ' has it next time.' : late ? 'Caught up. Late chores still count, at ¾ points.' : 'Done. Next: ' + dueLabel(choreState(Object.assign({}, ch, { last: { at, by: m } }))).toLowerCase() + '.';
+  celebrate(pts, line, false, el);
+  Store.write('feed', uid(), { type: 'done', who: m, title: ch.name, itemId: 'chore:' + id + ':' + at, choreId: id, pts, area: 'chore', line: offTurn ? 'covered ' + N[choreTurn(ch)] + '’s turn' : '', at });
+  payBounties('chore', id);
+}
+function renderChores() {
+  const list = choreList().filter(c => !c.paused), paused = choreList().filter(c => c.paused), N = names();
+  if (!list.length && !paused.length) return '<div class="card empty">No chores yet. <button class="link" data-act="chore-new">Add the first one</button></div>';
+  const withSt = list.map(c => ({ c, st: choreState(c) })).sort((x, y) => x.st.due - y.st.due);
+  const over = withSt.filter(x => x.st.overdue), today = withSt.filter(x => x.st.today), done = withSt.filter(x => x.st.doneToday), week = withSt.filter(x => !x.st.overdue && !x.st.today && !x.st.doneToday && x.st.days <= 7), later = withSt.filter(x => !x.st.doneToday && x.st.days > 7);
+  const cw = choresPointsWeek(currentWeekKey()), mine = list.filter(c => !choreState(c).doneToday && (choreState(c).today || choreState(c).overdue) && (choreTurn(c) === me() || c.who === 'any'));
+  let h = '<section class="hero"><div class="eyebrow">Chores</div><h1>' + (over.length + today.length ? (over.length + today.length) + ' to do today' : 'All caught up') + '</h1><div class="sub">' + (over.length ? over.length + ' overdue · ' : '') + (mine.length ? mine.length + ' on you' : 'Nothing on you right now') + '</div>' +
+    '<div class="tug"><div class="lab" style="margin-top:0"><span>' + esc(N.a) + ' <span class="num">' + cw.a.done + '</span> done · <span class="num">' + cw.a.pts + '</span> pts</span><span><span class="num">' + cw.b.pts + '</span> pts · <span class="num">' + cw.b.done + '</span> done ' + esc(N.b) + '</span></div><div class="small" style="opacity:.8;margin-top:4px">This week. Chores count toward the wager and the pot.</div></div></section>';
+  const group = (title, arr, cls) => arr.length ? '<div class="sec-h"><h2' + (cls ? ' class="' + cls + '"' : '') + '>' + title + '</h2><span class="small muted">' + arr.length + '</span></div><div class="list">' + arr.map(x => choreRow(x.c)).join('') + '</div>' : '';
+  h += group('Overdue', over, 'warn-t') + group('Today', today) + group('Done today', done) + group('Coming up this week', week) + group('Later', later);
+  if (paused.length) h += '<div class="sec-h"><h2>Paused</h2></div><div class="list">' + paused.map(c => '<div class="item"><span class="check" style="opacity:.4"></span><button class="body" data-act="chore-edit" data-id="' + c.id + '"><div class="t">' + esc(c.name) + '</div><div class="m">Paused · ' + esc(freqLabel(c)) + '</div></button></div>').join('') + '</div>';
+  h += '<div style="margin-top:12px"><button class="btn primary block" data-act="chore-new">' + ICON.plus + ' Add a chore</button></div>';
+  h += '<p class="hint">Tap the circle when it’s done; it comes back on its own schedule. Rotating chores pass to the other person after each turn. Late chores still score, at ¾ points. Covering the other person’s turn earns you the points.</p>';
+  return h;
+}
+function choreSheet(id) {
+  const ch = id ? Object.assign({ id }, S.chores[id]) : { name: '', mode: 'days', days: [todayIndex()], n: 1, unit: 'week', who: 'rotate', pts: CHORE_BASE, group: 'Other' };
+  const N = names();
+  let h = '<h2>' + (id ? 'Edit chore' : 'Add a chore') + '</h2>' + (ch.note ? '<p class="lead">' + esc(ch.note) + '</p>' : '');
+  h += '<label class="f">Chore</label><input type="text" id="cName" value="' + esc(ch.name) + '" placeholder="e.g. Water the plants">';
+  h += '<label class="f">How often</label>' + segHTML('cmode', ch.mode, [['daily', 'Every day'], ['days', 'On certain days'], ['every', 'Every few…']]);
+  h += '<div id="cDays" style="margin-top:8px;' + (ch.mode === 'days' ? '' : 'display:none') + '"><div class="daychips multi">' + [0, 1, 2, 3, 4, 5, 6].map(d => '<button type="button" class="' + ((ch.days || []).includes(d) ? 'on' : '') + '" data-cday="' + d + '">' + DAYS[d] + '</button>').join('') + '</div><p class="hint">Pick one or more days.</p></div>';
+  h += '<div id="cEvery" class="row" style="gap:8px;margin-top:8px;' + (ch.mode === 'every' ? '' : 'display:none') + '"><span class="small muted">Every</span><input type="number" id="cN" min="1" max="12" value="' + (ch.n || 1) + '" style="width:80px"><select id="cUnit" style="width:auto"><option value="day"' + (ch.unit === 'day' ? ' selected' : '') + '>days</option><option value="week"' + (ch.unit === 'week' ? ' selected' : '') + '>weeks</option><option value="month"' + (ch.unit === 'month' ? ' selected' : '') + '>months</option></select></div>';
+  h += '<label class="f">Who does it</label>' + segHTML('cwho', ch.who, [['rotate', 'Take turns'], ['a', esc(N.a), 'a'], ['b', esc(N.b), 'b'], ['any', 'Either']]);
+  if (ch.who === 'rotate' || !id) h += '<p class="hint" id="cTurnHint">Take turns: it alternates between you each time it’s done.' + (id ? ' ' + esc(N[choreTurn(ch)]) + ' is up next.' : '') + '</p>';
+  h += '<label class="f">Points</label>' + segHTML('cpts', String(ch.pts || CHORE_BASE), [['2', '2 · quick'], ['4', '4'], ['6', '6'], ['8', '8 · big job']]);
+  if (id) {
+    const hist = (ch.history || []).slice(-6).reverse();
+    h += '<label class="f">Recent</label><div class="card flat" style="margin:0">' + (hist.length ? hist.map(x => '<div class="kv"><span>' + esc(N[x.by]) + '</span><span class="muted">' + esc(ago(x.at)) + ' · +' + x.pts + '</span></div>').join('') : '<div class="small muted">Not done yet.</div>') + '</div>';
+  }
+  h += '<div class="form-actions">' + (id ? '<button type="button" class="btn danger" data-act="chore-delete" data-id="' + id + '">Delete</button><button type="button" class="btn ghost" data-act="chore-pause" data-id="' + id + '">' + (ch.paused ? 'Resume' : 'Pause') + '</button>' : '<button type="button" class="btn ghost" data-act="close-sheet">Cancel</button>') + '<button type="button" class="btn primary" data-act="chore-save" data-id="' + (id || '') + '">Save</button></div>';
+  openSheet(h, { focus: !id, onMount(root) {
+    root.addEventListener('click', e => {
+      const m = e.target.closest('[data-seg="cmode"] button'); if (m) { root.querySelector('#cDays').style.display = m.dataset.v === 'days' ? '' : 'none'; root.querySelector('#cEvery').style.display = m.dataset.v === 'every' ? 'flex' : 'none'; }
+      const d = e.target.closest('[data-cday]'); if (d) d.classList.toggle('on');
+    });
+  } });
+}
+function saveChore(id) {
+  const root = $('#sheet'), name = root.querySelector('#cName').value.trim(); if (!name) { root.querySelector('#cName').focus(); return; }
+  const mode = segVal(root, 'cmode') || 'days', days = [...root.querySelectorAll('[data-cday].on')].map(b => Number(b.dataset.cday));
+  if (mode === 'days' && !days.length) { toast('Pick at least one day'); return; }
+  const cur = id ? S.chores[id] : null;
+  const o = Object.assign({}, cur || { createdAt: nowStamp(), history: [], nextWho: me() }, { name, mode, days: mode === 'days' ? days : [], n: Math.max(1, Number(root.querySelector('#cN').value) || 1), unit: root.querySelector('#cUnit').value, who: segVal(root, 'cwho') || 'rotate', pts: Number(segVal(root, 'cpts')) || CHORE_BASE });
+  delete o.id; delete o.note;
+  Store.write('chores', id || uid(), o); closeSheet(); toast(id ? 'Saved' : 'Chore added');
+}
+
+/* ---------- the game layer: balances, power-up cards, bounties, seasons, quests ---------- */
+const CARDS = {
+  swap: { name: 'Swap', cost: 30, icon: 'shuffle', desc: 'Hand one of your open items or chore turns to your partner.' },
+  shield: { name: 'Shield', cost: 25, icon: 'shield', desc: 'Skip one of yours without it counting against you on the wager.' },
+  dd: { name: 'Double Down', cost: 10, icon: 'bolt', desc: 'Double the points on one item if it’s done on its day. Miss it and you lose its points.' }
+};
+const CARD_LIMIT = 2; // per card type, per person, per week
+const BOUNTY_AMOUNTS = [5, 10, 20, 30];
+const SEASON_WEEKS = 8;
+const QUEST_TEMPLATES = [
+  { key: 'iron', title: 'Iron month', metric: 'workouts', target: 12, days: 'month', reward: 40, desc: 'Workouts you both finish' },
+  { key: 'dates', title: 'Date night run', metric: 'dates', target: 4, days: 30, reward: 30, desc: 'Dates done' },
+  { key: 'sweep', title: 'Clean sweep', metric: 'chores', target: 40, days: 30, reward: 30, desc: 'Chores done, either of you' },
+  { key: 'chef', title: 'Home chef', metric: 'dinners', target: 12, days: 30, reward: 25, desc: 'Dinners cooked at home' },
+  { key: 'fixer', title: 'Fixer-upper', metric: 'house', target: 5, days: 30, reward: 30, desc: 'House tasks finished' },
+  { key: 'custom', title: '', metric: 'manual', target: 10, days: 30, reward: 25, desc: 'Count it yourselves with +1' }
+];
+const METRIC_LABEL = { workouts: 'workouts together', dates: 'dates', chores: 'chores', dinners: 'dinners', house: 'house tasks', manual: 'done' };
+ICON.shield = '<svg class="i" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 4.5-3.4 8.2-8 9-4.6-.8-8-4.5-8-9V6z"/></svg>';
+ICON.bolt = '<svg class="i" viewBox="0 0 24 24"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg>';
+ICON.target = '<svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r=".6"/></svg>';
+ICON.flag = '<svg class="i" viewBox="0 0 24 24"><path d="M5 21V4M5 4h11l-2 4 2 4H5"/></svg>';
+
+const cardPlays = () => Object.entries(S.cards || {}).map(([id, c]) => Object.assign({ id }, c));
+const bountyList = () => Object.entries(S.bounties || {}).map(([id, b]) => Object.assign({ id }, b));
+const questList = () => Object.entries(S.quests || {}).map(([id, q]) => Object.assign({ id }, q));
+function openBountyOn(kind, id) { return bountyList().filter(b => b.status === 'open' && b.kind === kind && b.targetId === id); }
+function bountyTotalOn(kind, id) { return openBountyOn(kind, id).reduce((n, b) => n + (b.amount || 0), 0); }
+
+/* balances */
+function questRewards() { const r = { a: 0, b: 0 }; questList().forEach(q => { if (q.completedAt) { r.a += q.reward || 0; r.b += q.reward || 0; } }); return r; }
+function bountyIncome() { const r = { a: 0, b: 0 }; bountyList().forEach(b => { if (b.status === 'paid' && r[b.paidTo] != null) r[b.paidTo] += b.amount || 0; }); return r; }
+function ddPenalties() { const r = { a: 0, b: 0 }, cur = currentWeekKey(); live().forEach(it => { if (it.dd && it.dd.p && it.week && it.week < cur && !partDone(it, it.dd.p)) r[it.dd.p] += BASE[it.area] || 5; }); return r; }
+function spentBy() {
+  const r = { a: 0, b: 0 };
+  cardPlays().forEach(c => { if (r[c.by] != null) r[c.by] += c.cost || 0; });
+  bountyList().forEach(b => { if (b.status !== 'cancelled' && r[b.by] != null) r[b.by] += b.amount || 0; });
+  const pen = ddPenalties(); r.a += pen.a; r.b += pen.b;
+  return r;
+}
+function balances() { const e = lifetimePoints(), s = spentBy(); return { a: e.a - s.a, b: e.b - s.b }; }
+function cardsUsedThisWeek(p, type) { const wk = currentWeekKey(); return cardPlays().filter(c => c.by === p && c.type === type && c.week === wk).length; }
+
+/* targets for cards and bounties */
+function openTargets(filter) {
+  const wk = currentWeekKey(), ti = todayIndex(), out = [];
+  weekItems(wk).forEach(it => { if (!it.done) out.push({ kind: 'item', id: it.id, title: it.title, it, when: it.day == null ? 'This week' : DAYS[it.day] + (it.day < ti ? ' (missed)' : ''), who: it.who }); });
+  choreList().filter(c => !c.paused).forEach(c => { const st = choreState(c); if (!st.doneToday && st.days <= 6) out.push({ kind: 'chore', id: c.id, title: c.name, ch: c, when: dueLabel(st), who: c.who === 'any' ? 'any' : choreTurn(c) }); });
+  return out.filter(filter || (() => true));
+}
+function targetsFor(type) {
+  const m = me(), ti = todayIndex();
+  if (type === 'swap') return openTargets(t => t.kind === 'item' ? (t.it.who === m && !partDone(t.it, m)) : (t.who === m));
+  if (type === 'shield') return openTargets(t => t.kind === 'item' ? ((t.it.who === m || t.it.who === 'both') && !partDone(t.it, m) && !(t.it.shield && t.it.shield[m])) : t.who === m);
+  if (type === 'dd') return openTargets(t => t.kind === 'item' && (t.it.who === m || t.it.who === 'both') && !partDone(t.it, m) && t.it.day != null && t.it.day >= ti && !t.it.dd);
+  if (type === 'bounty') return openTargets(t => !(t.kind === 'item' && t.it.done));
+  return [];
+}
+
+/* playing cards */
+function playCard(type, kind, id) {
+  const c = CARDS[type], m = me(), o = other(), N = names(), bal = balances()[m];
+  if (bal < c.cost) { toast('You need ' + c.cost + ' points for ' + c.name + ' (you have ' + bal + ')'); return; }
+  if (cardsUsedThisWeek(m, type) >= CARD_LIMIT) { toast('Two ' + c.name + ' cards a week, max'); return; }
+  let title = '', text = '';
+  if (kind === 'item') {
+    const it = S.items[id]; if (!it) return; title = it.title;
+    if (type === 'swap') { Store.patch('items', id, { who: o, swappedBy: m }); text = N[m] + ' swapped ' + title + ' to you.'; }
+    if (type === 'shield') { Store.patch('items', id, { shield: Object.assign({}, it.shield || {}, { [m]: nowStamp() }) }); text = N[m] + ' shielded ' + title + '.'; }
+    if (type === 'dd') { Store.patch('items', id, { dd: { p: m, at: nowStamp() } }); text = N[m] + ' doubled down on ' + title + '.'; }
+  } else {
+    const ch = S.chores[id]; if (!ch) return; title = ch.name; const due = keyOf(nextDue(ch));
+    if (type === 'swap') { Store.write('chores', id, Object.assign({}, ch, { cover: { due, who: o, by: m } })); text = N[m] + ' swapped ' + title + ' to you this time.'; }
+    if (type === 'shield') { const at = nowStamp(); Store.write('chores', id, Object.assign({}, ch, { last: { at, by: m, pts: 0, skipped: true }, history: (ch.history || []).concat([{ at, by: m, pts: 0, base: 0, skipped: true }]).slice(-40), nextWho: ch.who === 'rotate' ? o : ch.nextWho, cover: null })); text = N[m] + ' shielded ' + title + ' (skipped this one).'; }
+  }
+  Store.write('cards', uid(), { type, by: m, kind, targetId: id, title, cost: c.cost, at: nowStamp(), week: currentWeekKey() });
+  Store.write('feed', uid(), { type: 'card', who: m, card: type, text, title, at: nowStamp() });
+  closeSheet(); celebrate(null, c.name + ' played. ' + (type === 'dd' ? 'Get it done on its day for double points.' : type === 'swap' ? N[o] + ' has it now.' : 'It won’t count against you.'), false);
+}
+function cardSheet(type) {
+  const c = CARDS[type], t = targetsFor(type), bal = balances()[me()], used = cardsUsedThisWeek(me(), type);
+  let h = '<h2>' + ICON[c.icon] + ' ' + c.name + '</h2><p class="lead">' + c.desc + ' Costs ' + c.cost + ' points. You have ' + bal + '. ' + (CARD_LIMIT - used) + ' left this week.</p>';
+  h += t.length ? '<div class="list">' + t.map(x => '<button type="button" class="pick" data-act="card-play" data-card="' + type + '" data-kind="' + x.kind + '" data-id="' + x.id + '"' + (bal < c.cost || used >= CARD_LIMIT ? ' disabled' : '') + '><span class="box">' + ICON[c.icon] + '</span><span class="t">' + esc(x.title) + '<div class="small muted">' + esc((x.kind === 'chore' ? 'Chore · ' : '') + x.when) + '</div></span></button>').join('') + '</div>' : '<div class="card empty">Nothing of yours this week that this card can go on.</div>';
+  if (bal < c.cost) h += '<p class="hint">Not enough points yet. Check off a few things and come back.</p>';
+  h += '<div class="form-actions"><button type="button" class="btn ghost block" data-act="close-sheet">Close</button></div>';
+  openSheet(h, { focus: false });
+}
+
+/* bounties */
+function bountySheet(preKind, preId) {
+  const t = targetsFor('bounty'), bal = balances()[me()];
+  let h = '<h2>' + ICON.target + ' Post a bounty</h2><p class="lead">Put your own points on something. Whoever finishes it collects. Finish it yourself and you get them back. You have ' + bal + '.</p>';
+  h += '<label class="f">Amount</label>' + segHTML('bamt', '10', BOUNTY_AMOUNTS.map(n => [String(n), '+' + n]));
+  h += '<label class="f">On</label>' + (t.length ? '<div class="list">' + t.map(x => '<button type="button" class="pick' + (preId === x.id ? ' on' : '') + '" data-btarget="' + x.kind + ':' + x.id + '"><span class="box">' + ICON.check + '</span><span class="t">' + esc(x.title) + '<div class="small muted">' + esc((x.kind === 'chore' ? 'Chore · ' : '') + x.when) + (bountyTotalOn(x.kind, x.id) ? ' · already +' + bountyTotalOn(x.kind, x.id) : '') + '</div></span>' + (x.who === 'any' ? choreChip(x.ch) : whoChip(x.who, true)) + '</button>').join('') + '</div>' : '<div class="card empty">Nothing open right now.</div>');
+  h += '<div class="form-actions"><button type="button" class="btn ghost" data-act="close-sheet">Cancel</button><button type="button" class="btn primary" data-act="bounty-post">Post it</button></div>';
+  openSheet(h, { focus: false, onMount(root) { root.addEventListener('click', e => { const b = e.target.closest('[data-btarget]'); if (b) root.querySelectorAll('[data-btarget]').forEach(x => x.classList.toggle('on', x === b)); }); } });
+}
+function postBounty() {
+  const root = $('#sheet'), sel = root.querySelector('[data-btarget].on'), amt = Number(segVal(root, 'bamt')) || 10, m = me(), N = names();
+  if (!sel) { toast('Pick what the bounty is on'); return; }
+  if (balances()[m] < amt) { toast('You have ' + balances()[m] + ' points'); return; }
+  const [kind, id] = sel.dataset.btarget.split(':'), title = kind === 'item' ? (S.items[id] || {}).title : (S.chores[id] || {}).name;
+  Store.write('bounties', uid(), { by: m, kind, targetId: id, title, amount: amt, status: 'open', at: nowStamp() });
+  Store.write('feed', uid(), { type: 'bounty', who: m, text: N[m] + ' put ' + amt + ' points on ' + title + '. First to finish it collects.', title, at: nowStamp() });
+  closeSheet(); celebrate(null, 'Bounty posted: +' + amt + ' on ' + title, false);
+}
+function payBounties(kind, id) {
+  const open = openBountyOn(kind, id); if (!open.length) return 0; const m = me(), now = nowStamp(); let total = 0;
+  open.forEach(b => { Store.write('bounties', b.id, Object.assign({}, b, { status: 'paid', paidTo: m, paidAt: now })); total += b.amount || 0; });
+  const N = names(), title = open[0].title;
+  Store.write('feed', uid(), { type: 'bounty', who: m, text: N[m] + ' collected the +' + total + ' bounty on ' + title + '.', title, at: now + 1 });
+  setTimeout(() => toast('Bounty collected: +' + total), 1400);
+  return total;
+}
+function unpayBounties(kind, id) {
+  const m = me(), day = 86400e3; bountyList().filter(b => b.status === 'paid' && b.kind === kind && b.targetId === id && b.paidTo === m && Date.now() - (b.paidAt || 0) < day).forEach(b => { const o = Object.assign({}, b, { status: 'open' }); delete o.paidTo; delete o.paidAt; Store.write('bounties', b.id, o); });
+}
+function cancelBounty(id) { const b = S.bounties[id]; if (!b || b.status !== 'open' || b.by !== me()) return; Store.write('bounties', id, Object.assign({}, b, { status: 'cancelled', cancelledAt: nowStamp() })); toast('Bounty cancelled, points back'); }
+
+/* seasons */
+function seasonStart() { return (S.settings.main && S.settings.main.seasonStart) || programStart() || currentWeekKey(); }
+function seasonOf(wk) { const n = Math.floor(Math.round((parseKey(wk) - parseKey(seasonStart())) / (7 * 86400e3)) / SEASON_WEEKS) + 1; return Math.max(1, n); }
+function seasonWeeks(n) { const s = shiftWeek(seasonStart(), (n - 1) * SEASON_WEEKS); return Array.from({ length: SEASON_WEEKS }, (_, i) => shiftWeek(s, i)); }
+function seasonStandings(n) {
+  const weeks = seasonWeeks(n), cur = currentWeekKey(), r = { a: { wins: 0, pts: 0 }, b: { wins: 0, pts: 0 }, weeks: [] };
+  weeks.forEach((k, i) => {
+    if (k > cur) { r.weeks.push({ k, future: true, final: i === SEASON_WEEKS - 1 }); return; }
+    const wp = weekPoints(k), mult = i === SEASON_WEEKS - 1 ? 2 : 1, st = (S.weeks[k] || {}).settled;
+    r.a.pts += wp.a.pts * mult; r.b.pts += wp.b.pts * mult;
+    if (st && (st.winner === 'a' || st.winner === 'b')) r[st.winner].wins++;
+    r.weeks.push({ k, a: wp.a, b: wp.b, winner: st ? st.winner : null, live: k === cur, final: i === SEASON_WEEKS - 1 });
+  });
+  r.leader = r.a.wins !== r.b.wins ? (r.a.wins > r.b.wins ? 'a' : 'b') : r.a.pts !== r.b.pts ? (r.a.pts > r.b.pts ? 'a' : 'b') : 'tie';
+  return r;
+}
+function trophies(p) { return Object.values(S.seasons || {}).filter(s => s.champion === p).length; }
+function settleSeasons() {
+  const cur = currentWeekKey(), n = seasonOf(cur);
+  for (let k = 1; k < n; k++) {
+    const id = 'season-' + k; if (S.seasons[id]) continue;
+    const st = seasonStandings(k); if (!st.weeks.some(w => !w.future && w.a && (w.a.total || w.b.total))) { Store.write('seasons', id, { n: k, champion: 'none', at: nowStamp() }); continue; }
+    Store.write('seasons', id, { n: k, champion: st.leader, a: st.a, b: st.b, at: nowStamp(), start: seasonWeeks(k)[0] });
+    const N = names(), text = st.leader === 'tie' ? 'Season ' + k + ' ends in a tie. Shared trophy.' : N[st.leader] + ' is the Season ' + k + ' champion (' + st[st.leader].wins + ' weekly win' + (st[st.leader].wins === 1 ? '' : 's') + ').';
+    Store.write('feed', 'season-' + k, { type: 'season', who: st.leader === 'tie' ? 'tie' : st.leader, text, at: nowStamp() });
+  }
+}
+
+/* quests */
+function questProgress(q) {
+  const s = new Date(q.start).getTime(), e = parseKey(q.end).getTime() + 86400e3, inWin = ts => ts && ts >= s && ts < e;
+  if (q.metric === 'manual') return q.count || 0;
+  if (q.metric === 'chores') return choreList().reduce((n, c) => n + (c.history || []).filter(h => !h.skipped && inWin(h.at)).length, 0);
+  const area = { workouts: 'workout', dates: 'date', dinners: 'meal', house: 'house' }[q.metric];
+  return live().filter(it => it.area === area && (q.metric === 'workouts' ? it.who === 'both' && it.done : it.done) && inWin(it.doneAt || partAt(it, 'a') || partAt(it, 'b'))).length;
+}
+function questState(q) { const p = questProgress(q), done = !!q.completedAt || p >= q.target, expired = !done && keyOf(today0()) > q.end; return { p: Math.min(p, q.target), raw: p, done, expired, daysLeft: Math.round((parseKey(q.end) - today0()) / 86400e3) }; }
+function checkQuests() {
+  questList().forEach(q => { if (q.completedAt || q.failedAt) return; const st = questState(q);
+    if (st.raw >= q.target) { Store.write('quests', q.id, Object.assign({}, q, { completedAt: nowStamp(), id: undefined })); Store.write('feed', 'quest-' + q.id, { type: 'quest', who: 'tie', text: 'Quest complete: ' + q.title + '. +' + q.reward + ' points each.', at: nowStamp() }); setTimeout(() => celebrate(null, 'Quest complete: ' + q.title + '! +' + q.reward + ' each', true), 600); }
+    else if (st.expired) Store.write('quests', q.id, Object.assign({}, q, { failedAt: nowStamp(), id: undefined }));
+  });
+}
+function endOfMonthKey() { const d = new Date(); return keyOf(new Date(d.getFullYear(), d.getMonth() + 1, 0)); }
+function questSheet() {
+  let h = '<h2>' + ICON.flag + ' Start a quest</h2><p class="lead">A goal you chase together. Finish it in time and you each get the reward.</p>';
+  h += '<div class="list">' + QUEST_TEMPLATES.map(t => '<button type="button" class="pick" data-qtpl="' + t.key + '"><span class="box">' + ICON.check + '</span><span class="t">' + (t.title || 'Your own') + '<div class="small muted">' + esc(t.desc) + (t.key !== 'custom' ? ' · ' + t.target + ' ' + (t.days === 'month' ? 'by month end' : 'in ' + t.days + ' days') : '') + '</div></span><span class="pill gold">+' + t.reward + ' each</span></button>').join('') + '</div>';
+  h += '<div id="qForm" style="display:none"><label class="f">Name</label><input type="text" id="qTitle"><div class="row" style="gap:10px;align-items:flex-start"><div class="grow"><label class="f">Goal</label><input type="number" id="qTarget" min="1"></div><div class="grow"><label class="f">Ends</label><input type="text" id="qEnd" placeholder="YYYY-MM-DD"></div><div class="grow"><label class="f">Reward each</label><input type="number" id="qReward" min="5" step="5"></div></div><input type="hidden" id="qMetric"></div>';
+  h += '<div class="form-actions"><button type="button" class="btn ghost" data-act="close-sheet">Cancel</button><button type="button" class="btn primary" data-act="quest-save">Start it</button></div>';
+  openSheet(h, { focus: false, onMount(root) { root.addEventListener('click', e => { const b = e.target.closest('[data-qtpl]'); if (!b) return; root.querySelectorAll('[data-qtpl]').forEach(x => x.classList.toggle('on', x === b)); const t = QUEST_TEMPLATES.find(x => x.key === b.dataset.qtpl); root.querySelector('#qForm').style.display = ''; root.querySelector('#qTitle').value = t.title; root.querySelector('#qTarget').value = t.target; root.querySelector('#qReward').value = t.reward; root.querySelector('#qMetric').value = t.metric; root.querySelector('#qEnd').value = t.days === 'month' ? endOfMonthKey() : keyOf(addDays(today0(), t.days)); if (!t.title) root.querySelector('#qTitle').focus(); }); } });
+}
+function saveQuest() {
+  const root = $('#sheet'), title = root.querySelector('#qTitle').value.trim(), target = Math.max(1, Number(root.querySelector('#qTarget').value) || 0), end = root.querySelector('#qEnd').value.trim(), reward = Math.max(0, Number(root.querySelector('#qReward').value) || 0), metric = root.querySelector('#qMetric').value;
+  if (!metric) { toast('Pick a quest'); return; } if (!title) { root.querySelector('#qTitle').focus(); return; } if (!/^\d{4}-\d{2}-\d{2}$/.test(end) || end < keyOf(today0())) { toast('End date as YYYY-MM-DD, today or later'); return; }
+  Store.write('quests', uid(), { title, metric, target, end, reward, start: today0().getTime(), by: me(), createdAt: nowStamp(), count: 0 });
+  Store.write('feed', uid(), { type: 'quest-start', who: me(), text: 'New quest: ' + title + ' (' + target + ' ' + METRIC_LABEL[metric] + ' by ' + fmtDate(parseKey(end)) + ', +' + reward + ' each)', at: nowStamp() });
+  closeSheet(); toast('Quest on');
+}
+function seedGameIfNeeded() {
+  if (!S.loaded) return;
+  const main = S.settings.main || {}, patch = {};
+  if (!main.seasonStart) patch.seasonStart = programStart() || currentWeekKey();
+  if (!main.questsSeeded) { patch.questsSeeded = true; if (!questList().length) { const d = new Date(), mname = d.toLocaleString('en-US', { month: 'long' }); Store.write('quests', 'seed-iron', { title: 'Iron ' + mname, metric: 'workouts', target: 10, end: endOfMonthKey(), reward: 40, start: today0().getTime(), by: 'a', createdAt: nowStamp(), count: 0 }); } }
+  if (Object.keys(patch).length) Store.write('settings', 'main', Object.assign({}, S.settings.main || {}, patch));
+}
+let hkTimer = null;
+function housekeeping() { clearTimeout(hkTimer); hkTimer = setTimeout(() => { if (!S.loaded || !S.me) return; try { settleSeasons(); checkQuests(); } catch (e) { console.warn(e); } }, 1200); }
+
+/* chips shown on rows */
+function gameChips(kind, obj) {
+  const out = [], m = me();
+  const bt = bountyTotalOn(kind, obj.id); if (bt) out.push('<span class="chip-g bounty" title="Bounty">' + ICON.target + '+' + bt + '</span>');
+  if (kind === 'item') {
+    if (obj.dd) out.push('<span class="chip-g dd" title="Double Down">2×</span>');
+    if (obj.shield && Object.keys(obj.shield).length) out.push('<span class="chip-g shield" title="Shielded">' + ICON.shield + '</span>');
+  }
+  if (kind === 'chore' && obj.cover && obj.cover.due === keyOf(nextDue(obj))) out.push('<span class="chip-g swap" title="Swapped">' + ICON.shuffle + '</span>');
+  return out.join('');
+}
+
+/* Team tab: Season + Shop views */
+function renderSeason() {
+  const N = names(), cur = currentWeekKey(), n = seasonOf(cur), st = seasonStandings(n), weeks = seasonWeeks(n), idx = weeks.indexOf(cur), isFinal = idx === SEASON_WEEKS - 1;
+  let h = '<section class="hero"><div class="eyebrow">Season ' + n + ' · week ' + (idx + 1) + ' of ' + SEASON_WEEKS + '</div><h1>' + (st.leader === 'tie' ? 'Dead even' : esc(N[st.leader]) + ' leads') + '</h1><div class="sub">' + fmtDate(parseKey(weeks[0])) + ' – ' + fmtDate(addDays(parseKey(weeks[SEASON_WEEKS - 1]), 6)) + '. Most weekly wager wins takes the trophy; points break ties.' + (isFinal ? ' <b>Final week: points count double.</b>' : '') + '</div>' +
+    '<div class="season-score">' + ['a', 'b'].map(p => '<div class="ss ' + p + (st.leader === p ? ' lead' : '') + '"><span class="av ' + p + '">' + esc(initials(p)) + '</span><div><div class="ss-n num">' + st[p].wins + '<small> wins</small></div><div class="small muted num">' + st[p].pts + ' pts' + (trophies(p) ? ' · ' + trophies(p) + ' ' + ICON.trophy : '') + '</div></div></div>').join('') + '</div>' +
+    '<div class="season-strip">' + st.weeks.map((w, i) => '<span class="sw-w' + (w.future ? ' future' : '') + (w.live ? ' live' : '') + (w.final ? ' final' : '') + (w.winner === 'a' ? ' wa' : w.winner === 'b' ? ' wb' : '') + '" title="Week ' + (i + 1) + '">' + (w.final ? '2×' : i + 1) + '</span>').join('') + '</div></section>';
+  // quests
+  const qs = questList().sort((x, y) => (x.completedAt ? 1 : 0) - (y.completedAt ? 1 : 0) || (x.failedAt ? 1 : 0) - (y.failedAt ? 1 : 0) || (x.end < y.end ? -1 : 1));
+  const active = qs.filter(q => !q.completedAt && !q.failedAt), past = qs.filter(q => q.completedAt || q.failedAt).slice(0, 5);
+  h += '<div class="sec-h"><h2>Quests</h2><button class="link" data-act="quest-new">+ New quest</button></div>';
+  h += active.length ? active.map(q => { const s = questState(q), pct = Math.round(s.p / q.target * 100); return '<section class="card quest"><div class="row"><div class="grow"><div class="q-t">' + esc(q.title) + '</div><div class="small muted">' + s.p + ' of ' + q.target + ' ' + METRIC_LABEL[q.metric] + ' · ' + (s.daysLeft <= 0 ? 'last day' : s.daysLeft + ' days left') + '</div></div><span class="pill gold">+' + q.reward + ' each</span></div><div class="q-bar"><i style="width:' + pct + '%"></i></div>' + (q.metric === 'manual' ? '<div class="row" style="gap:8px;margin-top:10px"><button class="btn sm primary" data-act="quest-inc" data-id="' + q.id + '">+1</button><button class="btn sm ghost" data-act="quest-dec" data-id="' + q.id + '">−1</button></div>' : '') + '<button class="link small" style="margin-top:8px" data-act="quest-drop" data-id="' + q.id + '">Drop quest</button></section>'; }).join('') : '<div class="card empty">No quest running. <button class="link" data-act="quest-new">Start one</button>.</div>';
+  if (past.length) h += '<div class="list" style="margin-top:8px">' + past.map(q => '<div class="feed"><span class="av ' + (q.completedAt ? 'both' : 'grab') + '"></span><div class="grow"><div class="t"><b>' + esc(q.title) + '</b> ' + (q.completedAt ? 'complete · +' + q.reward + ' each' : 'ran out of time') + '</div><div class="d">' + esc(fmtDate(parseKey(q.end))) + '</div></div></div>').join('') + '</div>';
+  // trophy case + past seasons
+  const seasons = Object.values(S.seasons || {}).filter(s => s.champion && s.champion !== 'none').sort((x, y) => y.n - x.n);
+  h += '<div class="sec-h"><h2>Trophy case</h2></div><section class="card"><div class="row" style="justify-content:space-around;text-align:center">' + ['a', 'b'].map(p => '<div><span class="av ' + p + ' lg" style="margin:0 auto 6px">' + esc(initials(p)) + '</span><div class="num" style="font-size:22px;font-weight:600">' + trophies(p) + '</div><div class="small muted">season titles</div></div>').join('') + '</div>' + (seasons.length ? '<div style="margin-top:10px">' + seasons.map(s => '<div class="kv"><span>Season ' + s.n + '</span><b>' + (s.champion === 'tie' ? 'Tie' : esc(N[s.champion])) + '</b></div>').join('') + '</div>' : '<p class="hint" style="margin-bottom:0">The first trophy goes out when Season ' + n + ' ends.</p>') + '</section>';
+  // badges (moved here)
+  const lt = lifetimePoints();
+  h += '<div class="sec-h"><h2>Badges</h2></div>';
+  ['a', 'b'].forEach(p => { const lv = levelOf(lt[p]), bs = badgesFor(p), on = bs.filter(b => b.on).length; h += '<section class="card"><div class="row" style="margin-bottom:10px"><span class="av ' + p + ' lg">' + esc(initials(p)) + '</span><div class="grow"><div style="font-weight:650">' + esc(N[p]) + ' · ' + esc(lv.name) + '</div><div class="lvl"><div class="bar"><i style="width:' + lv.pct + '%"></i></div><span class="small muted num">' + lt[p] + (lv.next ? ' / ' + lv.next : '') + '</span></div></div><span class="pill">' + on + '/' + bs.length + '</span></div><div class="badges">' + bs.map(b => '<div class="badge' + (b.on ? '' : ' locked') + '" title="' + esc(b.desc) + '"><div class="ic">' + ICON[b.icon] + '</div>' + esc(b.name) + (b.count > 1 ? ' ×' + b.count : '') + '<div class="n">' + esc(b.desc) + '</div></div>').join('') + '</div></section>'; });
+  return h;
+}
+function renderShop() {
+  const N = names(), bal = balances(), m = me(), pot = potTotal(), rw = rewards();
+  let h = '<section class="hero"><div class="eyebrow">Your balance</div><h1 class="num">' + bal[m] + ' <small style="font-size:15px;color:var(--muted);font-weight:500">points</small></h1><div class="sub">' + esc(N[other()]) + ' has ' + bal[other()] + '. Cards and bounties come out of your balance; everything you both earn fills the pot.</div></section>';
+  h += '<div class="sec-h"><h2>Power-up cards</h2><span class="small muted">2 of each a week</span></div><div class="cards">' + Object.entries(CARDS).map(([k, c]) => { const used = cardsUsedThisWeek(m, k), can = bal[m] >= c.cost && used < CARD_LIMIT; return '<button class="pcard ' + k + (can ? '' : ' dim') + '" data-act="card-open" data-card="' + k + '"><span class="pc-ic">' + ICON[c.icon] + '</span><span class="pc-n">' + c.name + '</span><span class="pc-d">' + c.desc + '</span><span class="pc-c num">' + c.cost + ' pts' + (used ? ' · ' + used + '/2 used' : '') + '</span></button>'; }).join('') + '</div>';
+  const open = bountyList().filter(b => b.status === 'open').sort((x, y) => y.amount - x.amount), recent = bountyList().filter(b => b.status === 'paid').sort((x, y) => (y.paidAt || 0) - (x.paidAt || 0)).slice(0, 4);
+  h += '<div class="sec-h"><h2>Bounties</h2><button class="link" data-act="bounty-new">+ Post a bounty</button></div>';
+  h += '<div class="list">' + (open.length ? open.map(b => '<div class="reward"><span class="chip-g bounty">' + ICON.target + '+' + b.amount + '</span><span class="t">' + esc(b.title) + '<div class="small muted">posted by ' + esc(N[b.by]) + ' · ' + esc(ago(b.at)) + '</div></span>' + (b.by === m ? '<button class="btn sm ghost" data-act="bounty-cancel" data-id="' + b.id + '">Cancel</button>' : '') + '</div>').join('') : '<div class="empty">No open bounties. Hate a chore? Put points on it.</div>') + (recent.length ? recent.map(b => '<div class="reward"><span class="chip-g bounty paid">+' + b.amount + '</span><span class="t">' + esc(b.title) + '<div class="small muted">collected by ' + esc(N[b.paidTo]) + ' · ' + esc(ago(b.paidAt)) + '</div></span></div>').join('') : '') + '</div>';
+  // pot + rewards (moved here)
+  const nextR = rw.filter(r => !r.claimedAt).sort((x, y) => x.cost - y.cost)[0], tl = teamLevel();
+  h += '<div class="sec-h"><h2>The pot</h2><button class="link" data-act="reward-new">+ Reward</button></div>';
+  h += '<section class="pot"><div class="row"><div class="grow"><div style="font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;opacity:.7">Points together</div><div class="v num">' + pot + '</div></div><div style="text-align:right"><div class="small" style="opacity:.9">' + esc(tl.name) + '</div><div class="small num" style="opacity:.7">' + tl.total + ' earned' + (tl.next ? ' · ' + tl.next + ' next' : '') + '</div></div></div>' +
+    (nextR ? '<div class="track"><i style="width:' + Math.max(0, Math.min(100, Math.round(pot / nextR.cost * 100))) + '%"></i></div><div class="small" style="margin-top:6px;opacity:.9">Next up: <b>' + esc(nextR.name) + '</b> at ' + nextR.cost + (pot >= nextR.cost ? ' · ready to claim' : ' · ' + (nextR.cost - pot) + ' to go') + '</div>' : '<div class="small" style="margin-top:8px;opacity:.85">Add rewards you’d both want. Claim them when the pot covers it.</div>') + '</section>';
+  if (rw.length) h += '<div class="list" style="margin-bottom:12px">' + rw.slice().sort((x, y) => (x.claimedAt ? 1 : 0) - (y.claimedAt ? 1 : 0) || x.cost - y.cost).map(r => '<div class="reward' + (!r.claimedAt && pot >= r.cost ? ' ready' : '') + '"><span class="av both" style="width:22px;height:22px"></span><span class="t">' + esc(r.name) + (r.claimedAt ? ' <span class="muted small">· claimed ' + fmtDate(new Date(r.claimedAt)) + '</span>' : '') + '</span><span class="cost num">' + r.cost + '</span>' + (r.claimedAt ? '' : (pot >= r.cost ? '<button class="btn sm primary" data-act="reward-claim" data-id="' + r.id + '">Claim</button>' : '<button class="btn sm ghost" data-act="reward-edit" data-id="' + r.id + '">Edit</button>')) + '</div>').join('') + '</div>';
+  return h;
+}
+
 function renderHome() {
-  let h = '<div class="subnav"><button class="' + (S.home === 'projects' ? 'on' : '') + '" data-act="home" data-home="projects">Projects</button><button class="' + (S.home === 'kitchen' ? 'on' : '') + '" data-act="home" data-home="kitchen">Kitchen</button></div>';
-  return h + (S.home === 'kitchen' ? renderKitchen() : renderProjects());
+  const dueN = choreList().filter(c => !c.paused && (choreState(c).today || choreState(c).overdue)).length;
+  let h = '<div class="subnav">' + [['chores', 'Chores' + (dueN ? ' <span class="cnt">' + dueN + '</span>' : '')], ['projects', 'Projects'], ['kitchen', 'Kitchen']].map(([k, l]) => '<button class="' + (S.home === k ? 'on' : '') + '" data-act="home" data-home="' + k + '">' + l + '</button>').join('') + '</div>';
+  return h + (S.home === 'kitchen' ? renderKitchen() : S.home === 'projects' ? renderProjects() : renderChores());
 }
 function renderProjects() {
   const ps = Object.entries(S.projects).map(([id, p]) => Object.assign({ id }, p)).sort((x, y) => ({ active: 0, planned: 1, idea: 2, done: 3 }[x.status] - { active: 0, planned: 1, idea: 2, done: 3 }[y.status]) || (x.createdAt || 0) - (y.createdAt || 0));
@@ -1386,8 +1930,9 @@ function claimReward(id) {
   Store.write('feed', uid(), { type: 'reward', who: me(), text: list[i].name, at: nowStamp() });
   celebrate(null, 'Claimed: ' + list[i].name + '. Enjoy it.', true);
 }
+function nudgeTarget(id) { if (String(id).startsWith('chore:')) { const c = S.chores[id.slice(6)]; return c ? { title: c.name, who: c.who === 'any' || c.who === 'rotate' ? (c.who === 'any' ? 'both' : choreTurn(c)) : c.who } : null; } return S.items[id]; }
 function nudgeSheet(id) {
-  const it = S.items[id]; if (!it) return; const N = names(), to = it.who === 'both' ? other() : it.who;
+  const it = nudgeTarget(id); if (!it) return; const N = names(), to = it.who === 'both' ? other() : it.who;
   let h = '<h2>Nudge ' + esc(N[to]) + '</h2><p class="lead">' + esc(it.title) + ' is still open. Pick a line; it goes to their phone.</p>';
   h += '<div class="list">' + NUDGES.map(n => '<button type="button" class="pick" data-nudge="' + esc(n) + '"><span class="box">' + ICON.bell + '</span><span class="t">' + esc(n) + '</span></button>').join('') + '</div>';
   h += '<label class="f">Or your own</label><input type="text" id="nudgeText" placeholder="Say it your way">';
@@ -1395,7 +1940,7 @@ function nudgeSheet(id) {
   openSheet(h, { focus: false, onMount(root) { root.addEventListener('click', e => { const c = e.target.closest('[data-nudge]'); if (c) { root.querySelectorAll('[data-nudge]').forEach(x => x.classList.toggle('on', x === c)); root.querySelector('#nudgeText').value = ''; } }); } });
 }
 function sendNudge(id, to) {
-  const root = $('#sheet'), it = S.items[id]; if (!it) return;
+  const root = $('#sheet'), it = nudgeTarget(id); if (!it) return;
   const text = root.querySelector('#nudgeText').value.trim() || (root.querySelector('[data-nudge].on') || {}).dataset?.nudge || NUDGES[0];
   Store.write('feed', uid(), { type: 'nudge', who: me(), to, text, title: it.title, itemId: id, at: nowStamp() });
   closeSheet(); toast('Nudge sent');
@@ -1507,6 +2052,7 @@ function toggleItem(id, el) {
   } else {
     Store.patch('items', id, { done: false, doneAt: null, doneBy: null, earned: null });
     Object.entries(S.feed).forEach(([fid, f]) => { if (f.type === 'done' && f.itemId === id) Store.del('feed', fid); });
+    unpayBounties('item', id);
     toast('Marked not done');
   }
 }
@@ -1517,6 +2063,7 @@ function togglePart(id, el) {
     const earned = { a: (parts.a || {}).pts || 0, b: (parts.b || {}).pts || 0, pts: (parts[o] || {}).pts || 0, notes: (parts[o] || {}).notes || [] };
     Store.patch('items', id, { parts, done: false, doneAt: null, doneBy: parts[o] ? o : null, earned: parts[o] ? earned : null });
     Object.entries(S.feed).forEach(([fid, f]) => { if (f.type === 'done' && f.itemId === id && f.who === m) Store.del('feed', fid); });
+    unpayBounties('item', id);
     toast('Your check-off is undone' + (parts[o] ? '. ' + N[o] + '\u2019s still counts.' : '.'));
     return;
   }
@@ -1533,6 +2080,7 @@ function afterCheck(it, id, mine, earned, at, el, lineOverride) {
   const line = lineOverride || lineFor(it, earned, leftToday);
   celebrate(mine, line, leftToday === 0 && wk === currentWeekKey() && weekItems(wk).some(x => x.day === ti), el);
   Store.write('feed', uid(), { type: 'done', who: me(), title: it.title, itemId: id, pts: mine, area: it.area, line: earned.notes && earned.notes.length ? earned.notes.join(', ') : '', at });
+  payBounties('item', id);
 }
 function toast(msg) { const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove('show'), 2400); }
 
@@ -1544,7 +2092,23 @@ document.addEventListener('click', e => {
   const act = el.dataset.act, id = el.dataset.id;
   switch (act) {
     case 'tab': S.tab = el.dataset.tab; lsSet('home-team-tab', S.tab); render(); window.scrollTo(0, 0); break;
-    case 'home': S.home = el.dataset.home; render(); break;
+    case 'home': S.home = el.dataset.home; lsSet('home-team-home', S.home); render(); break;
+    case 'chore-done': toggleChore(id, el); break;
+    case 'team-sub': S.teamTab = el.dataset.sub; lsSet('home-team-teamtab', S.teamTab); render(); window.scrollTo(0, 0); break;
+    case 'card-open': cardSheet(el.dataset.card); break;
+    case 'card-play': playCard(el.dataset.card, el.dataset.kind, id); break;
+    case 'bounty-new': bountySheet(); break;
+    case 'bounty-post': postBounty(); break;
+    case 'bounty-cancel': cancelBounty(id); break;
+    case 'quest-new': questSheet(); break;
+    case 'quest-save': saveQuest(); break;
+    case 'quest-inc': case 'quest-dec': { const q = S.quests[id]; if (q) Store.write('quests', id, Object.assign({}, q, { count: Math.max(0, (q.count || 0) + (act === 'quest-inc' ? 1 : -1)) })); housekeeping(); break; }
+    case 'quest-drop': { if (el.dataset.sure !== '1') { el.dataset.sure = '1'; el.textContent = 'Tap again to drop'; break; } Store.del('quests', id); toast('Quest dropped'); break; }
+    case 'chore-edit': choreSheet(id); break;
+    case 'chore-new': choreSheet(null); break;
+    case 'chore-save': saveChore(id || null); break;
+    case 'chore-pause': { const c = S.chores[id]; if (c) Store.write('chores', id, Object.assign({}, c, { paused: !c.paused })); closeSheet(); toast(c && c.paused ? 'Back on the schedule' : 'Paused. It won\u2019t come due until you resume it.'); break; }
+    case 'chore-delete': { if (el.dataset.sure !== '1') { el.dataset.sure = '1'; el.textContent = 'Tap again'; break; } Store.del('chores', id); closeSheet(); toast('Chore deleted'); break; }
     case 'week-prev': S.viewWeek = shiftWeek(S.viewWeek, -1); render(); break;
     case 'week-next': S.viewWeek = shiftWeek(S.viewWeek, 1); render(); break;
     case 'settings': settingsSheet(); break;
@@ -1634,6 +2198,8 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape' && SHEET) clo
 /* ---------- boot ---------- */
 S.me = lsGet('home-team-me') || null;
 S.tab = lsGet('home-team-tab') || 'week';
+S.teamTab = lsGet('home-team-teamtab') || 'week'; if (!['week', 'season', 'shop'].includes(S.teamTab)) S.teamTab = 'week';
+S.home = lsGet('home-team-home') || 'chores'; if (!['chores', 'projects', 'kitchen'].includes(S.home)) S.home = 'chores';
 if (!['week', 'team', 'workouts', 'home', 'dates'].includes(S.tab)) S.tab = 'week';
 const hashTab = (location.hash || '').replace('#', ''); if (['week', 'team', 'workouts', 'home', 'dates'].includes(hashTab)) S.tab = hashTab;
 setSync(); render();
