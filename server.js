@@ -30,7 +30,9 @@ const TZ = process.env.TZ || 'America/New_York';
 const PUBLIC = path.join(__dirname, 'public');
 const COLLS = ['items', 'projects', 'grocery', 'weeks', 'settings', 'feed', 'push', 'chores', 'cards', 'bounties', 'quests', 'seasons'];
 const ID_RE = /^[A-Za-z0-9_.:@+~-]{1,80}$/;
-const VERSION = '2.0.0';
+const VERSION = '2.1.0';
+/* BUILD changes whenever index.html or sw.js changes; clients compare it to reload stale copies. */
+const BUILD = (() => { try { return crypto.createHash('sha1').update(fs.readFileSync(path.join(PUBLIC, 'index.html'))).update(fs.readFileSync(path.join(PUBLIC, 'sw.js'))).digest('hex').slice(0, 8); } catch (e) { return 'dev'; } })();
 const FEED_CAP = 400;
 
 /* ---------- storage: memory mirror + Postgres or JSON file ---------- */
@@ -105,8 +107,9 @@ function serveStatic(req, res, p) {
   fs.readFile(file, (err, data) => {
     if (err) return send(res, 404, { error: 'not found' });
     const ext = path.extname(file);
-    res.writeHead(200, { 'content-type': MIME[ext] || 'application/octet-stream', 'cache-control': ext === '.html' || file.endsWith('sw.js') ? 'no-cache' : 'public, max-age=86400' });
-    res.end(data);
+    const fresh = ext === '.html' || file.endsWith('sw.js') || file.endsWith('manifest.json');
+    res.writeHead(200, { 'content-type': MIME[ext] || 'application/octet-stream', 'cache-control': fresh ? 'no-cache, must-revalidate' : 'public, max-age=86400' });
+    res.end(ext === '.html' ? Buffer.from(data.toString('utf8').split('__HT_BUILD__').join(BUILD)) : data);
   });
 }
 const pad = n => String(n).padStart(2, '0');
@@ -130,7 +133,11 @@ function pushTo(person, key, payload) { if (!push.enabled || !notifyPref(person,
 function onFeed(entry) {
   if (!entry || !entry.type) return;
   const N = names(), other = entry.who === 'a' ? 'b' : 'a';
-  if (entry.type === 'done') pushTo(other, 'partner', { title: N[entry.who] + ' just finished ' + (entry.title || 'something'), body: (entry.pts ? '+' + entry.pts + ' points. ' : '') + (entry.line || 'Tap to high-five.'), url: '/#team' });
+  if (entry.type === 'done') {
+    // tapping this notification sends the high five (sw.js posts it), then opens the feed
+    const hf = entry.itemId && ID_RE.test(entry.itemId) ? { itemId: entry.itemId, who: other, to: entry.who, title: entry.title || '' } : null;
+    pushTo(other, 'partner', { title: N[entry.who] + ' just finished ' + (entry.title || 'something'), body: (entry.pts ? '+' + entry.pts + ' points. ' : '') + (hf ? 'Tap to send a high five.' : (entry.line || 'Nice.')), url: '/#team', hf, tag: 'partner-' + (entry.itemId || Date.now()) });
+  }
   else if (entry.type === 'nudge' && entry.to) pushTo(entry.to, 'nudge', { title: N[entry.who] + ' nudged you', body: (entry.text || '') + (entry.title ? ' (' + entry.title + ')' : ''), url: '/#week' });
   else if (entry.type === 'highfive' && entry.to) pushTo(entry.to, 'highfive', { title: 'High five from ' + N[entry.who], body: entry.title ? 'For ' + entry.title : 'Nice one.', url: '/#team' });
   else if (entry.type === 'wager' && entry.text) ['a', 'b'].forEach(p => pushTo(p, 'sunday', { title: 'The wager is set', body: entry.text, url: '/#team' }));
@@ -192,7 +199,7 @@ function resyncFuture() {
 async function handle(req, res) {
   const url = new URL(req.url, 'http://x');
   const p = url.pathname, m = req.method;
-  if (p === '/healthz') return send(res, 200, { ok: true, version: VERSION, store: pool ? 'postgres' : 'file', calendar: calendar.enabled, push: push.enabled, clients: clients.size });
+  if (p === '/healthz') return send(res, 200, { ok: true, version: VERSION, build: BUILD, store: pool ? 'postgres' : 'file', calendar: calendar.enabled, push: push.enabled, clients: clients.size });
   if (p === '/api/login' && m === 'POST') {
     const body = await readJson(req).catch(() => ({}));
     if (!keyOk(body.key)) { await new Promise(r => setTimeout(r, 600)); return send(res, 401, { error: 'wrong passphrase' }); }
@@ -202,7 +209,7 @@ async function handle(req, res) {
   if (p === '/api/logout' && m === 'POST') return send(res, 200, { ok: true }, { 'set-cookie': 'ht=; Path=/; Max-Age=0' });
   if (p.startsWith('/api/')) {
     if (!cookieOk(req)) return send(res, 401, { error: 'locked', needsKey: !!KEY });
-    if (p === '/api/state' && m === 'GET') { const out = {}; COLLS.filter(c => c !== 'push').forEach(c => { out[c] = DB[c]; }); out.pushDevices = Object.values(DB.push).map(r => ({ person: r.person, ua: r.ua || '', createdAt: r.createdAt })); out.push = { enabled: push.enabled, publicKey: push.status.publicKey }; out.calendar = calendar.status; out.locked = !!KEY; out.version = VERSION; return send(res, 200, out); }
+    if (p === '/api/state' && m === 'GET') { const out = {}; COLLS.filter(c => c !== 'push').forEach(c => { out[c] = DB[c]; }); out.pushDevices = Object.values(DB.push).map(r => ({ person: r.person, ua: r.ua || '', createdAt: r.createdAt })); out.push = { enabled: push.enabled, publicKey: push.status.publicKey }; out.calendar = calendar.status; out.locked = !!KEY; out.version = VERSION; out.build = BUILD; return send(res, 200, out); }
     if (p === '/api/push/subscribe' && m === 'POST') {
       let body; try { body = await readJson(req, 16384); } catch (e) { return send(res, 400, { error: e.message }); }
       if (!push.enabled) return send(res, 200, { ok: false, reason: 'push not configured' });
@@ -264,7 +271,7 @@ async function handle(req, res) {
 
 storeInit().then(() => {
   http.createServer((req, res) => handle(req, res).catch(e => { console.error('[http]', e); try { send(res, 500, { error: 'server error' }); } catch (x) {} })).listen(PORT, () => {
-    console.log('Home Team v' + VERSION + ' on :' + PORT + (KEY ? ' (passphrase set)' : ' (NO HOME_TEAM_KEY: open to anyone with the URL)'));
+    console.log('Home Team v' + VERSION + ' (' + BUILD + ') on :' + PORT + (KEY ? ' (passphrase set)' : ' (NO HOME_TEAM_KEY: open to anyone with the URL)'));
     calendar.probe();
   });
 }).catch(e => { console.error('[boot] store failed', e); process.exit(1); });
