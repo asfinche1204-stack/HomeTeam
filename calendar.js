@@ -88,9 +88,12 @@ function eventBody(item, ctx) {
   const date = itemDate(item);
   const body = {
     summary: (item.done ? '✓ ' : '') + item.title + (who ? ' · ' + who : ''),
-    description: 'Home Team · ' + (AREAS[item.area] || item.area) + (item.projectName ? ' · ' + item.projectName : '') + (item.notes ? '\n' + item.notes : '') + (ctx.appUrl ? '\n' + ctx.appUrl : ''),
+    description: 'Home Team · ' + (AREAS[item.area] || item.area) + (item.projectName ? ' · ' + item.projectName : '') + (item.place ? '\n📍 ' + (item.placeName ? item.placeName + ' · ' : '') + item.place : '') + (item.notes ? '\n' + item.notes : '') + (ctx.appUrl ? '\n' + ctx.appUrl : ''),
     extendedProperties: { private: { homeTeamId: item.id, homeTeamArea: item.area } }
   };
+  // the place is the event's location (the exact Maps link or the address, tappable in Google Calendar); the name goes in the description
+  if (item.place) body.location = item.place;
+  else { const m = (item.notes || '').match(/https?:\/\/(?:maps\.app\.goo\.gl|goo\.gl\/maps|(?:www\.)?google\.[a-z.]{2,8}\/maps|maps\.google\.[a-z.]{2,8})\S*/i); if (m) body.location = m[0]; }
   if (item.time && /^\d{2}:\d{2}$/.test(item.time)) {
     const mins = Number(item.duration) > 0 ? Number(item.duration) : 60;
     const endTime = addMinutes(item.time, mins), endDate = endTime < item.time ? addDays(date, 1) : date;

@@ -124,6 +124,41 @@ function calCtx() {
 }
 function withProject(item) { const p = item.projectId && DB.projects[item.projectId]; return p ? Object.assign({ projectName: p.name }, item) : item; }
 
+
+/* ---------- places: resolve Google Maps share links (host-allowlisted on every hop) ---------- */
+const MAPS_HOST = /^(maps\.app\.goo\.gl|goo\.gl|(www\.)?google\.[a-z.]{2,8}|maps\.google\.[a-z.]{2,8}|consent\.google\.[a-z.]{2,8})$/i;
+const placeCache = new Map();
+function placeFromUrl(u) {
+  let name = null, lat = null, lng = null;
+  try {
+    const x = new URL(u), m = x.pathname.match(/\/maps\/(?:place|search)\/([^/@]+)/);
+    if (m) name = decodeURIComponent(m[1].replace(/\+/g, ' ')).trim();
+    if (!name) { const q = x.searchParams.get('q') || x.searchParams.get('query'); if (q && !/^https?:/i.test(q)) name = q.trim(); }
+    const c = u.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/) || u.match(/!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)/); if (c) { lat = +c[1]; lng = +c[2]; }
+    if (name && /^-?\d+(\.\d+)?,\s*-?\d+(\.\d+)?$/.test(name)) { const [a, b] = name.split(',').map(Number); lat = lat == null ? a : lat; lng = lng == null ? b : lng; name = null; }
+  } catch (e) {}
+  return { name, lat, lng };
+}
+async function resolvePlace(raw) {
+  let u; try { u = new URL(raw); } catch (e) { return null; }
+  if (!/^https?:$/.test(u.protocol) || !MAPS_HOST.test(u.hostname)) return null;
+  if (placeCache.has(u.href)) return placeCache.get(u.href);
+  let cur = u.href;
+  for (let hop = 0; hop < 5; hop++) {
+    const here = new URL(cur); if (!MAPS_HOST.test(here.hostname)) break;
+    if (here.hostname.startsWith('consent.')) { const cont = here.searchParams.get('continue'); if (cont) { cur = cont; continue; } break; }
+    if (placeFromUrl(cur).name && !/goo\.gl$/i.test(here.hostname)) break;
+    let r; try { r = await fetch(cur, { redirect: 'manual', headers: { 'user-agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1', 'accept-language': 'en-US' }, signal: AbortSignal.timeout(6000) }); } catch (e) { break; }
+    const loc = r.headers.get('location');
+    if (r.status >= 300 && r.status < 400 && loc) { cur = new URL(loc, cur).href; continue; }
+    break;
+  }
+  let fin = u.href; try { if (MAPS_HOST.test(new URL(cur).hostname)) fin = cur; } catch (e) {}
+  const out = Object.assign({ url: fin }, placeFromUrl(fin));
+  placeCache.set(u.href, out); if (placeCache.size > 300) placeCache.delete(placeCache.keys().next().value);
+  return out;
+}
+
 /* ---------- notifications ---------- */
 const names = () => Object.assign({ a: 'Alan', b: 'Her' }, (DB.settings.main && DB.settings.main.names) || {});
 function notifyPref(person, key) { const n = DB.settings.main && DB.settings.main.notify && DB.settings.main.notify[person]; return !n || n[key] !== false; }
@@ -228,6 +263,11 @@ async function handle(req, res) {
       const person = ['a', 'b'].includes(body.person) ? body.person : 'a';
       const n = await push.sendTo(person, { title: 'Home Team is talking to this phone', body: 'Notifications are on.', tag: 'test', url: '/' }, pushSubs(), dropSub);
       return send(res, 200, { ok: true, sent: n });
+    }
+    if (p === '/api/place' && m === 'GET') {
+      // follows a Google Maps share link (maps.app.goo.gl/…) to the full URL and reads the place name from it
+      const out = await resolvePlace(url.searchParams.get('url') || '');
+      return out ? send(res, 200, out) : send(res, 400, { error: 'not a Google Maps link' });
     }
     if (p === '/api/calendar' && m === 'GET') {
       const wk = url.searchParams.get('week') || currentWeekKey();
