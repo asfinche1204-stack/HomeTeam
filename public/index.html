@@ -829,6 +829,26 @@ body.wl-open .scene .ridges{height:30vh;max-height:360px}
 .og .wl-login,.og .wl-err,.og .wl-sec,.og .wl-cta,.og .wl-foot,.og .wl-nav,.og .colibri{display:none!important}
 .og .wl-stage{height:560px;transform:scale(.86)}
 .og .reveal{opacity:1;transform:none}
+
+/* places */
+.pin{display:inline-flex;align-items:center;gap:5px;max-width:100%;height:26px;padding:0 9px 0 7px;border-radius:999px;background:var(--b-soft);color:var(--b-ink);font-size:12.5px;font-weight:650;text-decoration:none;white-space:nowrap;flex:none;border:1px solid color-mix(in srgb,var(--b) 22%,transparent);transition:background .15s,transform .15s}
+.pin span{overflow:hidden;text-overflow:ellipsis}
+.pin svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.pin:hover{background:color-mix(in srgb,var(--b) 18%,var(--surface))}
+.pin:active{transform:scale(.96)}
+.pin.big{height:32px;font-size:13.5px;padding:0 12px 0 9px}
+.item .pin{margin-right:2px;max-width:42%}
+.item-place{display:flex;padding:0 14px 10px 50px;margin-top:-4px}
+.idea .pin{max-width:40%}
+.place-in{display:flex;gap:8px;align-items:center}
+.place-in input{flex:1;min-width:0}
+.place-prev{display:flex;align-items:center;gap:12px;min-height:30px;margin-top:8px}
+.btn svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;vertical-align:-3px}
+a.btn{text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.memory-wrap{position:relative;border-bottom:1px solid var(--line)}
+.memory-wrap:last-child{border-bottom:0}
+.memory-wrap .memory{border-bottom:0;padding-right:140px}
+.memory-wrap .pin{position:absolute;right:12px;top:12px}
 </style>
 </head>
 <body>
@@ -1186,7 +1206,7 @@ function itemRow(it, opts) {
   if (it.area === 'house' && it.projectId && !opts.hideProject) meta.push(projName(it.projectId));
   if (it.area === 'date' && it.tag) meta.push(it.tag);
   if (opts.showWhen && it.week) meta.push(fmtWhen(it));
-  if (it.notes) meta.push(it.notes);
+  { const nn = notesSansMap(it.notes); if (nn) meta.push(nn); }
   if (it.carried && !it.done) meta.push('carried over, half points');
   const split = isSplit(it), mineDone = split ? partDone(it, me()) : it.done, N = names();
   if (split && !it.done) { const ps = partsOf(it), o = other(); if (ps[me()] && !ps[o]) meta.push('your half done \u00b7 waiting on ' + N[o]); else if (ps[o] && !ps[me()]) meta.push(N[o] + ' is done \u00b7 your turn'); else meta.push('each of you checks off your own'); }
@@ -1196,7 +1216,7 @@ function itemRow(it, opts) {
   return '<div class="item' + (it.done ? ' done' : '') + (split && mineDone && !it.done ? ' half' : '') + (opts.slipped && !mineDone ? ' slipped' : '') + '">' +
     '<button class="check" data-act="toggle" data-id="' + it.id + '" aria-label="Mark done">' + ICON.check + '</button>' +
     '<button class="body" ' + (it.session && PROGRAM.sessions[it.session] ? 'data-act="session" data-key="' + it.session + '" data-week="' + (it.programWeek || '') + '"' : 'data-act="edit"') + ' data-id="' + it.id + '"><div class="t">' + esc(it.title) + '</div>' + (meta.length ? '<div class="m">' + esc(meta.join(' · ')) + '</div>' : '') + '</button>' +
-    gameChips('item', it) + pts + who + '</div>';
+    pinChip(placeOf(it)) + gameChips('item', it) + pts + who + '</div>';
 }
 function ringHTML(done, total, size) {
   const r = 36, circ = 2 * Math.PI * r, off = circ * (1 - (total ? done / total : 0));
@@ -1284,7 +1304,7 @@ function renderWeek() {
   const calOn = S.calendar && S.calendar.connected; if (calOn) Cal.load(wk);
   const calEvents = (calOn && Cal.get(wk)) || [], calByDate = {}; calEvents.forEach(ev => { if (!ev.board) (calByDate[ev.date] = calByDate[ev.date] || []).push(ev); });
   const order = isCur ? [ti, ...[0, 1, 2, 3, 4, 5, 6].filter(d => d !== ti)] : [0, 1, 2, 3, 4, 5, 6];
-  const calRow = ev => '<div class="item cal"><span class="check cal-ic">' + ICON.week + '</span><button class="body" data-act="cal-add" data-title="' + esc(ev.title) + '" data-date="' + esc(ev.date) + '" data-start="' + esc(ev.start || '') + '"><div class="t">' + esc(ev.title) + '</div><div class="m">' + (ev.allDay ? 'All day' : esc(fmtIsoTime(ev.start) + (ev.end ? ' – ' + fmtIsoTime(ev.end) : ''))) + ' · On the calendar' + (ev.location ? ' · ' + esc(ev.location) : '') + '</div></button></div>';
+  const calRow = ev => '<div class="item cal"><span class="check cal-ic">' + ICON.week + '</span><button class="body" data-act="cal-add" data-title="' + esc(ev.title) + '" data-date="' + esc(ev.date) + '" data-start="' + esc(ev.start || '') + '" data-location="' + esc(ev.location || '') + '"><div class="t">' + esc(ev.title) + '</div><div class="m">' + (ev.allDay ? 'All day' : esc(fmtIsoTime(ev.start) + (ev.end ? ' – ' + fmtIsoTime(ev.end) : ''))) + ' · On the calendar' + '</div></button>' + pinChip(placeOf({ place: (ev.location || '').match(MAPS_RE) ? ev.location.match(MAPS_RE)[0] : ev.location, placeName: (ev.location || '').match(MAPS_RE) ? (ev.location.replace(MAPS_RE, '').replace(/[\s·,;-]+$/, '').trim() || null) : null })) + '</div>';
   const choresByDay = {}; if (isCur) choreList().filter(c => !c.paused).forEach(c => { const st = choreState(c); let d = null; if (st.doneToday || st.overdue || st.today) d = ti; else if (st.days > 0 && st.days <= 6 - ti) d = ti + st.days; if (d != null) (choresByDay[d] = choresByDay[d] || []).push(c); });
   const dayBlock = d => {
     const past = isCur && d < ti, list = byDay[d] || [], dk = keyOf(dayDate(wk, d)), cal = calByDate[dk] || [], chs = choresByDay[d] || [];
@@ -1787,12 +1807,12 @@ function renderDates() {
   const jar = live().filter(it => it.area === 'date' && !it.week && !it.done).sort((x, y) => (x.createdAt || 0) - (y.createdAt || 0));
   const mem = live().filter(it => it.area === 'date' && it.done).sort((x, y) => (y.doneAt || 0) - (x.doneAt || 0)).slice(0, 10);
   let h = '<div class="sec-h" style="margin-top:8px"><h2 style="font-size:22px">Dates</h2></div>';
-  if (upcoming) h += '<div class="hero"><div class="eyebrow">Next date</div><h1 style="font-size:24px">' + esc(upcoming.title) + '</h1><div class="sub">' + esc(fmtWhen(upcoming)) + (upcoming.time ? ' · ' + fmtTime(upcoming.time) : '') + (upcoming.tag ? ' · ' + esc(upcoming.tag) : '') + ' · 12 points each</div></div>';
+  if (upcoming) h += '<div class="hero"><div class="eyebrow">Next date</div><h1 style="font-size:24px">' + esc(upcoming.title) + '</h1><div class="sub">' + esc(fmtWhen(upcoming)) + (upcoming.time ? ' · ' + fmtTime(upcoming.time) : '') + (upcoming.tag ? ' · ' + esc(upcoming.tag) : '') + ' · 12 points each</div>' + placeButtons(placeOf(upcoming)) + '</div>';
   else h += '<div class="hero"><div class="eyebrow">Next date</div><h1 style="font-size:24px">Nothing on the calendar</h1><div class="sub">Pick one from the jar and give it a day. Dates are the best-paying thing on the board.</div></div>';
   h += '<div class="sec-h"><h2>The idea jar</h2><div class="row" style="gap:6px"><button class="btn sm ghost" data-act="idea-surprise" ' + (jar.length ? '' : 'disabled') + '>' + ICON.shuffle + ' Surprise us</button><button class="btn sm teal" data-act="idea-new">+ Idea</button></div></div>';
-  h += '<div class="list">' + (jar.length ? jar.map(it => '<div class="idea"><button class="t" data-act="edit" data-id="' + it.id + '">' + esc(it.title) + '</button>' + (it.tag ? '<span class="tag">' + esc(it.tag) + '</span>' : '') + whoChip(it.createdBy === 'b' ? 'b' : 'a', true) + '<button class="btn sm" data-act="idea-pick" data-id="' + it.id + '">Pick</button></div>').join('') : '<div class="empty">The jar is empty. <b>Both of you add a few</b>: cheap ones count.</div>') + '</div>';
+  h += '<div class="list">' + (jar.length ? jar.map(it => '<div class="idea"><button class="t" data-act="edit" data-id="' + it.id + '">' + esc(it.title) + '</button>' + pinChip(placeOf(it)) + (it.tag ? '<span class="tag">' + esc(it.tag) + '</span>' : '') + whoChip(it.createdBy === 'b' ? 'b' : 'a', true) + '<button class="btn sm" data-act="idea-pick" data-id="' + it.id + '">Pick</button></div>').join('') : '<div class="empty">The jar is empty. <b>Both of you add a few</b>: cheap ones count.</div>') + '</div>';
   { const have = new Set(live().filter(it => it.area === 'date').map(it => it.title.toLowerCase())), left = STARTER_DATES.filter(([t]) => !have.has(t.toLowerCase())).slice(0, 6); if (left.length) h += '<div class="starter">' + left.map(([t, g, e]) => '<button type="button" data-act="idea-starter" data-title="' + esc(t) + '" data-tag="' + esc(g) + '"><i>' + e + '</i>' + esc(t) + '</button>').join('') + '</div>'; }
-  h += '<div class="sec-h"><h2>Memories</h2></div><div class="list">' + (mem.length ? mem.map(it => '<button class="memory" data-act="memo" data-id="' + it.id + '"><div class="t">' + esc(it.title) + '</div><div class="d">' + esc(fmtWhen(it)) + '</div>' + (it.memo ? '<div class="memo">' + esc(it.memo) + '</div>' : '<div class="memo muted">Add a line about it</div>') + '</button>').join('') : '<div class="empty">Dates you check off show up here, with a line about how it went.</div>') + '</div>';
+  h += '<div class="sec-h"><h2>Memories</h2></div><div class="list">' + (mem.length ? mem.map(it => '<div class="memory-wrap"><button class="memory" data-act="memo" data-id="' + it.id + '"><div class="t">' + esc(it.title) + '</div><div class="d">' + esc(fmtWhen(it)) + '</div>' + (it.memo ? '<div class="memo">' + esc(it.memo) + '</div>' : '<div class="memo muted">Add a line about it</div>') + '</button>' + pinChip(placeOf(it)) + '</div>').join('') : '<div class="empty">Dates you check off show up here, with a line about how it went.</div>') + '</div>';
   return h;
 }
 /* ---------- sheets ---------- */
@@ -1816,9 +1836,9 @@ function ideaSheet(it, d) {
   let h = '<h2>' + (isNew ? 'New date idea' : 'Date idea') + '</h2><p class="lead">It goes in the jar. Pick a day for it whenever you’re ready.</p>';
   h += '<input type="hidden" id="fArea" value="date"><label class="f">The idea</label><input type="text" id="fTitle" value="' + esc(d.title) + '" placeholder="e.g. Arepas and a movie on the porch">';
   h += extraFields('date', d, []);
-  h += '<label class="f">Note</label><input type="text" id="fNotes" value="' + esc(d.notes || '') + '" placeholder="Optional: a place, a link, a price">';
+  h += '<label class="f">Note</label><input type="text" id="fNotes" value="' + esc(d.notes || '') + '" placeholder="Optional: a price, a reservation, a reminder">';
   h += '<div class="form-actions">' + (isNew ? '<button type="button" class="btn ghost" data-act="close-sheet">Cancel</button>' : '<button type="button" class="btn danger" data-act="item-delete" data-id="' + it.id + '">Delete</button><button type="button" class="btn ghost" data-act="idea-pick" data-id="' + it.id + '">Pick a day</button>') + '<button type="button" class="btn primary" data-act="item-save" data-id="' + (it ? it.id : '') + '">' + (isNew ? 'Add to the jar' : 'Save') + '</button></div>';
-  openSheet(h, { onMount(root) { const i = root.querySelector('#fTitle'); i.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); saveItemFromSheet(it ? it.id : null); } }); } });
+  openSheet(h, { onMount(root) { wirePlaceField(root); const i = root.querySelector('#fTitle'); i.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); saveItemFromSheet(it ? it.id : null); } }); } });
 }
 function itemSheet(it, defaults) {
   const isNew = !it, d = Object.assign({ area: 'workout', title: '', who: 'both', week: S.viewWeek, day: null, notes: '', projectId: '', tag: '' }, defaults || {}, it || {});
@@ -1837,17 +1857,18 @@ function itemSheet(it, defaults) {
   h += '<div class="form-actions">' + (isNew ? '' : '<button type="button" class="btn danger" data-act="item-delete" data-id="' + it.id + '">Delete</button>') + '<button type="button" class="btn ghost" data-act="close-sheet">Cancel</button><button type="button" class="btn primary" data-act="item-save" data-id="' + (it ? it.id : '') + '">Save</button></div>';
   openSheet(h, {
     onMount(root) {
+      wirePlaceField(root);
       root.addEventListener('click', e => {
         const b = e.target.closest('[data-seg="area"] button'); if (!b) return;
-        const a = b.dataset.v; root.querySelector('#fExtra').innerHTML = extraFields(a, d, projects);
+        const a = b.dataset.v; root.querySelector('#fExtra').innerHTML = extraFields(a, d, projects); wirePlaceField(root);
         root.querySelector('#fTitle').placeholder = a === 'date' ? 'e.g. Taco night on the porch' : a === 'house' ? 'e.g. Get two quotes for the fence' : a === 'meal' ? 'e.g. Chicken fajitas' : 'e.g. Leg day together';
       });
     }
   });
 }
 function extraFields(area, d, projects) {
-  if (area === 'house') return '<label class="f">Project</label><select id="fProject">' + (projects.length ? projects.map(([id, p]) => '<option value="' + id + '"' + (id === d.projectId ? ' selected' : '') + '>' + esc(p.name) + '</option>').join('') : '<option value="">No projects yet</option>') + '</select>';
-  if (area === 'date') return '<label class="f">Kind of date</label><select id="fTag"><option value="">Pick one</option>' + TAGS.map(t => '<option' + (t === d.tag ? ' selected' : '') + '>' + t + '</option>').join('') + '</select>';
+  if (area === 'house') return '<label class="f">Project</label><select id="fProject">' + (projects.length ? projects.map(([id, p]) => '<option value="' + id + '"' + (id === d.projectId ? ' selected' : '') + '>' + esc(p.name) + '</option>').join('') : '<option value="">No projects yet</option>') + '</select>' + placeField(d);
+  if (area === 'date') return '<label class="f">Kind of date</label><select id="fTag"><option value="">Pick one</option>' + TAGS.map(t => '<option' + (t === d.tag ? ' selected' : '') + '>' + t + '</option>').join('') + '</select>' + placeField(d);
   return '';
 }
 function saveItemFromSheet(id) {
@@ -1862,10 +1883,13 @@ function saveItemFromSheet(id) {
     projectId: root.querySelector('#fProject') ? root.querySelector('#fProject').value || null : (cur ? cur.projectId || null : null),
     tag: root.querySelector('#fTag') ? root.querySelector('#fTag').value || null : (cur ? cur.tag || null : null)
   });
+  { const pf = root.querySelector('#fPlace');
+    if (pf) { let pv = pf.value.trim(); if (!pv) { const m = (it.notes || '').match(MAPS_RE); if (m) { pv = m[0]; } } if (pv && MAPS_RE.test(it.notes || '') && (it.notes.match(MAPS_RE) || [])[0] === pv) it.notes = notesSansMap(it.notes);
+      if (pv !== (cur && cur.place || '')) { it.place = pv || null; it.placeName = null; it.placeFull = null; } } }
   if (area === 'meal' && !it.week) { it.week = wkV; }
   if (area === 'house' && !it.projectId) { toast('Make a project first (House tab)'); return; }
   delete it.id;
-  Store.write('items', id || uid(), it); closeSheet(); toast(it.week ? 'On the board' : area === 'date' ? 'In the jar' : area === 'house' ? 'In the backlog' : 'Saved');
+  const sid = id || uid(); Store.write('items', sid, it); if (it.place) setTimeout(() => fillPlaceName(sid), 50); closeSheet(); toast(it.week ? 'On the board' : area === 'date' ? 'In the jar' : area === 'house' ? 'In the backlog' : 'Saved');
 }
 
 function projectSheet(p) {
@@ -2424,7 +2448,8 @@ document.addEventListener('click', e => {
     case 'toggle': toggleItem(id, el); break;
     case 'edit': itemSheet(Object.assign({ id }, S.items[id])); break;
     case 'add': itemSheet(null, { week: S.viewWeek, day: el.dataset.day === 'any' ? null : Number(el.dataset.day), area: S.tab === 'workouts' ? 'workout' : S.tab === 'home' ? (S.home === 'kitchen' ? 'meal' : 'house') : S.tab === 'dates' ? 'date' : 'workout' }); break;
-    case 'cal-add': { const dt = parseKey(el.dataset.date), wkK = keyOf(mondayOf(dt)), dayI = (dt.getDay() + 6) % 7; itemSheet(null, { area: 'date', title: el.dataset.title, week: wkK, day: dayI, time: isoToHM(el.dataset.start), who: 'both' }); break; }
+    case 'cal-add': { const dt = parseKey(el.dataset.date), wkK = keyOf(mondayOf(dt)), dayI = (dt.getDay() + 6) % 7; itemSheet(null, { area: 'date', title: el.dataset.title, week: wkK, day: dayI, time: isoToHM(el.dataset.start), who: 'both', place: ((el.dataset.location || '').match(MAPS_RE) || [el.dataset.location || ''])[0] || '' }); break; }
+    case 'place-paste': { const inp = document.getElementById('fPlace'); if (inp && navigator.clipboard) navigator.clipboard.readText().then(t => { const m = (t || '').match(MAPS_RE); inp.value = (m ? m[0] : t || '').trim(); inp.dispatchEvent(new Event('input')); }).catch(() => toast('Long-press the box and tap Paste')); break; }
     case 'item-save': saveItemFromSheet(id || null); break;
     case 'item-delete': Store.del('items', id); closeSheet(); toast('Removed'); break;
     case 'carry-move': Store.patch('items', id, { week: currentWeekKey(), day: null, carried: true }); toast('Moved to this week at half points'); break;
@@ -2730,6 +2755,79 @@ const Welcome = {
     this._cb = setTimeout(fly, 2200);
   }
 };
+
+
+/* ---------- places: Google Maps links on dates and events ---------- */
+const MAPS_RE = /https?:\/\/(?:maps\.app\.goo\.gl|goo\.gl\/maps|(?:www\.)?google\.[a-z.]{2,8}\/maps|maps\.google\.[a-z.]{2,8})[^\s<>"']*/i;
+const isUrl = v => /^https?:\/\//i.test(v || '');
+function placeNameFromUrl(url) {
+  try {
+    const u = new URL(url), m = u.pathname.match(/\/maps\/(?:place|search)\/([^/@]+)/);
+    if (m) { const n = decodeURIComponent(m[1].replace(/\+/g, ' ')).trim(); if (n && !/^-?\d+(\.\d+)?,-?\d+/.test(n)) return n; }
+    const q = u.searchParams.get('q') || u.searchParams.get('query') || u.searchParams.get('destination');
+    if (q && !/^-?\d+(\.\d+)?,\s*-?\d+/.test(q) && !isUrl(q)) return q.trim();
+  } catch (e) {}
+  return null;
+}
+/* the place on an item: the Where field first, then a maps link pasted into the note */
+function placeOf(it) {
+  if (!it) return null;
+  let raw = (it.place || '').trim();
+  if (!raw && it.notes) { const m = it.notes.match(MAPS_RE); if (m) raw = m[0]; }
+  if (!raw) return null;
+  if (isUrl(raw)) return { url: raw, name: it.placeName || placeNameFromUrl(raw) || null, link: true };
+  return { url: 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(raw), name: raw, link: false };
+}
+const notesSansMap = n => (n || '').replace(MAPS_RE, '').replace(/\s{2,}/g, ' ').replace(/^[\s·,;-]+|[\s·,;-]+$/g, '');
+function directionsUrl(p) {
+  if (!p) return '';
+  let dest = p.name;
+  try { const m = (p.full || p.url).match(/@(-?\d+\.\d+),(-?\d+\.\d+)/); if (m) dest = m[1] + ',' + m[2]; } catch (e) {}
+  return dest ? 'https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(dest) : p.url;
+}
+const PIN = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>';
+function pinChip(p, opts) {
+  if (!p) return '';
+  const label = p.name || 'Map';
+  return '<a class="pin' + (opts && opts.big ? ' big' : '') + '" href="' + esc(p.url) + '" target="_blank" rel="noopener" data-place="1" title="Open in Google Maps">' + PIN + '<span>' + esc(label.length > 34 ? label.slice(0, 32) + '…' : label) + '</span></a>';
+}
+function placeButtons(p) {
+  if (!p) return '';
+  return '<div class="row" style="gap:8px;margin-top:12px;flex-wrap:wrap"><a class="btn sm teal" href="' + esc(p.url) + '" target="_blank" rel="noopener">' + PIN + ' Open in Maps</a><a class="btn sm ghost" href="' + esc(directionsUrl(p)) + '" target="_blank" rel="noopener">Directions</a></div>';
+}
+/* turn a pasted share link (maps.app.goo.gl/…) into the place's name; the server follows the redirect */
+const placeCache = {};
+async function resolvePlace(url) {
+  if (!isUrl(url)) return null;
+  if (placeCache[url]) return placeCache[url];
+  try { const r = await fetch('/api/place?url=' + encodeURIComponent(url), { cache: 'no-store' }); if (!r.ok) return null; const j = await r.json(); placeCache[url] = j; return j; } catch (e) { return null; }
+}
+async function fillPlaceName(id) {
+  const it = S.items[id]; if (!it || !isUrl(it.place) || it.placeName) return;
+  const local = placeNameFromUrl(it.place); if (local) { Store.patch('items', id, { placeName: local }); return; }
+  const j = await resolvePlace(it.place); const cur = S.items[id];
+  if (j && j.name && cur && cur.place === it.place) Store.patch('items', id, { placeName: j.name, placeFull: j.url || null });
+}
+function placeField(d) {
+  const v = d.place || ((d.notes || '').match(MAPS_RE) || [''])[0];
+  const p = placeOf({ place: v, placeName: d.placeName });
+  return '<label class="f">Where</label><div class="place-in"><input type="text" id="fPlace" inputmode="url" autocomplete="off" value="' + esc(v) + '" placeholder="Paste a Google Maps link or type an address">' +
+    (navigator.clipboard && navigator.clipboard.readText ? '<button type="button" class="btn sm ghost" data-act="place-paste">Paste</button>' : '') + '</div>' +
+    '<div id="placePrev" class="place-prev">' + (p ? pinChip(p) + '<a class="small link" href="' + esc(directionsUrl(p)) + '" target="_blank" rel="noopener">Directions</a>' : '<span class="small muted">In Google Maps: Share → Copy link, then paste it here.</span>') + '</div>';
+}
+function wirePlaceField(root) {
+  const inp = root.querySelector('#fPlace'); if (!inp) return;
+  const prev = root.querySelector('#placePrev');
+  const paint = async () => {
+    const v = inp.value.trim(), p = placeOf({ place: v });
+    if (!p) { prev.innerHTML = '<span class="small muted">In Google Maps: Share → Copy link, then paste it here.</span>'; return; }
+    prev.innerHTML = pinChip(p) + '<a class="small link" href="' + esc(directionsUrl(p)) + '" target="_blank" rel="noopener">Directions</a>';
+    if (p.link && !p.name) { const j = await resolvePlace(v); if (j && j.name && inp.value.trim() === v) { const q = Object.assign({}, p, { name: j.name, full: j.url }); prev.innerHTML = pinChip(q) + '<a class="small link" href="' + esc(directionsUrl(q)) + '" target="_blank" rel="noopener">Directions</a>'; } }
+  };
+  inp.addEventListener('input', () => { clearTimeout(inp._t); inp._t = setTimeout(paint, 250); });
+  inp.addEventListener('paste', () => setTimeout(paint, 30));
+  if (inp.value) paint();
+}
 
 /* ---------- boot ---------- */
 S.me = lsGet('home-team-me') || null;
