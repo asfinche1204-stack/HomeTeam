@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>España 2026 · Trip Planner</title>
+<meta name="description" content="Our Spain trip, Nov 22 – Dec 2: day-by-day planner, open-time ideas, and packing lists.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="España 2026 · Trip Planner">
+<meta property="og:description" content="Madrid · Córdoba · Seville · Granada · Valencia · Barcelona. Day-by-day planner and packing lists.">
+<meta property="og:image" content="https://hometeam-osws.onrender.com/spain-og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="España 2026 · Trip Planner">
+<meta name="twitter:description" content="Madrid · Córdoba · Seville · Granada · Valencia · Barcelona.">
+<meta name="twitter:image" content="https://hometeam-osws.onrender.com/spain-og.png">
+<meta name="theme-color" content="#081428">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#081428;--navy:#0d2040;--navy2:#13305a;--teal:#2ec4b6;--teal2:#7fe3d8;
+  --saff:#f5b942;--terra:#e8765c;--cream:#f7f0e3;--mute:#9db1c9;
+  --glass:rgba(255,255,255,.065);--line:rgba(255,255,255,.13);
+  --serif:'Playfair Display',Georgia,serif;--sans:'Outfit',system-ui,-apple-system,sans-serif;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--ink);color:var(--cream);font-family:var(--sans);font-weight:300;line-height:1.5;min-height:100vh;overflow-x:hidden}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+a{color:var(--teal2)}
+/* atmosphere */
+.sky{position:fixed;inset:0;z-index:-2;overflow:hidden;background:radial-gradient(120% 80% at 50% 0%,#14345f 0%,#0b1d3a 45%,#061022 100%)}
+.blob{position:absolute;border-radius:50%;filter:blur(70px);opacity:.55;will-change:transform}
+.b1{width:60vmax;height:60vmax;background:#1aa79b;left:-25vmax;top:-20vmax;animation:d1 26s ease-in-out infinite alternate}
+.b2{width:46vmax;height:46vmax;background:#e8765c;right:-22vmax;top:22vh;opacity:.32;animation:d2 32s ease-in-out infinite alternate}
+.b3{width:50vmax;height:50vmax;background:#f5b942;left:10vw;bottom:-34vmax;opacity:.2;animation:d3 38s ease-in-out infinite alternate}
+@keyframes d1{to{transform:translate(14vw,10vh) scale(1.15)}}
+@keyframes d2{to{transform:translate(-16vw,-8vh) scale(1.2)}}
+@keyframes d3{to{transform:translate(12vw,-12vh) scale(.9)}}
+.tiles{position:fixed;inset:0;z-index:-1;opacity:.07;pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='72' viewBox='0 0 72 72'%3E%3Cg fill='none' stroke='%23fff' stroke-width='1'%3E%3Cpath d='M36 4l10 22 22 10-22 10-10 22-10-22L4 36l22-10z'/%3E%3Ccircle cx='36' cy='36' r='7'/%3E%3Cpath d='M0 0l12 12M72 0L60 12M0 72l12-12M72 72L60 60'/%3E%3Ccircle cx='0' cy='0' r='9'/%3E%3Ccircle cx='72' cy='0' r='9'/%3E%3Ccircle cx='0' cy='72' r='9'/%3E%3Ccircle cx='72' cy='72' r='9'/%3E%3C/g%3E%3C/svg%3E")}
+@media (prefers-reduced-motion:reduce){.blob{animation:none}.route{animation:none!important;stroke-dashoffset:0!important}*{transition:none!important}}
+.wrap{max-width:760px;margin:0 auto;padding:0 16px 110px}
+/* hero */
+.hero{padding:34px 4px 18px;text-align:center}
+.eyebrow{font-size:.72rem;letter-spacing:.32em;text-transform:uppercase;color:var(--teal2);font-weight:500}
+h1{font-family:var(--serif);font-weight:700;font-size:clamp(2.6rem,11vw,4.4rem);line-height:1;margin:.25em 0 .12em;
+  background:linear-gradient(100deg,#fff 10%,var(--saff) 55%,var(--terra) 95%);-webkit-background-clip:text;background-clip:text;color:transparent}
+h1 i{font-weight:500}
+.sub{color:var(--mute);font-size:.95rem}
+.count{display:flex;justify-content:center;gap:10px;margin:20px 0 4px}
+.count div{min-width:68px;padding:10px 6px 8px;border-radius:16px;background:var(--glass);border:1px solid var(--line);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.count b{display:block;font-family:var(--serif);font-size:1.7rem;font-weight:700;line-height:1.1;color:#fff}
+.count span{font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--mute)}
+.now{margin-top:14px;font-family:var(--serif);font-style:italic;font-size:1.15rem;color:var(--saff)}
+/* cards */
+.card{background:var(--glass);border:1px solid var(--line);border-radius:22px;padding:18px;margin:14px 0;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:0 14px 40px rgba(0,0,0,.25)}
+h2{font-family:var(--serif);font-weight:700;font-size:1.45rem;margin:0 0 4px}
+h3{font-family:var(--serif);font-weight:500;font-size:1.1rem;margin:0}
+.lead{color:var(--mute);font-size:.9rem;margin:0 0 12px}
+.lab{font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;font-weight:600;color:var(--teal2);margin:16px 0 8px;display:flex;align-items:center;gap:8px}
+.lab::after{content:"";flex:1;height:1px;background:var(--line)}
+.lab.o{color:var(--saff)}.lab.e{color:var(--terra)}
+section{display:none;animation:in .45s ease}
+section.on{display:block}
+@keyframes in{from{opacity:0;transform:translateY(10px)}}
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.stats div{text-align:center;padding:12px 4px;border-radius:14px;background:rgba(255,255,255,.05)}
+.stats b{display:block;font-family:var(--serif);font-size:1.5rem;color:var(--saff);line-height:1.1}
+.stats span{font-size:.68rem;color:var(--mute);letter-spacing:.06em}
+/* map */
+.map svg{width:100%;height:auto;display:block}
+.land{fill:rgba(46,196,182,.09);stroke:rgba(127,227,216,.45);stroke-width:1.2;stroke-linejoin:round}
+.route{fill:none;stroke:var(--saff);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:900;stroke-dashoffset:900;animation:draw 3.6s .4s ease forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.opt{fill:none;stroke:var(--mute);stroke-width:1.2;stroke-dasharray:3 4}
+.pin{cursor:pointer}
+.pin circle.c{fill:var(--terra);stroke:#fff;stroke-width:1.5}
+.pin circle.h{fill:var(--terra);opacity:.35;transform-origin:center;transform-box:fill-box;animation:pulse 2.4s ease-out infinite}
+@keyframes pulse{from{transform:scale(1);opacity:.5}to{transform:scale(3.2);opacity:0}}
+.pin text{fill:#fff;font-family:var(--sans);font-size:11px;font-weight:500;paint-order:stroke;stroke:#081428;stroke-width:3px}
+.pin text.n{fill:var(--saff);font-size:8.5px;letter-spacing:.08em}
+/* weather */
+.wx{display:grid;gap:9px}
+.wx .r{display:grid;grid-template-columns:82px 1fr 74px;align-items:center;gap:10px;font-size:.88rem}
+.wx .bar{height:10px;border-radius:9px;background:rgba(255,255,255,.07);position:relative;overflow:hidden}
+.wx .bar i{position:absolute;top:0;bottom:0;border-radius:9px;background:linear-gradient(90deg,#6fb7ff,var(--teal),var(--saff));transform-origin:left;animation:grow 1.2s ease both}
+@keyframes grow{from{transform:scaleX(0)}}
+.wx .t{text-align:right;color:var(--mute);font-variant-numeric:tabular-nums}
+.wx .t b{color:#fff;font-weight:500}
+ul.plain{margin:0;padding-left:18px}ul.plain li{margin:6px 0;font-size:.93rem}
+/* day scroller */
+.chips{display:flex;gap:8px;overflow-x:auto;padding:6px 2px 12px;margin:0 -4px;scrollbar-width:none;position:sticky;top:0;z-index:5}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:0 0 auto;min-width:62px;padding:8px 10px;border-radius:16px;text-align:center;background:rgba(13,32,64,.85);border:1px solid var(--line);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);transition:.25s}
+.chip small{display:block;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
+.chip b{display:block;font-family:var(--serif);font-size:1.25rem;line-height:1.15}
+.chip em{display:block;font-style:normal;font-size:.62rem;color:var(--teal2);white-space:nowrap}
+.chip.on{background:linear-gradient(160deg,var(--teal),#178f86);border-color:transparent;transform:translateY(-2px);box-shadow:0 8px 22px rgba(46,196,182,.35)}
+.chip.on small,.chip.on em{color:#04201d}.chip.on b{color:#04201d}
+.chip.today{outline:2px solid var(--saff);outline-offset:2px}
+.dhead{display:flex;gap:14px;align-items:flex-start}
+.dnum{flex:0 0 auto;width:58px;height:58px;border-radius:18px;display:grid;place-items:center;background:linear-gradient(150deg,var(--saff),var(--terra));color:#2a1206;font-family:var(--serif);font-weight:700;font-size:1.5rem;line-height:1}
+.dnum small{display:block;font-family:var(--sans);font-size:.5rem;letter-spacing:.16em;font-weight:600}
+.dmeta{font-size:.8rem;color:var(--mute);margin-top:2px}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.tag{font-size:.72rem;padding:4px 10px;border-radius:99px;border:1px solid var(--line);background:rgba(255,255,255,.05)}
+.tag.m{border-color:rgba(245,185,66,.5);color:var(--saff)}
+.tag.d{border-color:rgba(127,227,216,.4);color:var(--teal2)}
+.tl{list-style:none;margin:0;padding:0 0 0 16px;border-left:2px solid rgba(46,196,182,.4)}
+.tl li{position:relative;margin:0 0 10px;font-size:.93rem}
+.tl li::before{content:"";position:absolute;left:-22px;top:.5em;width:10px;height:10px;border-radius:50%;background:var(--teal);box-shadow:0 0 0 4px rgba(46,196,182,.18)}
+.tl li.op::before{background:transparent;border:2px dashed var(--mute);box-shadow:none}
+.tl li.op{color:var(--mute)}
+.idea{display:flex;gap:12px;align-items:flex-start;width:100%;text-align:left;padding:11px 12px;margin:7px 0;border-radius:14px;background:rgba(255,255,255,.045);border:1px solid transparent;transition:.2s}
+.idea .s{flex:0 0 auto;width:26px;height:26px;border-radius:50%;border:1.5px solid var(--mute);display:grid;place-items:center;font-size:.8rem;color:transparent;transition:.2s;margin-top:1px}
+.idea.on{background:rgba(245,185,66,.1);border-color:rgba(245,185,66,.45)}
+.idea.on .s{background:var(--saff);border-color:var(--saff);color:#2a1206;transform:scale(1.08) rotate(72deg)}
+.idea b{font-weight:500;display:block;font-size:.95rem}
+.idea span{font-size:.83rem;color:var(--mute)}
+.tip{font-size:.87rem;padding:11px 13px;border-radius:14px;background:rgba(232,118,92,.12);border-left:3px solid var(--terra);margin-top:14px}
+textarea,input[type=text]{width:100%;font:inherit;color:var(--cream);background:rgba(0,0,0,.25);border:1px solid var(--line);border-radius:14px;padding:11px 13px;outline:none}
+textarea{min-height:76px;resize:vertical}
+textarea:focus,input:focus{border-color:var(--teal)}
+::placeholder{color:#7389a3}
+.nav2{display:flex;gap:10px;margin-top:16px}
+.nav2 button{flex:1;padding:11px;border-radius:14px;border:1px solid var(--line);background:rgba(255,255,255,.05);font-weight:500;font-size:.88rem}
+.nav2 button:disabled{opacity:.3}
+/* packing */
+.who{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:5px;border-radius:18px;background:rgba(0,0,0,.28);border:1px solid var(--line)}
+.who button{padding:10px 4px;border-radius:13px;font-weight:500;font-size:.92rem;color:var(--mute);transition:.25s}
+.who button.on{background:linear-gradient(160deg,var(--teal),#178f86);color:#04201d;box-shadow:0 6px 18px rgba(46,196,182,.3)}
+.prog{display:flex;align-items:center;gap:16px;margin-top:16px}
+.ring{flex:0 0 auto;width:86px;height:86px;position:relative}
+.ring svg{transform:rotate(-90deg)}
+.ring circle{fill:none;stroke-width:8}
+.ring .bg{stroke:rgba(255,255,255,.1)}
+.ring .fg{stroke:url(#rg);stroke-linecap:round;transition:stroke-dashoffset .6s cubic-bezier(.3,1.3,.5,1)}
+.ring b{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--serif);font-size:1.25rem}
+.cat{border-top:1px solid var(--line);margin-top:14px;padding-top:4px}
+.cat>button{display:flex;width:100%;align-items:center;justify-content:space-between;padding:12px 2px}
+.cat>button span{font-size:.78rem;color:var(--mute)}
+.cat>button h3::after{content:"▾";margin-left:8px;font-size:.8rem;color:var(--mute);display:inline-block;transition:.25s}
+.cat.shut>button h3::after{transform:rotate(-90deg)}
+.cat.shut .items{display:none}
+.it{display:flex;gap:12px;align-items:flex-start;width:100%;text-align:left;padding:9px 2px;font-size:.95rem}
+.it .bx{flex:0 0 auto;width:24px;height:24px;border-radius:8px;border:1.5px solid var(--mute);display:grid;place-items:center;font-size:.85rem;color:transparent;transition:.2s;margin-top:1px}
+.it.on .bx{background:var(--teal);border-color:var(--teal);color:#04201d;transform:scale(1.1)}
+.it.on .tx{color:var(--mute);text-decoration:line-through;text-decoration-color:rgba(157,177,201,.5)}
+.it small{display:block;color:var(--mute);font-size:.8rem}
+.it .x{margin-left:auto;color:var(--mute);padding:0 6px;font-size:1.1rem}
+.add{display:flex;gap:8px;margin-top:14px}
+.add button{flex:0 0 auto;padding:0 18px;border-radius:14px;background:var(--teal);color:#04201d;font-weight:600}
+.ghost{font-size:.8rem;color:var(--mute);text-decoration:underline;margin-top:14px}
+.done{text-align:center;font-family:var(--serif);font-style:italic;color:var(--saff);margin-top:10px;display:none}
+/* tab bar */
+.tabs{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);z-index:20;display:flex;gap:4px;padding:6px;border-radius:24px;background:rgba(8,20,40,.82);border:1px solid var(--line);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:0 12px 40px rgba(0,0,0,.5);width:min(94vw,440px)}
+.tabs button{flex:1;padding:9px 4px 7px;border-radius:18px;font-size:.7rem;letter-spacing:.06em;font-weight:500;color:var(--mute);transition:.25s}
+.tabs button svg{display:block;margin:0 auto 3px;width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.tabs button.on{background:rgba(46,196,182,.16);color:var(--teal2)}
+.foot{text-align:center;font-size:.74rem;color:#6f85a0;margin-top:22px}
+@media (max-width:420px){.count div{min-width:60px}.wx .r{grid-template-columns:70px 1fr 70px}}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.card,.count div{background:rgba(19,48,90,.9)}}
+
+/* sync chrome */
+.topbar{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:20px}
+.pill{font-size:.74rem;padding:6px 12px;border-radius:99px;border:1px solid var(--line);background:var(--glass);color:var(--cream);text-decoration:none;display:inline-flex;align-items:center;gap:6px;font-weight:500}
+.sync i{width:8px;height:8px;border-radius:50%;background:var(--mute)}
+.sync.ok i{background:#4ade80;box-shadow:0 0 8px #4ade80}.sync.off i{background:var(--terra)}.sync.wait i{background:var(--saff)}
+.av{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;font-style:normal;font-size:.68rem;font-weight:600;color:#04162b;flex:0 0 auto;border:1.5px solid rgba(8,20,40,.9);line-height:1}
+.av.a{background:#8ab8ff}.av.b{background:var(--teal)}.av+.av{margin-left:-7px}
+.by{margin-left:auto;display:flex;align-items:center;padding-left:8px;flex:0 0 auto;flex-wrap:wrap;justify-content:flex-end;max-width:64px}
+.by small{display:block;width:100%;text-align:right;margin-top:4px;white-space:nowrap;font-size:.56rem;letter-spacing:.08em;text-transform:uppercase;color:var(--saff);font-weight:600}
+.idea.theirs{border:1px dashed rgba(127,227,216,.5)}
+.idea.both{background:linear-gradient(120deg,rgba(245,185,66,.22),rgba(46,196,182,.14));border-color:var(--saff);box-shadow:0 0 22px rgba(245,185,66,.18)}
+.idea.both .s{background:var(--saff);border-color:var(--saff);color:#2a1206}
+.pk{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:12px;font-size:.93rem;margin:4px 0;background:rgba(255,255,255,.04)}
+.pk.both{background:rgba(245,185,66,.13);border:1px solid rgba(245,185,66,.4)}
+#notemeta{margin-top:6px;display:flex;align-items:center;gap:6px;min-height:22px}
+.ov{position:fixed;inset:0;z-index:50;background:rgba(3,8,18,.72);display:none;place-items:center;padding:20px}.ov.on{display:grid}
+.sheet{width:min(92vw,380px);background:#0f274b;border:1px solid var(--line);border-radius:24px;padding:22px;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.who2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.who2 button{padding:16px 8px;border-radius:16px;border:1px solid var(--line);background:rgba(255,255,255,.06);font-weight:500;display:flex;gap:8px;align-items:center;justify-content:center}
+.go{width:100%;margin-top:12px;padding:12px;border-radius:14px;background:var(--teal);color:#04201d;font-weight:600}
+.err{color:var(--terra);font-size:.82rem;min-height:1.2em;margin-top:6px}
+.toast{position:fixed;left:50%;bottom:96px;transform:translate(-50%,20px);opacity:0;pointer-events:none;z-index:40;background:#f7f0e3;color:#081428;padding:10px 16px;border-radius:99px;font-size:.85rem;font-weight:500;transition:.3s;max-width:90vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;box-shadow:0 10px 30px rgba(0,0,0,.4)}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+</style>
+</head>
+<body>
+<div class="sky"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div></div>
+<div class="tiles"></div>
+<div class="wrap">
+  <header class="hero">
+    <div class="topbar"><a class="pill" href="/">← Home Team</a><button class="pill" id="mebtn">Who's this?</button><span class="pill sync wait" id="sync"><i></i>Connecting</span></div>
+    <div class="eyebrow">Nov 22 – Dec 2, 2026</div>
+    <h1>España <i>juntos</i></h1>
+    <div class="sub">Madrid · Córdoba · Seville · Granada · Valencia · Barcelona</div>
+    <div class="count" id="count"></div>
+    <div class="now" id="now"></div>
+  </header>
+
+  <section id="s-trip">
+    <div class="card">
+      <h2>The route</h2>
+      <p class="lead">Tap a city to jump to that day.</p>
+      <div class="map" id="map"></div>
+      <div class="stats">
+        <div><b>6</b><span>cities</span></div><div><b>9</b><span>nights</span></div>
+        <div><b>9</b><span>breakfasts</span></div><div><b>4</b><span>dinners</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>What the weather usually does</h2>
+      <p class="lead">Typical late-November highs and lows (°F). Check the real forecast the day before you fly.</p>
+      <div class="wx" id="wx"></div>
+      <div class="tip">Mornings in Madrid and Granada sit near 40°F while Seville and Valencia afternoons reach the mid 60s. Layers beat one heavy coat.</div>
+    </div>
+    <div class="card">
+      <h2>Our picks so far</h2>
+      <p class="lead">Stars from both phones collect here. Gold means you both picked it.</p>
+      <div id="picks"></div>
+    </div>
+    <div class="card">
+      <h2>Good to know</h2>
+      <ul class="plain">
+        <li><b>Spain eats late.</b> Lunch runs about 1:30–3:30, dinner from 8:30. Kitchens often close in between, so plan tapas bars or markets for the gap.</li>
+        <li><b>Menú del día</b> at lunch (two courses, bread, drink) is the best value meal of the day.</li>
+        <li><b>3–4 hours of walking</b> on tour days, much of it cobblestone. Broken-in shoes matter more than anything else you pack.</li>
+        <li><b>Two long coach days</b> (to Valencia and the ride down to Andalusia). Keep snacks, a charger and a layer in the day bag, not the suitcase.</li>
+        <li><b>Pickpockets</b> work the Madrid metro, Las Ramblas and around Sagrada Família. Zipped crossbody in front, phone off the table.</li>
+        <li><b>Tipping</b> is light: round up or leave 5–10% for a sit-down meal you loved.</li>
+        <li><b>Plugs</b> are Type C/F at 230V. Phone and laptop chargers are fine with a plug adapter; check hair tools for dual voltage.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="s-days">
+    <div class="chips" id="chips"></div>
+    <div id="day"></div>
+  </section>
+
+  <section id="s-pack">
+    <div class="card">
+      <h2>Packing list</h2>
+      <p class="lead">Five hotel changes on a coach tour: one suitcase each plus a day bag keeps this easy.</p>
+      <div class="who" id="who"></div>
+      <div class="prog">
+        <div class="ring"><svg viewBox="0 0 86 86" width="86" height="86"><defs><linearGradient id="rg" x1="0" x2="1"><stop offset="0" stop-color="#2ec4b6"/><stop offset="1" stop-color="#f5b942"/></linearGradient></defs><circle class="bg" cx="43" cy="43" r="37"/><circle class="fg" id="ringfg" cx="43" cy="43" r="37" stroke-dasharray="232.5" stroke-dashoffset="232.5"/></svg><b id="ringpct">0%</b></div>
+        <div><h3 id="progt"></h3><div class="dmeta" id="progs"></div></div>
+      </div>
+      <div class="done" id="done">¡Listo! Bag zipped.</div>
+      <div id="cats"></div>
+      <div class="add"><input type="text" id="addtx" placeholder="Add your own item" maxlength="60"><button id="addbtn">Add</button></div>
+      <button class="ghost" id="reset">Uncheck everything on this list</button>
+    </div>
+  </section>
+
+  <section id="s-prep">
+    <div class="card">
+      <h2>Book before you fly</h2>
+      <p class="lead">These sell out or run on timed entry. Sorted by how soon they matter.</p>
+      <div id="book"></div>
+    </div>
+    <div class="card">
+      <h2>Before we leave the house</h2>
+      <div id="home"></div>
+    </div>
+    <div class="card">
+      <h2>Optional tours to decide on</h2>
+      <p class="lead">Sold through Gate 1. Prices are in your tour documents.</p>
+      <ul class="plain">
+        <li><b>Toledo, Tue Nov 24 (afternoon).</b> Medieval hill town with Santo Tomé church and Santa María la Blanca synagogue. Worth it if you want a third city feel; skip it if you'd rather have a slow Madrid afternoon and tapas night.</li>
+        <li><b>Flamenco show, Thu Nov 26 (evening).</b> Seville is the place to see it. An easy yes, or book a small tablao yourselves.</li>
+        <li><b>Montserrat, Tue Dec 1 (morning).</b> Mountain monastery outside Barcelona. It takes half of your only free Barcelona day, so pair it with an afternoon Sagrada Família slot.</li>
+      </ul>
+    </div>
+    <div class="foot">Itinerary follows Gate 1's 11 Day Affordable Spain, Sunday departure. Hotels, timings and restaurant hours can change. Your Gate 1 documents win any disagreement.<br><a href="https://www.gate1travel.com/tour/spain-escorted-11daffes27.aspx" target="_blank" rel="noopener">Gate 1 tour page</a></div>
+  </section>
+</div>
+
+<div class="ov" id="ov"><div class="sheet" id="sheet"></div></div>
+<div class="toast" id="toast" role="status"></div>
+<nav class="tabs" id="tabs">
+  <button data-t="trip"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/></svg>Trip</button>
+  <button data-t="days"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>Days</button>
+  <button data-t="pack"><svg viewBox="0 0 24 24"><rect x="5" y="7" width="14" height="13" rx="2.5"/><path d="M9 7V5a1.5 1.5 0 011.5-1.5h3A1.5 1.5 0 0115 5v2M9.5 11v5M14.5 11v5"/></svg>Pack</button>
+  <button data-t="prep"><svg viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11M3.5 6l1.2 1.2L7 5M3.5 12l1.2 1.2L7 11M3.5 18l1.2 1.2L7 17"/></svg>Prep</button>
+</nav>
+
+<script>
+(function(){
+"use strict";
+/* ---------- data ---------- */
+var DAYS=[
+{n:1,date:"2026-11-22",dow:"Sun",city:"Fly",title:"Depart for Spain",stay:"Overnight flight",meals:[],drive:"",
+ set:["Overnight flight to Madrid"],
+ open:[["Sleep on the plane","Eat before boarding, skip the movie, eye mask on. Landing rested is worth more than the in-flight dinner.","do"],
+       ["Set watches to Madrid time at the gate","Spain is 6 hours ahead of Durham.","do"]],
+ tip:"Wear the bulky shoes and jacket on the plane to save suitcase space. Passports, meds and one change of clothes go in the carry-on."},
+{n:2,date:"2026-11-23",dow:"Mon",city:"Madrid",title:"Arrive Madrid",stay:"Madrid",hotel:"Hotel Riu Plaza España",meals:["Dinner"],drive:"",
+ set:["Airport transfer to the hotel","About 7 PM: orientation meeting with the Tour Manager","Welcome dinner"],
+ free:"Arrival until 7 PM. Rooms may not be ready if you land early.",
+ open:[["Templo de Debod at golden hour","A real Egyptian temple on a hill a few minutes' walk from the hotel, with the best sunset view in Madrid.","see"],
+       ["Gran Vía stroll","Starts right outside the hotel. Good for staying awake and upright.","see"],
+       ["Chocolate con churros at San Ginés","Open since 1894, thick dipping chocolate. The cure for jet lag.","eat"],
+       ["Plaza Mayor and Mercado de San Miguel","Graze the market stalls for a light late lunch: croquetas, jamón, olives, vermut.","eat"],
+       ["Hotel rooftop","The Riu's sky bar has a 360° view over the city if you'd rather not wander far.","do"]],
+ tip:"Stay awake until after dinner, even if it hurts. Sunlight and walking today fix the rest of the week."},
+{n:3,date:"2026-11-24",dow:"Tue",city:"Madrid",title:"Madrid",stay:"Madrid",hotel:"Hotel Riu Plaza España",meals:["Breakfast"],drive:"",
+ set:["Morning city tour: Plaza de Cibeles, Royal Palace, Prado Museum","Optional: afternoon Toledo tour"],
+ free:"Afternoon and evening.",
+ open:[["Retiro Park","Rowboats on the lake, the Crystal Palace, late autumn colour. Ten minutes from the Prado.","see"],
+       ["Thyssen-Bornemisza","If the Prado left you wanting more. Note the Reina Sofía (Guernica) is closed on Tuesdays.","see"],
+       ["Tapas crawl on Cava Baja","La Latina's tapas street. One drink and one plate per bar, then move on.","eat"],
+       ["Bocadillo de calamares near Plaza Mayor","Fried squid sandwich, the classic Madrid cheap lunch.","eat"],
+       ["Dinner at Sobrino de Botín","Roast suckling pig in the world's oldest restaurant. Reserve ahead.","eat"],
+       ["Huevos rotos at Casa Lucio","Broken eggs over potatoes, a Madrid institution. Reserve ahead.","eat"],
+       ["Christmas lights walk","Madrid's holiday lights usually go on in late November. Sol to Plaza Mayor to Gran Vía after dark.","do"]],
+ tip:"Toledo or Madrid: you can't do both well. If you take Toledo, save the tapas crawl for tonight."},
+{n:4,date:"2026-11-25",dow:"Wed",city:"Córdoba → Seville",title:"Córdoba, then Seville",stay:"Seville",hotel:"Hotel Sevilla Center",meals:["Breakfast","Dinner"],drive:"Long coach day (about 5–6 hrs total)",
+ set:["Drive south through La Mancha","Mezquita de Córdoba","Walking tour of the Jewish Quarter and 14th-century synagogue","Continue to Seville; dinner included"],
+ free:"Lunch on your own in Córdoba, plus the evening in Seville after dinner.",
+ open:[["Salmorejo and flamenquín for lunch","Córdoba's two signatures: thick chilled tomato soup, and a fried ham-and-pork roll. Add berenjenas con miel (fried eggplant with honey).","eat"],
+       ["Calleja de las Flores","The flower-pot alley with the Mezquita tower framed at the end. Two minutes from the tour route.","see"],
+       ["Roman Bridge","Walk halfway across for the postcard view back to the Mezquita.","see"],
+       ["Seville night walk","After dinner, walk to the Cathedral and Giralda lit up. Orange trees everywhere.","do"]],
+ tip:"Eat lunch near the Mezquita rather than hunting. Time in Córdoba is short."},
+{n:5,date:"2026-11-26",dow:"Thu",city:"Seville",title:"Seville",stay:"Seville",hotel:"Hotel Sevilla Center",meals:["Breakfast"],drive:"",
+ set:["City tour: Plaza de España, María Luisa Park, Barrio Santa Cruz","Seville Cathedral and the Giralda","Optional: evening flamenco show"],
+ free:"Rest of the day after the tour.",
+ open:[["Real Alcázar","Moorish palace and gardens, right beside the Cathedral. Timed tickets, so book for mid-afternoon.","see"],
+       ["Las Setas at sunset","The giant wooden 'mushrooms' with a rooftop walkway over the old town.","see"],
+       ["Cross to Triana","Over the Isabel II bridge to the ceramics and flamenco neighbourhood. Tile shops and riverside bars.","see"],
+       ["El Rinconcillo","Seville's oldest bar, 1670. Tab chalked on the counter. Spinach with chickpeas, jamón.","eat"],
+       ["Bodega Santa Cruz (Las Columnas)","Loud, cheap, standing room. Order the pringá montadito.","eat"],
+       ["Eslava","Modern tapas, worth the wait. Go right at opening.","eat"],
+       ["Thanksgiving dinner, Spanish style","It's Thanksgiving back home. Make tonight the long, good dinner.","do"]],
+ tip:"Seville is the warmest stop. The jacket can stay in the room this afternoon."},
+{n:6,date:"2026-11-27",dow:"Fri",city:"Granada",title:"Granada and the Alhambra",stay:"Granada",hotel:"Gran Hotel Luna de Granada",meals:["Breakfast"],drive:"About 3 hrs by coach",
+ set:["Drive to Granada","Guided visit to the Alhambra (entry time is assigned by the site)"],
+ free:"Whatever the Alhambra slot leaves, plus the evening.",
+ open:[["Mirador de San Nicolás at sunset","The view of the Alhambra against the Sierra Nevada. Take a taxi up, walk down through the Albaicín.","see"],
+       ["Free tapas with every drink","Granada still does it. Bodegas Castañeda and Los Diamantes are the famous ones.","eat"],
+       ["Tea houses on Calderería Nueva","Moroccan-style teterías: mint tea and pastries on a lantern-lit lane.","eat"],
+       ["Cathedral and Alcaicería","The old silk market lanes beside the Cathedral, if the Alhambra is in the afternoon.","see"]],
+ tip:"Coldest night of the trip, often near freezing. This is the hat-and-gloves stop. You'll need your passport for Alhambra entry."},
+{n:7,date:"2026-11-28",dow:"Sat",city:"Valencia",title:"North to Valencia",stay:"Valencia",hotel:"Exe Rey Don Jaime or Sercotel Sorolla Palace",meals:["Breakfast","Dinner"],drive:"Longest coach day (about 5–6 hrs)",
+ set:["Drive north to Valencia","Hotel check-in","Dinner included"],
+ free:"A little time before dinner, and after.",
+ open:[["Download something for the coach","Podcasts, a show, a shared playlist. Signal drops in the mountains.","do"],
+       ["Evening walk in the Turia Gardens","The old riverbed turned into a park that runs through the whole city.","see"],
+       ["Agua de Valencia nightcap","Cava, orange juice and a kick. Order a jug to share in the old town.","eat"]],
+ tip:"Coach day uniform: comfortable layers, slip-on shoes, snacks, neck pillow."},
+{n:8,date:"2026-11-29",dow:"Sun",city:"Valencia",title:"Valencia",stay:"Valencia",hotel:"Exe Rey Don Jaime or Sercotel Sorolla Palace",meals:["Breakfast"],drive:"",
+ set:["City tour: City Gates, City Hall, Gothic Cathedral","City of Arts and Sciences"],
+ free:"Balance of the day.",
+ open:[["Sunday paella lunch by the beach","Valencia invented it and Sunday lunch is when locals eat it. Casa Carmela or La Pepica at Malvarrosa. Reserve, and order the Valenciana (chicken and rabbit).","eat"],
+       ["Horchata and fartons","Cold tiger-nut milk with a sweet bun for dunking. Horchatería Santa Catalina, beside the Cathedral.","eat"],
+       ["Oceanogràfic","Europe's largest aquarium, inside the City of Arts and Sciences.","see"],
+       ["Climb the Miguelete","207 steps up the Cathedral bell tower for the rooftop view.","see"],
+       ["Mercado de Colón","Art nouveau market hall full of cafés. Open Sundays, unlike the Mercado Central.","eat"],
+       ["Barrio del Carmen street art","Wander the old quarter between the two medieval gate towers.","see"]],
+ tip:"The Mercado Central is closed Sundays. If you want it, your only window is Saturday before it shuts mid-afternoon, which the coach probably misses."},
+{n:9,date:"2026-11-30",dow:"Mon",city:"Barcelona",title:"Up the coast to Barcelona",stay:"Barcelona",hotel:"Hotel Negresco Princess",meals:["Breakfast"],drive:"About 4 hrs by coach",
+ set:["Drive along the Mediterranean coast","Panoramic tour: Old Harbor, Plaça Catalunya, Casa Batlló","La Sagrada Família (outside only) and Montjuïc Hill"],
+ free:"Rest of the day and evening.",
+ open:[["Gothic Quarter wander","Cathedral, Plaça Reial, Roman walls. Best at dusk when the lanes light up.","see"],
+       ["El Born tapas","El Xampanyet for cava and anchovies, then Bar del Pla. Go early; they fill fast.","eat"],
+       ["Passeig de Gràcia by night","Casa Batlló and La Pedrera lit up, a short walk from the hotel.","see"],
+       ["Cervecería Catalana","Reliable, lively tapas near Passeig de Gràcia. No reservations, put your name down.","eat"],
+       ["Santa Maria del Mar","The fishermen's Gothic church in El Born. Quiet and beautiful.","see"]],
+ tip:"Picasso Museum is closed Mondays. Save it for tomorrow if it's on the list."},
+{n:10,date:"2026-12-01",dow:"Tue",city:"Barcelona",title:"Barcelona, our day",stay:"Barcelona",hotel:"Hotel Negresco Princess",meals:["Breakfast","Dinner"],drive:"",
+ set:["Full day at leisure","Optional: half-day Montserrat tour (morning)","Evening: farewell dinner with the Tour Manager"],
+ free:"All day until the farewell dinner.",
+ open:[["Inside La Sagrada Família","The tour only shows the outside. The interior is the single best thing in Barcelona. Timed tickets sell out, so book now.","see"],
+       ["Park Güell","Gaudí's mosaic terrace over the city. Timed entry; mornings have the best light.","see"],
+       ["La Boqueria","Market off Las Ramblas. Go before noon; eat at a counter like El Quim.","eat"],
+       ["Picasso Museum","His early work in five medieval palaces in El Born.","see"],
+       ["Vermut hour","Late-morning vermouth with chips and olives. A Barcelona ritual.","eat"],
+       ["Barceloneta beach walk","Along the sand to the W hotel and back. Seafood lunch at the port.","see"],
+       ["Last-night souvenir run","Turrón, olive oil, saffron, a tin of smoked pimentón, espadrilles.","do"]],
+ tip:"If you take Montserrat in the morning, book Sagrada Família for about 3 PM so the two don't collide."},
+{n:11,date:"2026-12-02",dow:"Wed",city:"Home",title:"Fly home",stay:"Home",meals:["Breakfast"],drive:"",
+ set:["Breakfast","Transfer to Barcelona airport","Flight home"],
+ open:[["Liquids go in the checked bag","Olive oil, wine and anything spreadable won't clear security in a carry-on.","do"],
+       ["Spend the coins","Airport coffee and one last jamón sandwich.","eat"]],
+ tip:"Confirm your transfer time with the Tour Manager at the farewell dinner."}
+];
+var CITIES=[["Madrid",-3.70,40.42,2,"R"],["Córdoba",-4.78,37.88,4,"L"],["Seville",-5.98,37.39,5,"L"],["Granada",-3.60,37.18,6,"R"],["Valencia",-0.38,39.47,7,"L"],["Barcelona",2.17,41.39,9,"L"]];
+var WX=[["Madrid",55,39],["Córdoba",65,45],["Seville",67,49],["Granada",60,38],["Valencia",66,49],["Barcelona",61,48]];
+var PERSON=[
+ ["Clothes",[
+  ["Packable insulated jacket","Madrid and Granada mornings are near 40°F"],
+  ["Light rain shell or compact umbrella"],
+  ["2 sweaters or fleece mid-layers"],
+  ["5–6 tops that layer","Long sleeves and tees that mix with everything"],
+  ["3 pairs of pants","Dark jeans plus two more; they all re-wear"],
+  ["2 nicer dinner outfits","Welcome dinner, flamenco night, farewell dinner"],
+  ["Scarf","Warmth, style, and Spain wears them"],
+  ["Light gloves and a beanie","For Granada"],
+  ["Underwear ×10"],["Socks ×10","Wool blend for the walking days"],
+  ["Sleepwear"],["Sunglasses"],["Swimsuit","Only if a hotel pool or spa tempts you"]]],
+ ["Shoes",[
+  ["Broken-in walking shoes","3–4 hours a day on cobblestones. Not new ones."],
+  ["Second pair that can dress up","Still walkable; gives the first pair a day off"],
+  ["Slip-ons for the plane and coach"]]],
+ ["Toiletries & health",[
+  ["Prescriptions in original bottles","Carry-on, never checked"],
+  ["Toothbrush, toothpaste, deodorant, razor"],
+  ["Travel-size shampoo and skincare"],
+  ["Blister plasters and moleskin"],
+  ["Pain reliever, antacid, stomach meds"],
+  ["Sunscreen and lip balm"],["Hand sanitizer and pocket tissues"],
+  ["Glasses, contacts and solution"]]],
+ ["Tech",[
+  ["Phone and charger"],["Power bank","Long coach days and all-day photos"],
+  ["Earbuds or headphones"],["Phone plan sorted","International day pass or an eSIM"],
+  ["Offline Google Maps for each city"]]],
+ ["Carry-on for the flight",[
+  ["Passport"],["One full change of clothes"],["Neck pillow and eye mask"],
+  ["Compression socks"],["Empty water bottle"],["Snacks"],["Pen","For any forms"]]],
+ ["Day bag for tours",[
+  ["Zipped crossbody or anti-theft bag"],["Packable tote","Markets and souvenirs"],
+  ["Small euro bills and coins","Restrooms, coffee, tips"],["Photo of passport on phone"]]]
+];
+var SHARED=[
+ ["Documents & money",[
+  ["Both passports","Valid at least 6 months past Dec 2"],
+  ["Gate 1 documents and luggage tags","Vouchers, hotel list, emergency number"],
+  ["Flight confirmations"],["Travel insurance details"],
+  ["Two no-foreign-fee credit cards","Keep them in separate bags"],
+  ["Debit card for ATMs","Use bank ATMs; decline the 'conversion' offer"],
+  ["About €200 in cash to start"],
+  ["Cash for Tour Manager and driver tips","Suggested amounts are in the Gate 1 documents"],
+  ["Printed tickets or QR codes","Sagrada Família, Alcázar, Park Güell"]]],
+ ["Shared gear",[
+  ["2–3 plug adapters (Type C/F)"],["Multi-port USB charger"],
+  ["Luggage scale"],["Tracker tags in each suitcase"],
+  ["Small first-aid kit"],["Laundry soap sheets and a sink stopper","For a mid-trip rinse in Seville or Valencia"],
+  ["Zip bags","Wet things, snacks, liquids on the way home"],
+  ["Bubble wrap or wine sleeve","For olive oil coming home"],
+  ["Foldable extra bag","Souvenir overflow"]]]
+];
+var BOOK=[
+ ["b1","Sagrada Família interior","Tue Dec 1. Timed entry; pick about 3 PM if you're doing Montserrat that morning.","https://sagradafamilia.org/en/tickets"],
+ ["b2","Real Alcázar, Seville","Thu Nov 26, mid-afternoon after the city tour.","https://www.alcazarsevilla.org/en/"],
+ ["b3","Park Güell","Tue Dec 1 morning, if it's on the list.","https://parkguell.barcelona/en"],
+ ["b4","Paella lunch in Valencia","Sun Nov 29, about 2 PM. Casa Carmela or La Pepica.",""],
+ ["b5","One big Madrid dinner","Tue Nov 24. Botín or Casa Lucio book out.",""],
+ ["b6","Gate 1 optional tours","Toledo, flamenco, Montserrat. Decide and add them through Gate 1.",""]
+];
+var HOME=[
+ ["h1","Check entry rules for each passport","The EU's ETIAS travel authorization was slated to begin in late 2026. Confirm on the official EU site whether it applies yet."],
+ ["h2","Tell the banks we're travelling"],["h3","Set up phone plans or eSIMs"],
+ ["h4","Download offline maps and the airline app"],["h5","Check in online 24 hours ahead"],
+ ["h6","Weigh the suitcases","Check your airline's limit; Gate 1 coaches take one suitcase per person"],
+ ["h7","Share the itinerary and hotel list with family"],
+ ["h8","Hold the mail, set the thermostat, take out the trash"],
+ ["h9","Charge everything the night before"],["h10","Photos of passports and cards saved to both phones"]
+];
+/* ---------- helpers ---------- */
+function $(id){return document.getElementById(id);}
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
+function slug(s){var x=String(s).toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,40);return x||"x";}
+function ymd(d){return d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+("0"+d.getDate()).slice(-2);}
+function lsGet(k){try{return localStorage.getItem(k);}catch(e){return null;}}
+function lsSet(k,v){try{localStorage.setItem(k,v);}catch(e){}}
+var TODAY=ymd(new Date());
+var MON=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+
+/* ---------- shared state: one small doc per star / check-off / note, stored by the Home Team server ----------
+   sp.star.<day>.<idea>.<a|b>   {at}            a star belongs to one person
+   sp.pk.<list>.<cat>.<item>    {by,at}         packed, and who ticked it
+   sp.cu.<list>.<slug>          {text,by,at}    an item someone added
+   sp.pr.<id>                   {by,at}         prep task done
+   sp.nt.<day>                  {text,by,at}    shared day notes                                              */
+var ME=lsGet("home-team-me");if(ME!=="a"&&ME!=="b")ME=null;
+var NAMES={a:"Alan",b:"Nat"},T={},Q={},UI={who:ME||"a",day:null,shut:{}},NET="load",TAB="trip",LBL={};
+try{var c0=JSON.parse(lsGet("spain26-sync")||"{}");T=c0.T||{};Q=c0.Q||{};if(c0.N&&c0.N.a&&c0.N.b)NAMES=c0.N;}catch(e){}
+try{var u0=JSON.parse(lsGet("spain26-ui")||"{}");for(var k0 in u0)UI[k0]=u0[k0];}catch(e){}
+if(["a","b","shared"].indexOf(UI.who)<0)UI.who=ME||"a";
+function saveSync(){lsSet("spain26-sync",JSON.stringify({T:T,Q:Q,N:NAMES}));}
+function saveUI(){lsSet("spain26-ui",JSON.stringify(UI));}
+function av(p){return'<i class="av '+(p==="b"?"b":"a")+'">'+esc((NAMES[p]||"?").charAt(0).toUpperCase())+"</i>";}
+var toastT;function toast(t){var el=$("toast");el.textContent=t;el.classList.add("on");clearTimeout(toastT);toastT=setTimeout(function(){el.classList.remove("on");},2800);}
+function setNet(s){
+  NET=s;var n=Object.keys(Q).length,el=$("sync");
+  var m={ok:["ok","Synced"],load:["wait","Connecting"],off:["off",n?n+" waiting to sync":"Offline"],lock:["off","Locked"],old:["off","This phone only"]}[s];
+  el.className="pill sync "+m[0];el.innerHTML="<i></i>"+m[1];
+}
+function overlayQ(){for(var id in Q){if(Q[id]===null)delete T[id];else T[id]=Q[id];}}
+var loading=false,loadT,es=null,esBad=false;
+function load(){
+  if(loading)return;loading=true;clearTimeout(loadT);
+  fetch("/api/state",{cache:"no-store"}).then(function(r){
+    if(r.status===401){loading=false;setNet("lock");loginSheet();return;}
+    if(!r.ok)throw 0;
+    return r.json().then(function(j){
+      loading=false;
+      if(!j||typeof j!=="object"||!j.items)throw 0;
+      var nm=j.settings&&j.settings.main&&j.settings.main.names;
+      if(nm){if(nm.a)NAMES.a=String(nm.a);if(nm.b)NAMES.b=String(nm.b);}
+      if(!j.trip){setNet("old");}else{T=j.trip;overlayQ();setNet("ok");}
+      saveSync();drawAll();listen();flush();
+    });
+  }).catch(function(){loading=false;setNet("off");loadT=setTimeout(load,10000);});
+}
+function listen(){
+  if(es||!window.EventSource)return;
+  es=new EventSource("/api/events");
+  es.onopen=function(){if(esBad){esBad=false;load();}};
+  es.onerror=function(){esBad=true;if(NET==="ok")setNet("off");};
+  es.onmessage=function(ev){
+    var m;try{m=JSON.parse(ev.data);}catch(e){return;}
+    if(m.t==="doc"&&m.coll==="settings"&&m.id==="main"&&m.data&&m.data.names){if(m.data.names.a)NAMES.a=String(m.data.names.a);if(m.data.names.b)NAMES.b=String(m.data.names.b);drawAll();return;}
+    if(m.t!=="doc"||m.coll!=="trip"||(m.id in Q))return;
+    var had=T[m.id];if(m.data)T[m.id]=m.data;else delete T[m.id];
+    saveSync();announce(m.id,m.data,had);drawAll();
+  };
+}
+var flushing=false,flushT;
+function flush(){
+  if(flushing||NET==="lock"||NET==="old")return;
+  var ids=Object.keys(Q);if(!ids.length)return;
+  flushing=true;var id=ids[0],v=Q[id];
+  fetch("/api/doc/trip/"+encodeURIComponent(id),{method:v===null?"DELETE":"PUT",headers:{"content-type":"application/json"},body:v===null?undefined:JSON.stringify(v)}).then(function(r){
+    flushing=false;
+    if(r.status===401){setNet("lock");loginSheet();return;}
+    if(r.status===400){setNet("old");return;}
+    if(!r.ok)throw 0;
+    if(Q[id]===v)delete Q[id];
+    saveSync();setNet("ok");flush();
+  }).catch(function(){flushing=false;setNet("off");clearTimeout(flushT);flushT=setTimeout(flush,8000);});
+}
+function put(id,data){
+  if(data===null)delete T[id];else T[id]=data;
+  Q[id]=data;saveSync();setNet(NET);flush();
+}
+function need(){if(ME)return true;whoSheet();return false;}
+function announce(id,data,had){
+  var p=id.split(".");
+  if(p[1]==="star"){var who=p[4];if(!data||who===ME)return;var d=DAYS[+p[2]-1],o=d&&d.open[+p[3]];if(o)toast(NAMES[who]+" starred "+o[0]);}
+  else if((p[1]==="pk"||p[1]==="pr")&&data&&!had&&data.by&&data.by!==ME)toast(NAMES[data.by]+" checked off "+(LBL[id]||"an item"));
+  else if(p[1]==="cu"&&data&&!had&&data.by&&data.by!==ME)toast(NAMES[data.by]+" added "+data.text);
+}
+/* ---------- sheets ---------- */
+function sheet(h){$("sheet").innerHTML=h;$("ov").classList.add("on");}
+function closeSheet(){$("ov").classList.remove("on");$("sheet").innerHTML="";}
+function whoSheet(){sheet('<h2>Whose phone is this?</h2><p class="lead">So stars and check-offs carry your name.</p><div class="who2"><button data-me="a">'+av("a")+esc(NAMES.a)+'</button><button data-me="b">'+av("b")+esc(NAMES.b)+"</button></div>");}
+function loginSheet(){sheet('<h2>Home Team passphrase</h2><p class="lead">The same one you use for the app.</p><input type="password" id="pw" autocomplete="current-password" placeholder="Passphrase"><div class="err" id="pwerr"></div><button class="go" id="pwgo">Unlock</button>');}
+function tryLogin(){
+  var v=$("pw").value;if(!v)return;
+  fetch("/api/login",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({key:v})}).then(function(r){
+    if(!r.ok){$("pwerr").textContent="That isn't it. Try again.";return;}
+    closeSheet();setNet("load");load();
+  }).catch(function(){$("pwerr").textContent="Can't reach Home Team right now.";});
+}
+$("ov").addEventListener("click",function(e){
+  var b=e.target.closest("[data-me]");
+  if(b){var first=!ME;ME=b.getAttribute("data-me");lsSet("home-team-me",ME);if(first)UI.who=ME;saveUI();closeSheet();drawAll();return;}
+  if(e.target.id==="pwgo"){tryLogin();return;}
+  if(e.target===this&&NET!=="lock"&&ME)closeSheet();
+});
+$("ov").addEventListener("keydown",function(e){if(e.key==="Enter"&&e.target.id==="pw")tryLogin();});
+$("mebtn").addEventListener("click",whoSheet);
+
+/* ---------- countdown ---------- */
+function tick(){
+  var now=new Date(),start=new Date(2026,10,22,0,0,0),end=new Date(2026,11,3,0,0,0),c=$("count"),n=$("now");
+  if(now<start){
+    var ms=start-now,d=Math.floor(ms/864e5),h=Math.floor(ms%864e5/36e5),m=Math.floor(ms%36e5/6e4);
+    c.innerHTML="<div><b>"+d+"</b><span>days</span></div><div><b>"+h+"</b><span>hours</span></div><div><b>"+m+"</b><span>min</span></div>";
+    n.textContent=d===0?"Tomorrow we fly.":"until wheels up";
+  }else if(now<end){
+    var t=DAYS.filter(function(x){return x.date===TODAY;})[0];
+    c.innerHTML="";n.textContent=t?"Day "+t.n+" of 11 · "+t.title:"¡Buen viaje!";
+  }else{c.innerHTML="";n.textContent="Bienvenidos a casa.";}
+}
+/* ---------- map ---------- */
+function drawMap(){
+  var out=[[-9.3,43.2],[-8,43.75],[-5.8,43.6],[-3.8,43.45],[-1.8,43.4],[0.7,42.75],[3.2,42.4],[3.15,41.9],[2.2,41.3],[0.9,41.0],[0.2,40.2],[-0.3,39.5],[0.2,38.8],[-0.5,38.3],[-0.7,37.6],[-1.9,37.0],[-2.4,36.75],[-4.4,36.7],[-5.35,36.1],[-6.0,36.2],[-6.4,36.9],[-7.4,37.2],[-8.9,37.0],[-8.8,38.5],[-9.5,38.8],[-8.9,40.2],[-8.7,41.2],[-8.9,42.0],[-9.3,43.0]];
+  function P(lon,lat){return[((lon+10.4)*26).toFixed(1),((44.4-lat)*35).toFixed(1)];}
+  var land=out.map(function(p,i){var q=P(p[0],p[1]);return(i?"L":"M")+q[0]+" "+q[1];}).join(" ")+"Z";
+  var route=CITIES.map(function(c,i){var q=P(c[1],c[2]);return(i?"L":"M")+q[0]+" "+q[1];}).join(" ");
+  var m=P(-3.70,40.42),t=P(-4.02,39.86);
+  var h='<svg viewBox="0 0 380 310" role="img" aria-label="Map of the route through Spain"><path class="land" d="'+land+'"/>'+
+    '<path class="opt" d="M'+m[0]+" "+m[1]+"L"+t[0]+" "+t[1]+'"/><circle cx="'+t[0]+'" cy="'+t[1]+'" r="2.5" fill="#9db1c9"/><text x="'+(+t[0]-8)+'" y="'+(+t[1]+4)+'" text-anchor="end" font-size="8.5" fill="#9db1c9" font-family="Outfit,sans-serif">Toledo (optional)</text>'+
+    '<path class="route" d="'+route+'"/>';
+  CITIES.forEach(function(c,i){
+    var q=P(c[1],c[2]),L=c[4]==="L",dx=L?-10:10,an=L?"end":"start";
+    h+='<g class="pin" data-day="'+c[3]+'" tabindex="0" role="button" aria-label="'+c[0]+'"><circle class="h" cx="'+q[0]+'" cy="'+q[1]+'" r="5" style="animation-delay:'+(i*.4)+'s"/><circle class="c" cx="'+q[0]+'" cy="'+q[1]+'" r="5"/>'+
+       '<text class="n" x="'+(+q[0]+dx)+'" y="'+(+q[1]-6)+'" text-anchor="'+an+'">STOP '+(i+1)+'</text><text x="'+(+q[0]+dx)+'" y="'+(+q[1]+6)+'" text-anchor="'+an+'">'+c[0]+'</text></g>';
+  });
+  $("map").innerHTML=h+"</svg>";
+  $("map").addEventListener("click",function(e){var g=e.target.closest(".pin");if(g){UI.day=+g.getAttribute("data-day");saveUI();go("days");}});
+}
+function drawWx(){
+  $("wx").innerHTML=WX.map(function(w,i){
+    var l=(w[2]-32)/40*100,r=(w[1]-32)/40*100;
+    return'<div class="r"><span>'+w[0]+'</span><div class="bar"><i style="left:'+l+"%;width:"+(r-l)+"%;animation-delay:"+(i*.1)+'s"></i></div><span class="t"><b>'+w[1]+"°</b> / "+w[2]+"°</span></div>";
+  }).join("");
+}
+/* ---------- days ---------- */
+function sid(n,i,p){return"sp.star."+n+"."+i+"."+p;}
+function stars(n,i){var o=[];if(T[sid(n,i,"a")])o.push("a");if(T[sid(n,i,"b")])o.push("b");return o;}
+function dayStars(n){var c=0;DAYS[n-1].open.forEach(function(o,i){if(stars(n,i).length)c++;});return c;}
+function drawChips(scroll){
+  $("chips").innerHTML=DAYS.map(function(d){
+    var dt=d.date.split("-"),c=dayStars(d.n);
+    return'<button class="chip'+(d.n===UI.day?" on":"")+(d.date===TODAY?" today":"")+'" data-n="'+d.n+'"><small>'+d.dow+"</small><b>"+(+dt[2])+"</b><em>"+esc(d.city.split(" ")[0])+(c?" ★"+c:"")+"</em></button>";
+  }).join("");
+  if(scroll){var on=$("chips").querySelector(".on");if(on&&on.scrollIntoView)try{on.scrollIntoView({inline:"center",block:"nearest"});}catch(e){}}
+}
+function drawDay(){
+  var d=DAYS[UI.day-1],dt=d.date.split("-");
+  var h='<div class="card"><div class="dhead"><div class="dnum"><div><small>DAY</small>'+d.n+'</div></div><div><h2>'+esc(d.title)+'</h2><div class="dmeta">'+d.dow+", "+MON[+dt[1]-1]+" "+(+dt[2])+(d.hotel?" · "+esc(d.hotel):"")+'</div></div></div><div class="tags">';
+  d.meals.forEach(function(m){h+='<span class="tag m">'+m+" included</span>";});
+  if(d.drive)h+='<span class="tag d">'+esc(d.drive)+"</span>";
+  if(d.stay)h+='<span class="tag">Sleep: '+esc(d.stay)+"</span>";
+  h+='</div><div class="lab">Set by the tour</div><ul class="tl">'+d.set.map(function(s){return"<li"+(s.indexOf("Optional")===0?' class="op"':"")+">"+esc(s)+"</li>";}).join("")+"</ul>";
+  if(d.free)h+='<div class="lab o">Open time</div><div style="font-size:.93rem">'+esc(d.free)+"</div>";
+  h+='<div class="lab e">Ideas · tap to star</div><div id="ideas"></div>';
+  if(d.tip)h+='<div class="tip">'+esc(d.tip)+"</div>";
+  h+='<div class="lab">Our notes</div><textarea id="note" maxlength="4000" placeholder="Reservations, meeting times, things we want to remember"></textarea><div class="dmeta" id="notemeta"></div>';
+  h+='<div class="nav2"><button id="prev"'+(d.n===1?" disabled":"")+">← Day "+(d.n-1)+'</button><button id="next"'+(d.n===11?" disabled":"")+">Day "+(d.n+1)+" →</button></div></div>";
+  $("day").innerHTML=h;drawIdeas();syncNote(true);
+}
+function drawIdeas(){
+  var d=DAYS[UI.day-1],h="",el=$("ideas");if(!el)return;
+  d.open.forEach(function(o,i){
+    var s=stars(d.n,i),mine=ME&&s.indexOf(ME)>-1,both=s.length===2;
+    var ic=o[2]==="eat"?"🍴":o[2]==="see"?"◆":"✦";
+    h+='<button class="idea'+(mine?" on":"")+(both?" both":s.length&&!mine?" theirs":"")+'" data-i="'+i+'"><span class="s">★</span><span><b>'+ic+" "+esc(o[0])+"</b><span>"+esc(o[1])+"</span></span>"+
+       (s.length?'<span class="by">'+s.map(av).join("")+(both?"<small>Both in</small>":"")+"</span>":"")+"</button>";
+  });
+  el.innerHTML=h;
+}
+function syncNote(force){
+  var ta=$("note");if(!ta)return;var d=T["sp.nt."+UI.day];
+  if(force||(document.activeElement!==ta&&!notePend))ta.value=d?d.text:"";
+  $("notemeta").innerHTML=d&&d.by?"Last edited by "+av(d.by)+" "+esc(NAMES[d.by]):"";
+}
+var noteT,notePend=null;
+function commitNote(){
+  clearTimeout(noteT);if(!notePend)return;var p=notePend;notePend=null;
+  var txt=p.text.replace(/\s+$/,"");
+  put("sp.nt."+p.day,txt?{text:txt,by:ME,at:Date.now()}:null);
+  if(TAB==="days"&&p.day===UI.day)syncNote();
+}
+function drawPicks(){
+  var h="";
+  DAYS.forEach(function(d){
+    var rows=[];d.open.forEach(function(o,i){var s=stars(d.n,i);if(s.length)rows.push([s,o[0]]);});
+    if(!rows.length)return;
+    rows.sort(function(x,y){return y[0].length-x[0].length;});
+    h+='<div class="lab o">Day '+d.n+" · "+esc(d.city)+"</div>"+rows.map(function(r){return'<div class="pk'+(r[0].length===2?" both":"")+'"><span>'+esc(r[1])+'</span><span class="by">'+r[0].map(av).join("")+"</span></div>";}).join("");
+  });
+  $("picks").innerHTML=h||'<div class="dmeta">Nothing starred yet. Open a day and tap the ideas you want.</div>';
+}
+/* ---------- packing ---------- */
+function lists(l){return l==="shared"?SHARED:PERSON;}
+function pkid(l,cat,item){return"sp.pk."+l+"."+slug(cat)+"."+slug(item);}
+["a","b","shared"].forEach(function(l){lists(l).forEach(function(c){c[1].forEach(function(it){LBL[pkid(l,c[0],it[0])]=it[0];});});});
+function customs(l){var pre="sp.cu."+l+".",o=[];Object.keys(T).forEach(function(id){if(id.indexOf(pre)===0&&T[id]&&T[id].text)o.push([id.slice(pre.length),T[id]]);});o.sort(function(x,y){return(x[1].at||0)-(y[1].at||0);});return o;}
+function row(id,text,sub,extra){
+  var d=T[id],on=!!d;
+  return'<button class="it'+(on?" on":"")+'" data-id="'+id+'"'+(extra||"")+'><span class="bx">✓</span><span class="tx">'+esc(text)+(sub?"<small>"+esc(sub)+"</small>":"")+"</span>"+(on&&d.by?'<span class="by">'+av(d.by)+"</span>":"")+"</button>";
+}
+function drawPack(){
+  var l=UI.who;
+  $("who").innerHTML=[["a",NAMES.a],["b",NAMES.b],["shared","Shared"]].map(function(w){return'<button data-w="'+w[0]+'" class="'+(l===w[0]?"on":"")+'">'+esc(w[1])+"</button>";}).join("");
+  var tot=0,done=0,h="";
+  lists(l).forEach(function(c){
+    var ct=0,cd=0,rows="";
+    c[1].forEach(function(it){var id=pkid(l,c[0],it[0]);ct++;if(T[id])cd++;rows+=row(id,it[0],it[1]);});
+    tot+=ct;done+=cd;var sk=l+":"+slug(c[0]);
+    h+='<div class="cat'+(UI.shut[sk]?" shut":"")+'" data-sk="'+sk+'"><button class="ch"><h3>'+esc(c[0])+"</h3><span>"+cd+" / "+ct+'</span></button><div class="items">'+rows+"</div></div>";
+  });
+  var cu=customs(l);
+  if(cu.length){
+    var rows2="";
+    cu.forEach(function(x){var id="sp.pk."+l+".custom."+x[0];LBL[id]=x[1].text;tot++;if(T[id])done++;
+      rows2+='<div style="display:flex;align-items:flex-start">'+row(id,x[1].text,x[1].by?"Added by "+NAMES[x[1].by]:"",' style="flex:1"')+'<button class="x" data-rm="'+x[0]+'" aria-label="Remove">×</button></div>';});
+    h+='<div class="cat"><button class="ch" disabled><h3 style="pointer-events:none">Our additions</h3><span></span></button><div class="items">'+rows2+"</div></div>";
+  }
+  $("cats").innerHTML=h;
+  var pct=tot?Math.round(done/tot*100):0;
+  $("ringfg").style.strokeDashoffset=(232.5*(1-pct/100)).toFixed(1);
+  $("ringpct").textContent=pct+"%";
+  $("progt").textContent=l==="shared"?"Shared bag":NAMES[l]+"'s bag";$("progs").textContent=done+" of "+tot+" packed";
+  $("done").style.display=tot&&done===tot?"block":"none";
+}
+/* ---------- prep ---------- */
+BOOK.concat(HOME).forEach(function(a){LBL["sp.pr."+a[0]]=a[1];});
+function drawPrep(){
+  function r(a){return row("sp.pr."+a[0],a[1],a[2])+(a[3]?'<div style="margin:-4px 0 6px 36px;font-size:.8rem"><a href="'+a[3]+'" target="_blank" rel="noopener">Official tickets ↗</a></div>':"");}
+  $("book").innerHTML=BOOK.map(r).join("");$("home").innerHTML=HOME.map(r).join("");
+}
+function toggle(id){if(!need())return;put(id,T[id]?null:{by:ME,at:Date.now()});}
+/* ---------- tabs ---------- */
+var TABS=["trip","days","pack","prep"];
+function drawAll(){
+  $("mebtn").innerHTML=ME?av(ME)+esc(NAMES[ME]):"Who's this?";
+  if(TAB==="trip")drawPicks();
+  else if(TAB==="days"){drawChips();drawIdeas();syncNote();}
+  else if(TAB==="pack")drawPack();
+  else drawPrep();
+}
+function show(t){
+  if(TABS.indexOf(t)<0)t="trip";
+  commitNote();TAB=t;
+  TABS.forEach(function(x){$("s-"+x).classList.toggle("on",x===t);});
+  [].forEach.call($("tabs").children,function(b){b.classList.toggle("on",b.getAttribute("data-t")===t);});
+  if(t==="days"){drawChips(true);drawDay();}
+  drawAll();
+}
+function go(t){try{if(location.hash!=="#"+t){location.hash=t;return;}}catch(e){}show(t);window.scrollTo(0,0);}
+function setDay(n){commitNote();UI.day=n;saveUI();drawChips(true);drawDay();}
+window.addEventListener("hashchange",function(){show(location.hash.slice(1));window.scrollTo(0,0);});
+$("tabs").addEventListener("click",function(e){var b=e.target.closest("button");if(b)go(b.getAttribute("data-t"));});
+$("chips").addEventListener("click",function(e){var b=e.target.closest(".chip");if(b)setDay(+b.getAttribute("data-n"));});
+$("day").addEventListener("click",function(e){
+  var b=e.target.closest(".idea");
+  if(b){if(!need())return;var id=sid(UI.day,+b.getAttribute("data-i"),ME);put(id,T[id]?null:{at:Date.now()});drawIdeas();drawChips();return;}
+  if(e.target.id==="prev"&&UI.day>1){setDay(UI.day-1);window.scrollTo(0,0);}
+  if(e.target.id==="next"&&UI.day<11){setDay(UI.day+1);window.scrollTo(0,0);}
+});
+$("day").addEventListener("input",function(e){
+  if(e.target.id!=="note")return;if(!ME){e.target.blur();whoSheet();return;}
+  notePend={day:UI.day,text:e.target.value};clearTimeout(noteT);noteT=setTimeout(commitNote,900);
+});
+$("day").addEventListener("focusout",function(e){if(e.target.id==="note")commitNote();});
+$("who").addEventListener("click",function(e){var b=e.target.closest("button");if(b){UI.who=b.getAttribute("data-w");saveUI();drawPack();}});
+$("cats").addEventListener("click",function(e){
+  var rm=e.target.closest("[data-rm]");
+  if(rm){if(!need())return;var s=rm.getAttribute("data-rm");put("sp.cu."+UI.who+"."+s,null);if(T["sp.pk."+UI.who+".custom."+s])put("sp.pk."+UI.who+".custom."+s,null);drawPack();return;}
+  var it=e.target.closest("[data-id]");
+  if(it){toggle(it.getAttribute("data-id"));drawPack();return;}
+  var ch=e.target.closest(".ch");
+  if(ch){var c=ch.parentNode,sk=c.getAttribute("data-sk");if(!sk)return;UI.shut[sk]=!UI.shut[sk];saveUI();c.classList.toggle("shut");}
+});
+function addItem(){
+  var v=$("addtx").value.trim();if(!v||!need())return;
+  var s=slug(v);if(s==="x")s="x"+Date.now().toString(36);
+  var id="sp.cu."+UI.who+"."+s;if(!T[id])put(id,{text:v.slice(0,60),by:ME,at:Date.now()});
+  $("addtx").value="";drawPack();
+}
+$("addbtn").addEventListener("click",addItem);
+$("addtx").addEventListener("keydown",function(e){if(e.key==="Enter")addItem();});
+$("reset").addEventListener("click",function(){
+  var b=this;
+  if(b.getAttribute("data-arm")){if(!need())return;var pre="sp.pk."+UI.who+".";Object.keys(T).forEach(function(k){if(k.indexOf(pre)===0)put(k,null);});drawPack();b.removeAttribute("data-arm");b.textContent="Uncheck everything on this list";}
+  else{b.setAttribute("data-arm","1");b.textContent="Tap again to confirm (clears it for both of you)";setTimeout(function(){b.removeAttribute("data-arm");b.textContent="Uncheck everything on this list";},3500);}
+});
+$("s-prep").addEventListener("click",function(e){var b=e.target.closest("[data-id]");if(b){toggle(b.getAttribute("data-id"));drawPrep();}});
+document.addEventListener("visibilitychange",function(){if(document.hidden)commitNote();else load();});
+window.addEventListener("online",load);
+window.addEventListener("pagehide",commitNote);
+/* ---------- boot ---------- */
+if(!UI.day||UI.day<1||UI.day>11){var td=DAYS.filter(function(x){return x.date===TODAY;})[0];UI.day=td?td.n:2;}
+tick();setInterval(tick,30000);drawMap();drawWx();setNet("load");
+var h0="";try{h0=location.hash.slice(1);}catch(e){}
+show(h0||(TODAY>="2026-11-22"&&TODAY<="2026-12-02"?"days":"trip"));
+load();
+})();
+</script>
+</body>
+</html>

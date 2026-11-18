@@ -28,7 +28,7 @@ const DATA_FILE = process.env.HOME_TEAM_DATA_FILE || path.join(__dirname, 'data'
 const APP_URL = (process.env.APP_URL || '').replace(/\/$/, '');
 const TZ = process.env.TZ || 'America/New_York';
 const PUBLIC = path.join(__dirname, 'public');
-const COLLS = ['items', 'projects', 'grocery', 'weeks', 'settings', 'feed', 'push', 'chores', 'cards', 'bounties', 'quests', 'seasons'];
+const COLLS = ['items', 'projects', 'grocery', 'weeks', 'settings', 'feed', 'push', 'chores', 'cards', 'bounties', 'quests', 'seasons', 'trip'];
 const ID_RE = /^[A-Za-z0-9_.:@+~-]{1,80}$/;
 const VERSION = '2.2.0';
 /* BUILD changes whenever index.html or sw.js changes; clients compare it to reload stale copies. */
