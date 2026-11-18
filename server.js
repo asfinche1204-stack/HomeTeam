@@ -28,7 +28,7 @@ const DATA_FILE = process.env.HOME_TEAM_DATA_FILE || path.join(__dirname, 'data'
 const APP_URL = (process.env.APP_URL || '').replace(/\/$/, '');
 const TZ = process.env.TZ || 'America/New_York';
 const PUBLIC = path.join(__dirname, 'public');
-const COLLS = ['items', 'projects', 'grocery', 'weeks', 'settings', 'feed', 'push', 'chores', 'cards', 'bounties', 'quests', 'seasons'];
+const COLLS = ['items', 'projects', 'grocery', 'weeks', 'settings', 'feed', 'push', 'chores', 'cards', 'bounties', 'quests', 'seasons', 'trip'];
 const ID_RE = /^[A-Za-z0-9_.:@+~-]{1,80}$/;
 const VERSION = '2.2.0';
 /* BUILD changes whenever index.html or sw.js changes; clients compare it to reload stale copies. */
@@ -102,6 +102,7 @@ function readJson(req, limit) {
 }
 const MIME = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.json': 'application/json; charset=utf-8', '.png': 'image/png', '.webp': 'image/webp', '.jpg': 'image/jpeg', '.svg': 'image/svg+xml', '.webmanifest': 'application/manifest+json', '.ico': 'image/x-icon', '.css': 'text/css; charset=utf-8' };
 function serveStatic(req, res, p) {
+  if (p !== '/' && !path.extname(p)) p += '.html'; // /spain serves spain.html
   const file = path.join(PUBLIC, p === '/' ? 'index.html' : p);
   if (!file.startsWith(PUBLIC)) return send(res, 404, { error: 'not found' });
   fs.readFile(file, (err, data) => {
