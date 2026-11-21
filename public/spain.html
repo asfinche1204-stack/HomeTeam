@@ -185,6 +185,13 @@ textarea:focus,input:focus{border-color:var(--teal)}
 .bkadd input[type=time]{font:inherit;color:var(--cream);background:rgba(0,0,0,.25);border:1px solid var(--line);border-radius:14px;color-scheme:dark}
 .bkadd button{padding:0 16px;border-radius:14px;background:var(--saff);color:#2a1206;font-weight:600}
 .chip i.dot{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--saff);margin-left:4px;vertical-align:middle}
+.idw{display:flex;align-items:stretch;gap:6px}.idw .idea{flex:1;min-width:0}
+.ix{flex:0 0 auto;width:30px;margin:7px 0;border-radius:12px;color:var(--mute);font-size:1.15rem;background:rgba(255,255,255,.035)}
+.ix:active{background:rgba(232,118,92,.25);color:#fff}
+.nw{display:inline-block;margin:6px 6px 0 0;font-style:normal;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;font-weight:600;color:var(--teal2);border:1px solid rgba(127,227,216,.5);padding:1px 8px;border-radius:99px}
+.morebtn{width:100%;margin-top:10px;padding:12px;border-radius:14px;border:1px dashed rgba(127,227,216,.55);color:var(--teal2);font-weight:500;background:rgba(46,196,182,.07)}
+.morebtn:disabled{opacity:.45;border-style:solid}
+.rs{margin-left:8px;font-size:.78rem;color:var(--teal2);text-decoration:underline;flex:0 0 auto}
 .idea.theirs{border:1px dashed rgba(127,227,216,.5)}
 .idea.both{background:linear-gradient(120deg,rgba(245,185,66,.22),rgba(46,196,182,.14));border-color:var(--saff);box-shadow:0 0 22px rgba(245,185,66,.18)}
 .idea.both .s{background:var(--saff);border-color:var(--saff);color:#2a1206}
@@ -420,6 +427,64 @@ var DAYS=[
        ["Spend the coins","Airport coffee and one last jamón sandwich.","eat"]],
  tip:"Confirm your transfer time with the Tour Manager at the farewell dinner."}
 ];
+/* Reserve ideas, revealed by "New ideas". Their positions start at 100 so adding to a day's main list never shifts them. Append only. */
+var MORE={
+1:[["Offline maps at the gate","Download Madrid, Seville, Granada, Valencia and Barcelona in Google Maps while you still have fast wifi.","do"],
+   ["Pick the first-night plan on the plane","Star a few Madrid ideas together now so nobody has to decide while jet-lagged.","do"]],
+2:[["Círculo de Bellas Artes rooftop","Small entry fee, big view down Gran Vía. Good first-night drink.","see"],
+   ["Mercado de San Antón","Three-floor market in Chueca with a rooftop terrace. Calmer than San Miguel.","eat"],
+   ["Vermouth at Bodega de la Ardosa","Malasaña tavern from 1892. Vermouth on tap and a famous tortilla.","eat"],
+   ["Plaza de Oriente at dusk","The Royal Palace and Almudena Cathedral lit up, ten minutes from the hotel.","see"],
+   ["Jamón at a stand-up counter","Museo del Jamón: a plate of ibérico and a caña at the bar for a few euros.","eat"]],
+3:[["Casa Labra","Since 1860, steps from Sol. Fried cod and croquettes at the counter with a vermouth.","eat"],
+   ["Cocido madrileño at La Bola","The city's chickpea stew, cooked in individual clay pots. A long lunch; reserve.","eat"],
+   ["Napolitanas at La Mallorquina","The pastry counter on Puerta del Sol. Find the Kilometre Zero plaque outside.","eat"],
+   ["Espadrilles at Casa Hernanz","Hand-made since 1840 beside Plaza Mayor. Expect a line, and a midday closure.","do"],
+   ["Flamenco at Corral de la Morería","Madrid's best-known tablao. Book ahead if you'd rather see it here than in Seville.","do"],
+   ["Malasaña and Calle Fuencarral","Vintage shops, record stores and cafés north of Gran Vía.","see"]],
+4:[["Patio de los Naranjos","The Mezquita's orange-tree courtyard is free to walk through before or after the visit.","see"],
+   ["Maimonides statue","In the Jewish Quarter. Rubbing his foot is said to make you wiser.","see"],
+   ["Córdoba leather and silver","The Judería lanes sell embossed leather and silver filigree, both local crafts.","do"],
+   ["Rooftop drink facing the Giralda","Several hotels by Seville Cathedral have terraces level with the bell tower.","do"],
+   ["Orange wine in Seville","Vino de naranja at Taberna Álvaro Peregil, a tiny bar near the Cathedral.","eat"]],
+5:[["Rowboat at Plaza de España","Rent one on the canal after the tour group moves on.","do"],
+   ["Archivo de Indias","Free, beside the Cathedral: Columbus-era maps and documents in a grand hall.","see"],
+   ["Torre del Oro river walk","Along the Guadalquivir from the gold tower toward Triana bridge.","see"],
+   ["Casa de Pilatos","A quieter palace than the Alcázar, with walls of tile and a garden.","see"],
+   ["Mercado de Triana","Market under the bridge on the far bank. Good for a late lunch at a stall.","eat"],
+   ["Triana ceramics","Tile and pottery workshops around Calle San Jorge. Easy to pack if they wrap it well.","do"],
+   ["Casa Morales","Old bodega near the Cathedral, tables set among giant clay wine jars.","eat"],
+   ["Convent sweets","Cloistered nuns sell pastries through a turntable. San Leandro's yemas are the classic.","eat"]],
+6:[["Carrera del Darro","The riverside lane under the Alhambra walls, ending at Paseo de los Tristes.","see"],
+   ["Royal Chapel","Ferdinand and Isabella's tombs, next to the Cathedral.","see"],
+   ["Sacromonte cave flamenco","A zambra show in the hillside caves. Book one that includes transport.","do"],
+   ["Hammam Al Ándalus","Arab baths below the Alhambra. A good answer to a cold night; reserve.","do"],
+   ["Piononos","Granada's small syrup-soaked pastry. Casa Ysla is the name to look for.","eat"],
+   ["Corral del Carbón","A 14th-century merchants' inn with a quiet courtyard. Free and five minutes.","see"]],
+7:[["Plaza de la Virgen by night","Valencia's prettiest square, with the Cathedral and basilica lit up.","see"],
+   ["Ruzafa for a drink","The neighbourhood where locals go out. Vermouth bars and small plates.","eat"],
+   ["Torres de Serranos lit up","The medieval city gate at the edge of the old town.","see"]],
+8:[["La Lonja de la Seda","The Gothic silk exchange with twisted stone columns. It closes early on Sundays, so go right after the tour.","see"],
+   ["Climb the Torres de Serranos","Short climb, wide view over the old town and the Turia park.","see"],
+   ["Bike the Turia","Rent bikes and ride the riverbed park from the old town to the City of Arts and Sciences.","do"],
+   ["Malvarrosa promenade","A walk on the beachfront before or after paella.","see"],
+   ["Plaza Redonda","A round hidden plaza with a Sunday-morning craft and collectors' market.","see"],
+   ["Science Museum or Hemisfèric","Inside the City of Arts and Sciences if the weather turns.","see"]],
+9:[["La Boqueria before it closes","Open Mondays. Walk it early evening for fruit, jamón cones and a counter seat.","eat"],
+   ["Chocolate on Carrer Petritxol","Thick hot chocolate and churros at Granja La Pallaresa.","eat"],
+   ["Can Paixano","Standing-room cava bar by the port. Cheap pink cava and grilled sandwiches.","eat"],
+   ["Plaça Sant Felip Neri","A small, quiet square in the Gothic Quarter with a fountain and a story.","see"],
+   ["Casa Batlló night visit","Evening entry after the crowds, if you want the inside as well as the facade.","see"],
+   ["Palau de la Música","Art nouveau concert hall. Take a tour or check for a concert tonight.","see"]],
+10:[["Hospital de Sant Pau","Art nouveau hospital complex ten minutes' walk from Sagrada Família. Ideal right after the towers.","see"],
+    ["La Pedrera rooftop","Gaudí's chimneys on Passeig de Gràcia.","see"],
+    ["Montjuïc cable car and castle","Ride up for the harbour view.","see"],
+    ["Lunch in Gràcia","Village-feel squares like Plaça del Sol, full of small restaurants.","eat"],
+    ["Cathedral rooftop","A lift takes you up among the spires of the Gothic cathedral.","see"],
+    ["El Born shopping","Small design shops between Santa Maria del Mar and the Picasso Museum.","do"]],
+11:[["Leave the jamón behind","US customs generally doesn't allow cured meats in. Declare any food you do bring.","do"],
+    ["VAT refund","If you bought anything big, get the tax-free form stamped before you check your bag.","do"]]
+};
 var CITIES=[["Madrid",-3.70,40.42,2,"R"],["Córdoba",-4.78,37.88,4,"L"],["Seville",-5.98,37.39,5,"L"],["Granada",-3.60,37.18,6,"R"],["Valencia",-0.38,39.47,7,"L"],["Barcelona",2.17,41.39,9,"L"]];
 var WX=[["Madrid",55,39],["Córdoba",65,45],["Seville",67,49],["Granada",60,38],["Valencia",66,49],["Barcelona",61,48]];
 var PERSON=[
@@ -573,8 +638,9 @@ function put(id,data){
 function need(){if(ME)return true;whoSheet();return false;}
 function announce(id,data,had){
   var p=id.split(".");
-  if(p[1]==="star"){var who=p[4];if(!data||who===ME)return;var d=DAYS[+p[2]-1],o=d&&d.open[+p[3]];if(o)toast(NAMES[who]+" starred "+o[0]);}
+  if(p[1]==="star"){var who=p[4];if(!data||who===ME)return;var d=DAYS[+p[2]-1],o=d&&idea(d.n,+p[3]);if(o)toast(NAMES[who]+" starred "+o[0]);}
   else if((p[1]==="pk"||p[1]==="pr")&&data&&!had&&data.by&&data.by!==ME)toast(NAMES[data.by]+" checked off "+(LBL[id]||"an item"));
+  else if(p[1]==="no"&&data&&!had&&data.by&&data.by!==ME){var o2=DAYS[+p[2]-1]&&idea(+p[2],+p[3]);if(o2)toast(NAMES[data.by]+" dismissed "+o2[0]);}
   else if(p[1]==="ev"&&data&&!had&&data.by&&data.by!==ME)toast(NAMES[data.by]+" booked "+data.title);
   else if(p[1]==="cu"&&data&&!had&&data.by&&data.by!==ME)toast(NAMES[data.by]+" added "+data.text);
 }
@@ -638,7 +704,14 @@ function drawWx(){
 /* ---------- days ---------- */
 function sid(n,i,p){return"sp.star."+n+"."+i+"."+p;}
 function stars(n,i){var o=[];if(T[sid(n,i,"a")])o.push("a");if(T[sid(n,i,"b")])o.push("b");return o;}
-function dayStars(n){var c=0;DAYS[n-1].open.forEach(function(o,i){if(stars(n,i).length)c++;});return c;}
+/* ideas: main list at 0.., reserve at 100..; sp.add.<day>.<i> reveals a reserve idea, sp.no.<day>.<i> dismisses one (both shared) */
+function idea(n,i){var d=DAYS[n-1];return i<100?d.open[i]:(MORE[n]||[])[i-100];}
+function ideaIds(n){var o=DAYS[n-1].open.map(function(x,i){return i;});(MORE[n]||[]).forEach(function(x,j){o.push(100+j);});return o;}
+function gone(n,i){return T["sp.no."+n+"."+i];}
+function shown(n,i){return(i<100||!!T["sp.add."+n+"."+i])&&!gone(n,i);}
+function spare(n){return ideaIds(n).filter(function(i){return i>=100&&!T["sp.add."+n+"."+i]&&!gone(n,i);});}
+function dayStars(n){var c=0;ideaIds(n).forEach(function(i){if(shown(n,i)&&stars(n,i).length)c++;});return c;}
+var showGone=false;
 function drawChips(scroll){
   $("chips").innerHTML=DAYS.map(function(d){
     var dt=d.date.split("-"),c=dayStars(d.n);
@@ -655,20 +728,28 @@ function drawDay(){
   h+='</div><div class="lab o">Booked</div><div id="booked"></div><div class="bkadd"><input type="time" id="evtime" aria-label="Time"><input type="text" id="evtitle" maxlength="80" placeholder="Add a ticket or reservation"><button id="evadd">Add</button></div>';
   h+='<div class="lab">Set by the tour</div><ul class="tl">'+d.set.map(function(s){return"<li"+(s.indexOf("Optional")===0?' class="op"':"")+">"+esc(s)+"</li>";}).join("")+"</ul>";
   if(d.free)h+='<div class="lab o">Open time</div><div style="font-size:.93rem">'+esc(d.free)+"</div>";
-  h+='<div class="lab e">Ideas · tap to star</div><div id="ideas"></div>';
+  h+='<div class="lab e">Ideas · tap to star, × to dismiss</div><div id="ideas"></div>';
   if(d.tip)h+='<div class="tip">'+esc(d.tip)+"</div>";
   h+='<div class="lab">Our notes</div><textarea id="note" maxlength="4000" placeholder="Reservations, meeting times, things we want to remember"></textarea><div class="dmeta" id="notemeta"></div>';
   h+='<div class="nav2"><button id="prev"'+(d.n===1?" disabled":"")+">← Day "+(d.n-1)+'</button><button id="next"'+(d.n===11?" disabled":"")+">Day "+(d.n+1)+" →</button></div></div>";
   $("day").innerHTML=h;drawBooked();drawIdeas();syncNote(true);
 }
 function drawIdeas(){
-  var d=DAYS[UI.day-1],h="",el=$("ideas");if(!el)return;
-  d.open.forEach(function(o,i){
-    var s=stars(d.n,i),mine=ME&&s.indexOf(ME)>-1,both=s.length===2;
+  var n=UI.day,h="",el=$("ideas");if(!el)return;
+  ideaIds(n).forEach(function(i){
+    if(!shown(n,i))return;
+    var o=idea(n,i),s=stars(n,i),mine=ME&&s.indexOf(ME)>-1,both=s.length===2,nw=T["sp.add."+n+"."+i];
     var ic=o[2]==="eat"?"🍴":o[2]==="see"?"◆":"✦";
-    h+='<button class="idea'+(mine?" on":"")+(both?" both":s.length&&!mine?" theirs":"")+'" data-i="'+i+'"><span class="s">★</span><span><b>'+ic+" "+esc(o[0])+"</b><span>"+esc(o[1])+"</span>"+(o[3]==="b"?'<em class="tb">Bourdain ate here</em>':"")+"</span>"+
-       (s.length?'<span class="by">'+s.map(av).join("")+(both?"<small>Both in</small>":"")+"</span>":"")+"</button>";
+    h+='<div class="idw"><button class="idea'+(mine?" on":"")+(both?" both":s.length&&!mine?" theirs":"")+'" data-i="'+i+'"><span class="s">★</span><span><b>'+ic+" "+esc(o[0])+"</b><span>"+esc(o[1])+"</span>"+(o[3]==="b"?'<em class="tb">Bourdain ate here</em>':"")+(nw&&nw.by?'<em class="nw">New · '+esc(NAMES[nw.by])+"</em>":"")+"</span>"+
+       (s.length?'<span class="by">'+s.map(av).join("")+(both?"<small>Both in</small>":"")+"</span>":"")+'</button><button class="ix" data-x="'+i+'" aria-label="Dismiss '+esc(o[0])+'">×</button></div>';
   });
+  if(!h)h='<div class="dmeta">Every idea is dismissed. Pull some new ones or restore below.</div>';
+  var sp=spare(n).length,out=ideaIds(n).filter(function(i){return gone(n,i);});
+  h+='<button class="morebtn" id="morebtn"'+(sp?"":" disabled")+">"+(sp?"✦ New ideas ("+sp+" left)":"No more ideas for this day")+"</button>";
+  if(out.length){
+    h+='<button class="ghost" id="gonebtn">'+(showGone?"Hide":"Show")+" dismissed ("+out.length+")</button>";
+    if(showGone)h+=out.map(function(i){var g=gone(n,i);return'<div class="pk"><span>'+esc(idea(n,i)[0])+'</span><span class="by">'+(g.by?av(g.by):"")+'</span><button class="rs" data-rs="'+i+'">Restore</button></div>';}).join("");
+  }
   el.innerHTML=h;
 }
 function syncNote(force){
@@ -686,7 +767,7 @@ function commitNote(){
 function drawPicks(){
   var h="";
   DAYS.forEach(function(d){
-    var rows=[];d.open.forEach(function(o,i){var s=stars(d.n,i);if(s.length)rows.push([s,o[0]]);});
+    var rows=[];ideaIds(d.n).forEach(function(i){var s=stars(d.n,i);if(s.length&&shown(d.n,i))rows.push([s,idea(d.n,i)[0]]);});
     if(!rows.length)return;
     rows.sort(function(x,y){return y[0].length-x[0].length;});
     h+='<div class="lab o">Day '+d.n+" · "+esc(d.city)+"</div>"+rows.map(function(r){return'<div class="pk'+(r[0].length===2?" both":"")+'"><span>'+esc(r[1])+'</span><span class="by">'+r[0].map(av).join("")+"</span></div>";}).join("");
@@ -770,11 +851,17 @@ function show(t){
   drawAll();
 }
 function go(t){try{if(location.hash!=="#"+t){location.hash=t;return;}}catch(e){}show(t);window.scrollTo(0,0);}
-function setDay(n){commitNote();UI.day=n;saveUI();drawChips(true);drawDay();}
+function setDay(n){showGone=false;commitNote();UI.day=n;saveUI();drawChips(true);drawDay();}
 window.addEventListener("hashchange",function(){show(location.hash.slice(1));window.scrollTo(0,0);});
 $("tabs").addEventListener("click",function(e){var b=e.target.closest("button");if(b)go(b.getAttribute("data-t"));});
 $("chips").addEventListener("click",function(e){var b=e.target.closest(".chip");if(b)setDay(+b.getAttribute("data-n"));});
 $("day").addEventListener("click",function(e){
+  var x=e.target.closest("[data-x]");
+  if(x){if(!need())return;put("sp.no."+UI.day+"."+x.getAttribute("data-x"),{by:ME,at:Date.now()});drawIdeas();drawChips();return;}
+  var rs=e.target.closest("[data-rs]");
+  if(rs){if(!need())return;put("sp.no."+UI.day+"."+rs.getAttribute("data-rs"),null);drawIdeas();drawChips();return;}
+  if(e.target.id==="morebtn"){if(!need())return;spare(UI.day).slice(0,3).forEach(function(i){put("sp.add."+UI.day+"."+i,{by:ME,at:Date.now()});});drawIdeas();return;}
+  if(e.target.id==="gonebtn"){showGone=!showGone;drawIdeas();return;}
   var b=e.target.closest(".idea");
   if(b){if(!need())return;var id=sid(UI.day,+b.getAttribute("data-i"),ME);put(id,T[id]?null:{at:Date.now()});drawIdeas();drawChips();return;}
   if(e.target.id==="evadd"){addEvent();return;}
