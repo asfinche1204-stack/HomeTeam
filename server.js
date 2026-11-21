@@ -71,6 +71,41 @@ function fileSave() {
   }, 400);
 }
 
+/* ---------- photos: stored apart from the synced docs so the board stays small ---------- */
+const PHOTO_DIR = path.join(path.dirname(DATA_FILE), 'photos');
+const PHOTO_ID = /^[a-z0-9]{6,32}$/;
+const photoCache = new Map();
+async function photoInit() { if (pool) await pool.query('CREATE TABLE IF NOT EXISTS ht_photos (id text PRIMARY KEY, thumb bytea NOT NULL, full_img bytea NOT NULL, created_at timestamptz NOT NULL DEFAULT now())'); }
+async function photoPut(id, thumb, full) {
+  if (pool) await pool.query('INSERT INTO ht_photos (id, thumb, full_img) VALUES ($1, $2, $3) ON CONFLICT (id) DO UPDATE SET thumb = EXCLUDED.thumb, full_img = EXCLUDED.full_img', [id, thumb, full]);
+  else { fs.mkdirSync(PHOTO_DIR, { recursive: true }); fs.writeFileSync(path.join(PHOTO_DIR, id + '-t.jpg'), thumb); fs.writeFileSync(path.join(PHOTO_DIR, id + '-f.jpg'), full); }
+}
+async function photoGet(id, size) {
+  const key = id + size; if (photoCache.has(key)) return photoCache.get(key);
+  let buf = null;
+  if (pool) { const r = await pool.query('SELECT ' + (size === 't' ? 'thumb' : 'full_img') + ' AS b FROM ht_photos WHERE id = $1', [id]); buf = r.rows[0] ? r.rows[0].b : null; }
+  else { try { buf = fs.readFileSync(path.join(PHOTO_DIR, id + '-' + size + '.jpg')); } catch (e) { buf = null; } }
+  if (buf && size === 't') { photoCache.set(key, buf); if (photoCache.size > 400) photoCache.delete(photoCache.keys().next().value); }
+  return buf;
+}
+async function photoDel(id) {
+  photoCache.delete(id + 't'); photoCache.delete(id + 'f');
+  if (pool) await pool.query('DELETE FROM ht_photos WHERE id = $1', [id]);
+  else ['t', 'f'].forEach(s => { try { fs.unlinkSync(path.join(PHOTO_DIR, id + '-' + s + '.jpg')); } catch (e) {} });
+}
+/* ---------- visitors' likes and comments: public, rate-limited, only on things already shared ---------- */
+const visitHits = new Map();
+function visitOk(req) {
+  const ip = String(req.headers['x-forwarded-for'] || req.socket.remoteAddress || '').split(',')[0].trim(), now = Date.now();
+  const a = (visitHits.get(ip) || []).filter(t => now - t < 3600e3); if (a.length >= 60) return false;
+  a.push(now); visitHits.set(ip, a); if (visitHits.size > 5000) visitHits.clear(); return true;
+}
+function visitTarget(tid) {
+  const mm = /^(pub|ph)\.([A-Za-z0-9]{4,40})$/.exec(String(tid || '')); if (!mm) return null;
+  const d = DB.trip['sp.' + mm[1] + '.' + mm[2]]; if (!d || (mm[1] === 'ph' && d.pub !== true)) return null; return mm[0];
+}
+const isJpeg = b => b.length > 3 && b[0] === 0xff && b[1] === 0xd8 && b[2] === 0xff;
+
 /* ---------- auth: passphrase -> signed cookie ---------- */
 function sign(s) { return crypto.createHmac('sha256', SECRET).update(s).digest('base64url'); }
 function makeCookie() { const exp = String(Date.now() + 30 * 86400e3); return exp + '.' + sign(exp); }
@@ -246,8 +281,38 @@ async function handle(req, res) {
   // posted updates, passport stamps, places ticked off, game results and level progress. Never bookings, notes, postcards or packing.
   if (p === '/api/trip-public' && m === 'GET') {
     const pub = {}, keep = /^sp\.(pub|st|dn|gm|bk)\./;
-    Object.keys(DB.trip || {}).forEach(id => { if (keep.test(id)) pub[id] = DB.trip[id]; });
+    Object.keys(DB.trip || {}).forEach(id => {
+      const d = DB.trip[id]; if (!d) return;
+      if (keep.test(id) || (id.startsWith('sp.ph.') && d.pub === true)) pub[id] = d;
+      else if (id.startsWith('sp.vk.') || id.startsWith('sp.vc.')) { const q = id.split('.'); if (visitTarget(q[2] + '.' + q[3])) pub[id] = id.startsWith('sp.vk.') ? { n: d.n || 0 } : { name: d.name, text: d.text, at: d.at, by: d.by }; }
+    });
     return send(res, 200, { names: names(), trip: pub }, { 'cache-control': 'no-store' });
+  }
+  // Photo images: the two of you always; anyone else only for photos marked as shared with visitors.
+  const pm = /^\/api\/photo\/([a-z0-9]+)\/(t|f)$/.exec(p);
+  if (pm && (m === 'GET' || m === 'HEAD')) {
+    const meta = DB.trip['sp.ph.' + pm[1]];
+    if (!PHOTO_ID.test(pm[1]) || !meta || !(cookieOk(req) || meta.pub === true)) return send(res, 404, { error: 'not found' });
+    const buf = await photoGet(pm[1], pm[2]); if (!buf) return send(res, 404, { error: 'not found' });
+    res.writeHead(200, { 'content-type': 'image/jpeg', 'content-length': buf.length, 'cache-control': 'private, max-age=86400' }); return res.end(m === 'HEAD' ? undefined : buf);
+  }
+  if ((p === '/api/visit/like' || p === '/api/visit/comment') && m === 'POST') {
+    let b; try { b = await readJson(req, 4096); } catch (e) { return send(res, 400, { error: e.message }); }
+    const tid = visitTarget(b.tid); if (!tid) return send(res, 404, { error: 'not found' });
+    if (!visitOk(req)) return send(res, 429, { error: 'slow down' });
+    if (p === '/api/visit/like') {
+      const h = crypto.createHash('sha256').update('v:' + String(b.vid || '').slice(0, 64)).digest('hex').slice(0, 12);
+      const key = 'sp.vk.' + tid, v = ((DB.trip[key] || {}).v || []).slice(), i = v.indexOf(h);
+      if (i >= 0) v.splice(i, 1); else v.push(h);
+      const doc = { n: v.length, v: v.slice(-3000) }; await storePut('trip', key, doc); broadcast({ t: 'doc', coll: 'trip', id: key, data: doc });
+      return send(res, 200, { n: doc.n, liked: i < 0 });
+    }
+    const name = String(b.name || '').replace(/\s+/g, ' ').trim().slice(0, 40), text = String(b.text || '').trim().slice(0, 300);
+    if (!name || !text) return send(res, 400, { error: 'need a name and a comment' });
+    if (Object.keys(DB.trip).filter(k => k.startsWith('sp.vc.' + tid + '.')).length >= 300) return send(res, 400, { error: 'too many comments' });
+    const id = 'sp.vc.' + tid + '.' + Date.now().toString(36) + crypto.randomBytes(2).toString('hex'), doc = { name, text, at: Date.now() };
+    await storePut('trip', id, doc); broadcast({ t: 'doc', coll: 'trip', id, data: doc });
+    return send(res, 200, { id, doc });
   }
   if (p === '/follow' || p === '/follow/') return serveStatic(req, res, '/spain.html');
   if (p === '/api/logout' && m === 'POST') return send(res, 200, { ok: true }, { 'set-cookie': 'ht=; Path=/; Max-Age=0' });
@@ -272,6 +337,24 @@ async function handle(req, res) {
       const person = ['a', 'b'].includes(body.person) ? body.person : 'a';
       const n = await push.sendTo(person, { title: 'Home Team is talking to this phone', body: 'Notifications are on.', tag: 'test', url: '/' }, pushSubs(), dropSub);
       return send(res, 200, { ok: true, sent: n });
+    }
+    if (p === '/api/photo' && m === 'POST') {
+      let body; try { body = await readJson(req, 4 * 1024 * 1024); } catch (e) { return send(res, 413, { error: 'photo too large' }); }
+      const id = String(body.id || ''), mt = body.meta || {};
+      if (!PHOTO_ID.test(id) || DB.trip['sp.ph.' + id]) return send(res, 400, { error: 'bad id' });
+      if (Object.keys(DB.trip).filter(k => k.startsWith('sp.ph.')).length >= 800) return send(res, 400, { error: 'photo limit reached' });
+      const thumb = Buffer.from(String(body.thumb || ''), 'base64'), full = Buffer.from(String(body.full || ''), 'base64');
+      if (!isJpeg(thumb) || !isJpeg(full)) return send(res, 400, { error: 'not a jpeg' });
+      const day = Number(mt.day);
+      const meta = { day: day >= 1 && day <= 11 ? Math.round(day) : 1, cap: String(mt.cap || '').slice(0, 140), pub: mt.pub === true, by: ['a', 'b'].includes(mt.by) ? mt.by : 'a', w: Number(mt.w) || 0, h: Number(mt.h) || 0, at: Date.now() };
+      await photoPut(id, thumb, full); await storePut('trip', 'sp.ph.' + id, meta); broadcast({ t: 'doc', coll: 'trip', id: 'sp.ph.' + id, data: meta });
+      return send(res, 200, { ok: true, meta });
+    }
+    const pd = /^\/api\/photo\/([a-z0-9]+)$/.exec(p);
+    if (pd && m === 'DELETE') {
+      if (!PHOTO_ID.test(pd[1])) return send(res, 400, { error: 'bad id' });
+      await photoDel(pd[1]); if (DB.trip['sp.ph.' + pd[1]]) { await storeDel('trip', 'sp.ph.' + pd[1]); broadcast({ t: 'doc', coll: 'trip', id: 'sp.ph.' + pd[1], data: null }); }
+      return send(res, 200, { ok: true });
     }
     if (p === '/api/place' && m === 'GET') {
       // follows a Google Maps share link (maps.app.goo.gl/…) to the full URL and reads the place name from it
@@ -318,7 +401,7 @@ async function handle(req, res) {
   return send(res, 404, { error: 'not found' });
 }
 
-storeInit().then(() => {
+storeInit().then(photoInit).then(() => {
   http.createServer((req, res) => handle(req, res).catch(e => { console.error('[http]', e); try { send(res, 500, { error: 'server error' }); } catch (x) {} })).listen(PORT, () => {
     console.log('Home Team v' + VERSION + ' (' + BUILD + ') on :' + PORT + (KEY ? ' (passphrase set)' : ' (NO HOME_TEAM_KEY: open to anyone with the URL)'));
     calendar.probe();
