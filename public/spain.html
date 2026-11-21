@@ -85,7 +85,8 @@ section.on{display:block}
 .pin text.n{fill:var(--saff);font-size:8.5px;letter-spacing:.08em}
 /* weather */
 .wx{display:grid;gap:9px}
-.wx .r{display:grid;grid-template-columns:82px 1fr 74px;align-items:center;gap:10px;font-size:.88rem}
+.wx .r.typ{opacity:.55}.wx .r.now span:first-child b{color:var(--saff)}.wx .r span:first-child{font-size:.78rem;color:var(--mute);line-height:1.2}.wx .r span:first-child b{display:block;color:var(--cream);font-weight:500;font-size:.86rem}.wx .t small{display:block;font-size:.66rem;color:var(--teal2)}
+.wx .r{display:grid;grid-template-columns:86px 1fr 92px;align-items:center;gap:10px;font-size:.88rem}
 .wx .bar{height:10px;border-radius:9px;background:rgba(255,255,255,.07);position:relative;overflow:hidden}
 .wx .bar i{position:absolute;top:0;bottom:0;border-radius:9px;background:linear-gradient(90deg,#6fb7ff,var(--teal),var(--saff));transform-origin:left;animation:grow 1.2s ease both}
 @keyframes grow{from{transform:scaleX(0)}}
@@ -162,7 +163,7 @@ textarea:focus,input:focus{border-color:var(--teal)}
 .tabs button svg{display:block;margin:0 auto 3px;width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
 .tabs button.on{background:rgba(46,196,182,.16);color:var(--teal2)}
 .foot{text-align:center;font-size:.74rem;color:#6f85a0;margin-top:22px}
-@media (max-width:420px){.count div{min-width:60px}.wx .r{grid-template-columns:70px 1fr 70px}}
+@media (max-width:420px){.count div{min-width:60px}.wx .r{grid-template-columns:78px 1fr 88px}}
 @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.card,.count div{background:rgba(19,48,90,.9)}}
 
 /* sync chrome */
@@ -192,6 +193,49 @@ textarea:focus,input:focus{border-color:var(--teal)}
 .morebtn{width:100%;margin-top:10px;padding:12px;border-radius:14px;border:1px dashed rgba(127,227,216,.55);color:var(--teal2);font-weight:500;background:rgba(46,196,182,.07)}
 .morebtn:disabled{opacity:.45;border-style:solid}
 .rs{margin-left:8px;font-size:.78rem;color:var(--teal2);text-decoration:underline;flex:0 0 auto}
+/* extras */
+.todo{fill:none;stroke:var(--mute);stroke-width:1.6;stroke-dasharray:4 5;opacity:.75}
+.pin.been circle.c{fill:var(--saff)}.pin.cur circle.c{fill:#fff;stroke:var(--saff);stroke-width:2.5}.pin.cur text.n{fill:#fff}
+.coach circle{fill:rgba(8,20,40,.85);stroke:var(--saff);stroke-width:1.5}.coach text{font-size:10px}
+.todayc{border-color:rgba(245,185,66,.45);background:linear-gradient(140deg,rgba(245,185,66,.14),rgba(46,196,182,.08))}
+.todayc .k{font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;color:var(--saff);font-weight:600}
+.nxt{margin:12px 0 4px;padding:12px 14px;border-radius:14px;background:rgba(0,0,0,.25);border:1px solid var(--line)}
+.nxt span{display:block;font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:var(--mute)}
+.nxt b{display:block;font-family:var(--serif);font-size:1.2rem;font-weight:700}.nxt em{font-style:normal;color:var(--saff);font-size:.88rem}
+.go.gold{background:linear-gradient(120deg,var(--saff),var(--terra));color:#2a1206}
+.icol{display:flex;flex-direction:column;gap:5px;margin:7px 0;flex:0 0 auto}
+.icol .ix{margin:0;flex:1}.iok{flex:1;width:30px;border-radius:12px;color:var(--mute);background:rgba(255,255,255,.035);font-size:.95rem}
+.iok.on{background:var(--saff);color:#2a1206}
+.idea.did{border-color:rgba(245,185,66,.6)}
+.hecho{display:inline-block;margin:6px 6px 0 0;font-style:normal;font-family:var(--serif);font-weight:700;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--saff);border:1.5px solid var(--saff);padding:1px 8px;border-radius:4px;transform:rotate(-3deg)}
+.rrow{display:flex;align-items:center;gap:6px;margin:6px 0}
+.rstar{font-size:1.7rem;line-height:1;color:rgba(255,255,255,.18);padding:0 2px}.rstar.on{color:var(--saff);text-shadow:0 0 12px rgba(245,185,66,.5)}
+.rch{display:flex;gap:5px;align-items:flex-end;height:110px;margin:6px 0 4px}
+.rc{flex:1;display:flex;flex-direction:column;align-items:center;height:100%}
+.rc .bars{flex:1;width:100%;display:flex;gap:2px;align-items:flex-end;border-bottom:1px solid var(--line)}
+.rc .bars i{flex:1;border-radius:3px 3px 0 0;transition:height .8s ease;min-height:1px}.rc .bars i.a{background:#8ab8ff}.rc .bars i.b{background:var(--teal)}
+.rc small{font-size:.62rem;color:var(--mute);margin-top:3px}
+.splash{position:fixed;inset:0;z-index:70;display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;color:#fff;cursor:pointer}
+.splash.on{display:flex;animation:in .5s ease}
+.splash small{font-size:.8rem;letter-spacing:.34em;text-transform:uppercase;opacity:.85;min-height:1.2em}
+.splash h1{font-size:clamp(3rem,16vw,6rem);background:none;color:#fff;-webkit-text-fill-color:#fff;margin:.15em 0;text-shadow:0 6px 30px rgba(0,0,0,.35)}
+.splash h1 span{display:inline-block;opacity:0;animation:drop .6s cubic-bezier(.2,1.5,.4,1) both}
+@keyframes drop{from{opacity:0;transform:translateY(-40px) rotate(-8deg)}to{opacity:1;transform:none}}
+.splash p{font-family:var(--serif);font-style:italic;font-size:1.25rem;margin:0 0 28px}.splash em{font-style:normal;font-size:.75rem;letter-spacing:.2em;text-transform:uppercase;opacity:.8}
+.recap{position:fixed;inset:0;z-index:65;display:none;background:#050b16;cursor:pointer}.recap.on{display:block}
+.rbar{position:absolute;top:12px;left:12px;right:12px;display:flex;gap:4px;z-index:2}.rbar i{flex:1;height:3px;border-radius:3px;background:rgba(255,255,255,.25)}.rbar i.d{background:#fff}
+.rx{position:absolute;top:22px;right:12px;z-index:3;font-size:1.8rem;color:#fff;width:44px;height:44px}
+.rsl{position:absolute;inset:0;display:grid;place-items:center;padding:64px 26px 70px;overflow:auto}
+.rin{width:min(100%,520px);text-align:center;animation:in .6s ease}
+.rin small{display:block;font-size:.72rem;letter-spacing:.3em;text-transform:uppercase;color:var(--saff);font-weight:600;margin-bottom:14px}
+.rin h1{font-size:clamp(3rem,15vw,5.5rem);background:none;color:#fff;-webkit-text-fill-color:#fff}.rin h2{font-size:1.6rem;margin:14px 0}
+.rin p{font-size:1.1rem}.rin .lg{font-size:.85rem;color:var(--mute)}
+.nums{display:grid;grid-template-columns:1fr 1fr;gap:14px 10px;text-align:center}
+.nums b{display:block;font-family:var(--serif);font-size:2.6rem;line-height:1;color:#fff}.nums span{font-size:.78rem;color:rgba(255,255,255,.75)}
+.rin ul{list-style:none;padding:0;margin:0;text-align:left}.rin li{padding:10px 0;border-bottom:1px solid rgba(255,255,255,.18);font-size:1.05rem}
+.rin li em{display:block;font-style:normal;font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--saff)}
+.rin .ans{text-align:left}.rin .ans p{font-size:1.15rem;font-family:var(--serif)}
+.rhint{position:absolute;bottom:22px;left:0;right:0;text-align:center;font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.6)}
 /* juntos */
 #usdot{display:none;position:absolute;top:6px;right:22%;width:8px;height:8px;border-radius:50%;background:var(--terra);box-shadow:0 0 8px var(--terra)}
 .tabs button{font-size:.66rem}
@@ -265,6 +309,7 @@ textarea:focus,input:focus{border-color:var(--teal)}
   </header>
 
   <section id="s-trip">
+    <div class="card todayc" id="today"></div>
     <div class="card">
       <h2>The route</h2>
       <p class="lead">Tap a city to jump to that day.</p>
@@ -275,8 +320,8 @@ textarea:focus,input:focus{border-color:var(--teal)}
       </div>
     </div>
     <div class="card">
-      <h2>What the weather usually does</h2>
-      <p class="lead">Typical late-November highs and lows (°F). Check the real forecast the day before you fly.</p>
+      <h2>Weather</h2>
+      <p class="lead" id="wxlead">Loading the forecast.</p>
       <div class="wx" id="wx"></div>
       <div class="tip">Mornings in Madrid and Granada sit near 40°F while Seville and Valencia afternoons reach the mid 60s. Layers beat one heavy coat.</div>
     </div>
@@ -338,6 +383,12 @@ textarea:focus,input:focus{border-color:var(--teal)}
       <div id="pcs"></div>
     </div>
     <div class="card">
+      <h2>Nuestro viaje</h2>
+      <p class="lead">Each evening, rate the day in secret at the bottom of its Days page. Scores appear once you have both rated. The recap pulls everything together.</p>
+      <div id="rchart"></div>
+      <button class="go gold" data-recap="1">▶ Play our recap so far</button>
+    </div>
+    <div class="card">
       <h2>Sobres</h2>
       <p class="lead">Sealed notes for each other that cannot be opened until the day you choose.</p>
       <div id="notes"></div>
@@ -367,6 +418,8 @@ textarea:focus,input:focus{border-color:var(--teal)}
   </section>
 </div>
 
+<div class="recap" id="recap"></div>
+<div class="splash" id="splash"></div>
 <div class="ov" id="ov"><div class="sheet" id="sheet"></div></div>
 <div class="toast" id="toast" role="status"></div>
 <nav class="tabs" id="tabs">
@@ -706,6 +759,8 @@ function announce(id,data,had){
   else if((p[1]==="pk"||p[1]==="pr")&&data&&!had&&data.by&&data.by!==ME)toast(NAMES[data.by]+" checked off "+(LBL[id]||"an item"));
   else if(p[1]==="no"&&data&&!had&&data.by&&data.by!==ME){var o2=DAYS[+p[2]-1]&&idea(+p[2],+p[3]);if(o2)toast(NAMES[data.by]+" dismissed "+o2[0]);}
   else if(p[1]==="ev"&&data&&!had&&data.by&&data.by!==ME)toast(NAMES[data.by]+" booked "+data.title);
+  else if(p[1]==="dn"&&data&&!had&&data.by&&data.by!==ME){var o3=DAYS[+p[2]-1]&&idea(+p[2],+p[3]);if(o3)toast(NAMES[data.by]+" marked "+o3[0]+" done");}
+  else if(p[1]==="rt"&&data&&!had&&p[3]!==ME)toast(NAMES[p[3]]+" rated Day "+p[2]);
   else if(p[1]==="st"&&data&&p[3]!==ME)toast(NAMES[p[3]]+" stamped "+STAMPS[+p[2]][0]);
   else if(p[1]==="pc"&&data&&!had&&p[3]!==ME)toast(NAMES[p[3]]+" sealed a postcard answer");
   else if(p[1]==="sn"&&data&&!had&&p[3]!==ME)toast(NAMES[p[3]]+" left you a sealed note");
@@ -747,28 +802,57 @@ function tick(){
   }else{c.innerHTML="";n.textContent="Bienvenidos a casa.";}
 }
 /* ---------- map ---------- */
+function curStop(){var c=-1;STAMPS.forEach(function(s,i){if(TODAY>=s[1])c=i;});if(TODAY==="2026-11-25")c=1;return c;}
 function drawMap(){
   var out=[[-9.3,43.2],[-8,43.75],[-5.8,43.6],[-3.8,43.45],[-1.8,43.4],[0.7,42.75],[3.2,42.4],[3.15,41.9],[2.2,41.3],[0.9,41.0],[0.2,40.2],[-0.3,39.5],[0.2,38.8],[-0.5,38.3],[-0.7,37.6],[-1.9,37.0],[-2.4,36.75],[-4.4,36.7],[-5.35,36.1],[-6.0,36.2],[-6.4,36.9],[-7.4,37.2],[-8.9,37.0],[-8.8,38.5],[-9.5,38.8],[-8.9,40.2],[-8.7,41.2],[-8.9,42.0],[-9.3,43.0]];
   function P(lon,lat){return[((lon+10.4)*26).toFixed(1),((44.4-lat)*35).toFixed(1)];}
+  function line(a,b){var s="";for(var i=a;i<=b;i++){var q=pts[i];s+=(i===a?"M":"L")+q[0]+" "+q[1]+" ";}return s;}
   var land=out.map(function(p,i){var q=P(p[0],p[1]);return(i?"L":"M")+q[0]+" "+q[1];}).join(" ")+"Z";
-  var route=CITIES.map(function(c,i){var q=P(c[1],c[2]);return(i?"L":"M")+q[0]+" "+q[1];}).join(" ");
+  var pts=CITIES.map(function(c){return P(c[1],c[2]);}),c=curStop(),last=pts.length-1;
   var m=P(-3.70,40.42),t=P(-4.02,39.86);
   var h='<svg viewBox="0 0 380 310" role="img" aria-label="Map of the route through Spain"><path class="land" d="'+land+'"/>'+
     '<path class="opt" d="M'+m[0]+" "+m[1]+"L"+t[0]+" "+t[1]+'"/><circle cx="'+t[0]+'" cy="'+t[1]+'" r="2.5" fill="#9db1c9"/><text x="'+(+t[0]-8)+'" y="'+(+t[1]+4)+'" text-anchor="end" font-size="8.5" fill="#9db1c9" font-family="Outfit,sans-serif">Toledo (optional)</text>'+
-    '<path class="route" d="'+route+'"/>';
-  CITIES.forEach(function(c,i){
-    var q=P(c[1],c[2]),L=c[4]==="L",dx=L?-10:10,an=L?"end":"start";
-    h+='<g class="pin" data-day="'+c[3]+'" tabindex="0" role="button" aria-label="'+c[0]+'"><circle class="h" cx="'+q[0]+'" cy="'+q[1]+'" r="5" style="animation-delay:'+(i*.4)+'s"/><circle class="c" cx="'+q[0]+'" cy="'+q[1]+'" r="5"/>'+
-       '<text class="n" x="'+(+q[0]+dx)+'" y="'+(+q[1]-6)+'" text-anchor="'+an+'">STOP '+(i+1)+'</text><text x="'+(+q[0]+dx)+'" y="'+(+q[1]+6)+'" text-anchor="'+an+'">'+c[0]+'</text></g>';
+    '<path class="todo" d="'+line(Math.max(c,0),last)+'"/>'+(c>0?'<path class="route" d="'+line(0,c)+'"/>':"");
+  CITIES.forEach(function(ci,i){
+    var q=pts[i],L=ci[4]==="L",dx=L?-10:10,an=L?"end":"start";
+    h+='<g class="pin'+(i===c?" cur":i<c?" been":"")+'" data-day="'+ci[3]+'" tabindex="0" role="button" aria-label="'+ci[0]+'"><circle class="h" cx="'+q[0]+'" cy="'+q[1]+'" r="5" style="animation-delay:'+(i*.4)+'s"/><circle class="c" cx="'+q[0]+'" cy="'+q[1]+'" r="5"/>'+
+       '<text class="n" x="'+(+q[0]+dx)+'" y="'+(+q[1]-6)+'" text-anchor="'+an+'">'+(i===c?"WE ARE HERE":"STOP "+(i+1))+'</text><text x="'+(+q[0]+dx)+'" y="'+(+q[1]+6)+'" text-anchor="'+an+'">'+ci[0]+'</text></g>';
   });
+  /* the coach: loops the whole route as a preview before the trip, then drives the latest leg and parks */
+  var mv=c<0?'<animateMotion dur="11s" repeatCount="indefinite" path="'+line(0,last)+'"/>':c>0?'<animateMotion dur="2.6s" begin="0.5s" fill="freeze" calcMode="spline" keyTimes="0;1" keySplines=".4 0 .2 1" path="'+line(c-1,c)+'"/>':"";
+  var at=c<0?"0,0":c>0?"0,0":pts[0][0]+","+pts[0][1];
+  h+='<g class="coach" transform="translate('+at+')"><g>'+mv+'<circle r="9"/><text y="4" text-anchor="middle">🚌</text></g></g>';
   $("map").innerHTML=h+"</svg>";
   $("map").addEventListener("click",function(e){var g=e.target.closest(".pin");if(g){UI.day=+g.getAttribute("data-day");saveUI();go("days");}});
 }
+/* live forecast from Open-Meteo (free, no key); falls back to the late-November normals in WX */
+var WXC=[[40.42,-3.70],[37.88,-4.78],[37.39,-5.98],[37.18,-3.60],[39.47,-0.38],[41.39,2.17]];
+var WXD=[["2026-11-23",0],["2026-11-24",0],["2026-11-25",1],["2026-11-26",2],["2026-11-27",3],["2026-11-28",4],["2026-11-29",4],["2026-11-30",5],["2026-12-01",5],["2026-12-02",5]];
+var LIVE=null;try{LIVE=JSON.parse(lsGet("spain26-wx")||"null");}catch(e){}
+function wxIcon(c){return c===0?"☀️":c<=2?"🌤️":c===3?"☁️":c<=48?"🌫️":c<=67?"🌧️":c<=77?"❄️":c<=82?"🌦️":"⛈️";}
+function wxFor(date){
+  var m=WXD.filter(function(x){return x[0]===date;})[0];if(!m)return null;
+  var lv=LIVE&&LIVE.c&&LIVE.c[m[1]]&&LIVE.c[m[1]][date];
+  return lv?{city:WX[m[1]][0],hi:lv.hi,lo:lv.lo,pp:lv.pp,ic:wxIcon(lv.code),live:true}:{city:WX[m[1]][0],hi:WX[m[1]][1],lo:WX[m[1]][2],live:false};
+}
+function wxLine(date){var w=wxFor(date);if(!w)return"";return(w.live?w.ic+" ":"")+w.hi+"° / "+w.lo+"°"+(w.live&&w.pp!=null?" · "+w.pp+"% rain":"")+(w.live?"":" typical");}
+function loadWx(){
+  if(LIVE&&Date.now()-LIVE.at<36e5)return;
+  var u="https://api.open-meteo.com/v1/forecast?latitude="+WXC.map(function(c){return c[0];}).join(",")+"&longitude="+WXC.map(function(c){return c[1];}).join(",")+"&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&temperature_unit=fahrenheit&timezone=Europe%2FMadrid&forecast_days=16";
+  fetch(u).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(j){
+    var arr=Array.isArray(j)?j:[j];if(arr.length!==WXC.length)throw 0;
+    var c=arr.map(function(x){var d=x.daily,o={};d.time.forEach(function(t,i){if(d.temperature_2m_max[i]==null)return;o[t]={hi:Math.round(d.temperature_2m_max[i]),lo:Math.round(d.temperature_2m_min[i]),pp:d.precipitation_probability_max?d.precipitation_probability_max[i]:null,code:d.weather_code?d.weather_code[i]:0};});return o;});
+    LIVE={at:Date.now(),c:c};lsSet("spain26-wx",JSON.stringify(LIVE));drawWx();if(TAB==="trip")drawToday();if(TAB==="days"){var t=$("wxtag");if(t)t.textContent=wxLine(DAYS[UI.day-1].date);}
+  }).catch(function(){});
+}
 function drawWx(){
-  $("wx").innerHTML=WX.map(function(w,i){
-    var l=(w[2]-32)/40*100,r=(w[1]-32)/40*100;
-    return'<div class="r"><span>'+w[0]+'</span><div class="bar"><i style="left:'+l+"%;width:"+(r-l)+"%;animation-delay:"+(i*.1)+'s"></i></div><span class="t"><b>'+w[1]+"°</b> / "+w[2]+"°</span></div>";
+  var any=false;
+  $("wx").innerHTML=WXD.map(function(x,i){
+    var w=wxFor(x[0]),p=x[0].split("-"),l=(w.lo-30)/45*100,r=(w.hi-30)/45*100;if(w.live)any=true;
+    return'<div class="r'+(w.live?"":" typ")+(x[0]===TODAY?" now":"")+'"><span><b>'+nice(x[0]).split(",")[0]+" "+(+p[2])+"</b> "+esc(w.city)+'</span><div class="bar"><i style="left:'+l+"%;width:"+Math.max(4,r-l)+"%;animation-delay:"+(i*.06)+'s"></i></div><span class="t">'+(w.live?w.ic+" ":"")+"<b>"+w.hi+"°</b> / "+w.lo+"°"+(w.live&&w.pp!=null?"<small>"+w.pp+"% rain</small>":"")+"</span></div>";
   }).join("");
+  var at=LIVE&&new Date(LIVE.at);
+  $("wxlead").textContent=any?"Live forecast for each day of the trip (°F), updated "+at.toLocaleTimeString([], {hour:"numeric",minute:"2-digit"})+". Dimmed rows are typical values where the forecast doesn't reach yet.":"Typical late-November highs and lows (°F). The live forecast couldn't be loaded just now.";
 }
 /* ---------- days ---------- */
 function sid(n,i,p){return"sp.star."+n+"."+i+"."+p;}
@@ -794,14 +878,15 @@ function drawDay(){
   d.meals.forEach(function(m){h+='<span class="tag m">'+m+" included</span>";});
   if(d.drive)h+='<span class="tag d">'+esc(d.drive)+"</span>";
   if(d.stay)h+='<span class="tag">Sleep: '+esc(d.stay)+"</span>";
+  if(wxFor(d.date))h+='<span class="tag d" id="wxtag">'+wxLine(d.date)+"</span>";
   h+='</div><div class="lab o">Booked</div><div id="booked"></div><div class="bkadd"><input type="time" id="evtime" aria-label="Time"><input type="text" id="evtitle" maxlength="80" placeholder="Add a ticket or reservation"><button id="evadd">Add</button></div>';
   h+='<div class="lab">Set by the tour</div><ul class="tl">'+d.set.map(function(s){return"<li"+(s.indexOf("Optional")===0?' class="op"':"")+">"+esc(s)+"</li>";}).join("")+"</ul>";
   if(d.free)h+='<div class="lab o">Open time</div><div style="font-size:.93rem">'+esc(d.free)+"</div>";
   h+='<div class="lab e">Ideas · tap to star, × to dismiss</div><div id="ideas"></div>';
   if(d.tip)h+='<div class="tip">'+esc(d.tip)+"</div>";
-  h+='<div class="lab">Our notes</div><textarea id="note" maxlength="4000" placeholder="Reservations, meeting times, things we want to remember"></textarea><div class="dmeta" id="notemeta"></div>';
+  h+='<div class="lab">Our notes</div><textarea id="note" maxlength="4000" placeholder="Reservations, meeting times, things we want to remember"></textarea><div class="dmeta" id="notemeta"></div><div class="lab o">How was the day?</div><div id="rate"></div>';
   h+='<div class="nav2"><button id="prev"'+(d.n===1?" disabled":"")+">← Day "+(d.n-1)+'</button><button id="next"'+(d.n===11?" disabled":"")+">Day "+(d.n+1)+" →</button></div></div>";
-  $("day").innerHTML=h;drawBooked();drawIdeas();syncNote(true);
+  $("day").innerHTML=h;drawBooked();drawIdeas();syncNote(true);drawRate();
 }
 function drawIdeas(){
   var n=UI.day,h="",el=$("ideas");if(!el)return;
@@ -809,8 +894,9 @@ function drawIdeas(){
     if(!shown(n,i))return;
     var o=idea(n,i),s=stars(n,i),mine=ME&&s.indexOf(ME)>-1,both=s.length===2,nw=T["sp.add."+n+"."+i];
     var ic=o[2]==="eat"?"🍴":o[2]==="see"?"◆":"✦";
-    h+='<div class="idw"><button class="idea'+(mine?" on":"")+(both?" both":s.length&&!mine?" theirs":"")+'" data-i="'+i+'"><span class="s">★</span><span><b>'+ic+" "+esc(o[0])+"</b><span>"+esc(o[1])+"</span>"+(o[3]==="b"?'<em class="tb">Bourdain ate here</em>':"")+(nw&&nw.by?'<em class="nw">New · '+esc(NAMES[nw.by])+"</em>":"")+"</span>"+
-       (s.length?'<span class="by">'+s.map(av).join("")+(both?"<small>Both in</small>":"")+"</span>":"")+'</button><button class="ix" data-x="'+i+'" aria-label="Dismiss '+esc(o[0])+'">×</button></div>';
+    var dn=T["sp.dn."+n+"."+i];
+    h+='<div class="idw"><button class="idea'+(dn?" did":"")+(mine?" on":"")+(both?" both":s.length&&!mine?" theirs":"")+'" data-i="'+i+'"><span class="s">★</span><span><b>'+ic+" "+esc(o[0])+"</b><span>"+esc(o[1])+"</span>"+(o[3]==="b"?'<em class="tb">Bourdain ate here</em>':"")+(nw&&nw.by?'<em class="nw">New · '+esc(NAMES[nw.by])+"</em>":"")+(dn?'<em class="hecho">Hecho'+(dn.by?" · "+esc(NAMES[dn.by]):"")+"</em>":"")+"</span>"+
+       (s.length?'<span class="by">'+s.map(av).join("")+(both?"<small>Both in</small>":"")+"</span>":"")+'</button><span class="icol"><button class="iok'+(dn?" on":"")+'" data-ok="'+i+'" aria-label="We did this">✓</button><button class="ix" data-x="'+i+'" aria-label="Dismiss '+esc(o[0])+'">×</button></span></div>';
   });
   if(!h)h='<div class="dmeta">Every idea is dismissed. Pull some new ones or restore below.</div>';
   var sp=spare(n).length,out=ideaIds(n).filter(function(i){return gone(n,i);});
@@ -1002,14 +1088,98 @@ $("s-us").addEventListener("click",function(e){
     drawUs();
   }
 });
+/* ---------- extras: today card, been-there, ratings, splash, recap ----------
+   sp.dn.<day>.<idea>     {by,at}   we actually did this
+   sp.rt.<day>.<a|b>      {v,at}    secret 1-5 rating, shown once both exist                */
+function dtOf(date,t){var p=date.split("-"),m=/^(\d{1,2}):(\d{2})$/.exec(t||"");return new Date(+p[0],+p[1]-1,+p[2],m?+m[1]:0,m?+m[2]:0);}
+function dayToday(){return DAYS.filter(function(d){return d.date===TODAY;})[0];}
+function rel(ms){var m=Math.max(1,Math.round(ms/6e4));if(m<60)return m+" min";var h=Math.floor(m/60);if(h<24)return h+"h "+(m%60)+"m";var d=Math.round(h/24);return d+(d===1?" day":" days");}
+function drawToday(){
+  var el=$("today");if(!el)return;var d=dayToday(),now=new Date(),h="",nx=null;
+  DAYS.forEach(function(x){bookings(x.n).forEach(function(b){if(!b.t)return;var w=dtOf(x.date,b.t);if(w>now&&(!nx||w<nx.w))nx={w:w,b:b,d:x};});});
+  if(d)h+='<small class="k">Today · Day '+d.n+" of 11</small><h2>"+esc(d.title)+"</h2>";
+  else if(TODAY<"2026-11-22")h+='<small class="k">Coming up</small><h2>First stop: Madrid</h2>';
+  else h+='<small class="k">Home again</small><h2>What a trip.</h2>';
+  if(d&&wxFor(d.date))h+='<div class="dmeta" style="margin-top:4px">'+esc(wxFor(d.date).city)+" today: "+wxLine(d.date)+"</div>";
+  if(nx)h+='<div class="nxt"><span>Next booking</span><b>'+esc(nx.b.title)+"</b><em>in "+rel(nx.w-now)+" · "+nice(nx.d.date)+", "+t12(nx.b.t)+"</em></div>";
+  if(d){
+    var bs=bookings(d.n),st=ideaIds(d.n).filter(function(i){return shown(d.n,i)&&stars(d.n,i).length;});
+    if(bs.length)h+='<div class="lab o">Booked today</div>'+bs.map(function(x){return bkRow(x,false);}).join("");
+    h+='<div class="lab">Set by the tour</div><ul class="tl">'+d.set.map(function(s){return"<li"+(s.indexOf("Optional")===0?' class="op"':"")+">"+esc(s)+"</li>";}).join("")+"</ul>";
+    if(st.length)h+='<div class="lab e">Starred for today</div>'+st.map(function(i){var dn=T["sp.dn."+d.n+"."+i];return'<div class="pk'+(dn?" both":"")+'"><span>'+(dn?"✓ ":"")+esc(idea(d.n,i)[0])+'</span><span class="by">'+stars(d.n,i).map(av).join("")+"</span></div>";}).join("");
+    h+='<button class="go" id="gotoday">Open today</button>';
+  }
+  if(TODAY>="2026-12-01")h+='<button class="go gold" data-recap="1">▶ Play our recap</button>';
+  el.innerHTML=h;
+}
+/* ratings */
+function drawRate(){
+  var el=$("rate");if(!el)return;var d=DAYS[UI.day-1];
+  if(TODAY<d.date){el.innerHTML='<div class="dmeta">Opens '+nice(d.date)+".</div>";return;}
+  var a=T["sp.rt."+d.n+".a"],b=T["sp.rt."+d.n+".b"],mine=ME&&T["sp.rt."+d.n+"."+ME],O=ME?NAMES[other()]:"your partner";
+  function row(v,tap){var s="";for(var i=1;i<=5;i++)s+=tap?'<button class="rstar'+(i<=v?" on":"")+'" data-rate="'+i+'" aria-label="'+i+' stars">★</button>':'<span class="rstar'+(i<=v?" on":"")+'">★</span>';return s;}
+  if(a&&b)el.innerHTML='<div class="rrow">'+av("a")+row(a.v)+'</div><div class="rrow">'+av("b")+row(b.v)+"</div>";
+  else el.innerHTML='<div class="rrow">'+row(mine?mine.v:0,true)+'</div><div class="dmeta">'+(mine?"Yours is hidden until "+esc(O)+" rates too.":(ME&&T["sp.rt."+d.n+"."+other()]?esc(O)+" has rated. Yours?":"Rate in secret. Scores show once you have both rated."))+"</div>";
+}
+function rchart(){
+  var any=false,best=null,h='<div class="rch">';
+  DAYS.forEach(function(d){var a=T["sp.rt."+d.n+".a"],b=T["sp.rt."+d.n+".b"],ok=a&&b;if(ok){any=true;if(!best||a.v+b.v>best.s)best={s:a.v+b.v,d:d};}
+    h+='<div class="rc"><div class="bars"><i class="a" style="height:'+(ok?a.v*20:0)+'%"></i><i class="b" style="height:'+(ok?b.v*20:0)+'%"></i></div><small>'+(+d.date.slice(8))+"</small></div>";});
+  return{h:h+"</div>",any:any,best:best};
+}
+/* arrival splash, once per phone per day */
+var SPL={"2026-11-22":["¡Vámonos!","Eleven days. Six cities. Us.","#13305a,#2ec4b6"],"2026-11-23":["Madrid","Late dinners start here.","#7a1022,#f5b942"],"2026-11-25":["Córdoba","A forest of red and white arches.","#8a2a1a,#f1e3c8"],"2026-11-26":["Sevilla","Orange trees and flamenco.","#c2410c,#f5b942"],"2026-11-27":["Granada","The Alhambra is waiting.","#7b1e3a,#e8765c"],"2026-11-28":["València","Paella's home town.","#b45309,#2563a8"],"2026-11-30":["Barcelona","Gaudí, the sea, the last chapter.","#1d4ed8,#f5b942"],"2026-12-02":["Hasta pronto","Thank you, España.","#0d2040,#e8765c"]};
+function splash(){
+  var s=SPL[TODAY];UI.spl=UI.spl||{};if(!s||UI.spl[TODAY])return;UI.spl[TODAY]=1;saveUI();
+  var d=dayToday(),el=$("splash");
+  el.style.background="linear-gradient(150deg,"+s[2]+")";
+  el.innerHTML="<small>"+(TODAY==="2026-11-22"||TODAY==="2026-12-02"?"":"Bienvenidos a")+"</small><h1>"+s[0].split("").map(function(ch,i){return'<span style="animation-delay:'+(.25+i*.07)+'s">'+(ch===" "?"&nbsp;":esc(ch))+"</span>";}).join("")+"</h1><p>"+esc(s[1])+"</p><em>"+(d?"Day "+d.n+" of 11 · tap to begin":"Tap to begin")+"</em>";
+  el.classList.add("on");
+  el.onclick=function(){el.classList.remove("on");if(TODAY==="2026-12-02")playRecap();};
+}
+/* recap story */
+var RC={i:0,s:[]},GR=["#13305a,#0b6e68","#7a1022,#c2410c","#1d3a7a,#2ec4b6","#7b1e3a,#b45309","#0d2040,#5b2a86"];
+function recapSlides(){
+  var S=[],done=[],st=0,pc=[],notes=0,bk=0;
+  DAYS.forEach(function(d){ideaIds(d.n).forEach(function(i){if(T["sp.dn."+d.n+"."+i])done.push([d.city.split(" ")[0],idea(d.n,i)[0]]);});bk+=bookings(d.n).length;});
+  STAMPS.forEach(function(s,i){if(T["sp.st."+i+".a"]&&T["sp.st."+i+".b"])st++;});
+  PCS.forEach(function(q){var a=T["sp.pc."+q[0]+".a"],b=T["sp.pc."+q[0]+".b"];if(a&&b)pc.push([q,a,b]);});
+  Object.keys(T).forEach(function(id){if(id.indexOf("sp.sn.")===0)notes++;});
+  S.push("<small>Nov 22 – Dec 2, 2026</small><h1>España<br><i>juntos</i></h1><p>"+esc(NAMES.a)+" &amp; "+esc(NAMES.b)+"</p>");
+  function num(n,l){return n?'<div><b data-n="'+n+'">0</b><span>'+l+"</span></div>":"";}
+  S.push("<small>By the numbers</small><div class=\"nums\">"+num(6,"cities")+num(1000,"miles by coach, roughly")+num(st,"stamps together")+num(done.length,"places we did")+num(bk,"bookings")+num(pc.length,"postcards flipped")+num(notes,"sealed notes")+"</div>");
+  for(var i=0;i<done.length;i+=6)S.push("<small>We actually did this</small><ul>"+done.slice(i,i+6).map(function(x){return"<li><em>"+esc(x[0])+"</em>"+esc(x[1])+"</li>";}).join("")+"</ul>");
+  var rc=rchart();
+  if(rc.any)S.push("<small>How the days scored</small>"+rc.h+'<p class="lg">'+av("a")+" "+esc(NAMES.a)+" &nbsp; "+av("b")+" "+esc(NAMES.b)+"</p>"+(rc.best?"<h2>Best day: "+esc(rc.best.d.title)+"</h2>":""));
+  pc.forEach(function(x){if(x[0][0]===11)return;S.push("<small>"+esc(x[0][2])+"</small><h2><i>"+esc(QS[x[0][0]])+'</i></h2><div class="ans"><div>'+av("a")+"<p>"+esc(x[1].text)+"</p></div><div>"+av("b")+"<p>"+esc(x[2].text)+"</p></div></div>");});
+  var nx=pc.filter(function(x){return x[0][0]===11;})[0];
+  S.push(nx?"<small>Where next?</small><div class=\"ans\"><div>"+av("a")+"<p>"+esc(nx[1].text)+"</p></div><div>"+av("b")+"<p>"+esc(nx[2].text)+"</p></div></div><h1><i>Hasta la próxima</i></h1>":"<small>Fin</small><h1>Hasta la<br><i>próxima</i></h1>");
+  return S;
+}
+function showSlide(){
+  var el=$("recap");
+  el.innerHTML='<div class="rbar">'+RC.s.map(function(x,j){return'<i class="'+(j<=RC.i?"d":"")+'"></i>';}).join("")+'</div><button class="rx" id="rclose" aria-label="Close">×</button><div class="rsl" style="background:linear-gradient(160deg,'+GR[RC.i%GR.length]+')"><div class="rin">'+RC.s[RC.i]+'</div></div><div class="rhint">'+(RC.i<RC.s.length-1?"Tap to continue":"Tap to finish")+"</div>";
+  [].forEach.call(el.querySelectorAll("[data-n]"),function(b){var n=+b.getAttribute("data-n"),t0=Date.now();(function step(){var k=Math.min(1,(Date.now()-t0)/900);b.textContent=Math.round(n*k).toLocaleString();if(k<1)setTimeout(step,30);})();});
+  if(RC.i===RC.s.length-1)confetti();
+}
+function playRecap(){RC.s=recapSlides();RC.i=0;$("recap").classList.add("on");showSlide();}
+$("recap").addEventListener("click",function(e){
+  if(e.target.id==="rclose"){this.classList.remove("on");return;}
+  RC.i+=e.clientX<window.innerWidth*.3?-1:1;if(RC.i<0)RC.i=0;
+  if(RC.i>=RC.s.length){this.classList.remove("on");return;}showSlide();
+});
+document.addEventListener("click",function(e){
+  if(e.target.closest("[data-recap]")){playRecap();return;}
+  if(e.target.id==="gotoday"){var d=dayToday();if(d){UI.day=d.n;saveUI();}go("days");}
+});
 /* ---------- tabs ---------- */
 var TABS=["trip","days","pack","us","prep"];
 function drawAll(){
   $("mebtn").innerHTML=ME?av(ME)+esc(NAMES[ME]):"Who's this?";
-  if(TAB==="trip"){drawAllBooked();drawPicks();}
-  else if(TAB==="days"){drawChips();drawBooked();drawIdeas();syncNote();}
+  if(TAB==="trip"){drawToday();drawAllBooked();drawPicks();}
+  else if(TAB==="days"){drawChips();drawBooked();drawIdeas();syncNote();drawRate();}
   else if(TAB==="pack")drawPack();
-  else if(TAB==="us")drawUs();
+  else if(TAB==="us"){drawUs();var rc=rchart();$("rchart").innerHTML=rc.h+(rc.any?"":'<div class="dmeta">No days rated by both of you yet.</div>');}
   else drawPrep();
   var td=$("usdot");if(td)td.style.display=usTodo()?"block":"none";
 }
@@ -1027,6 +1197,10 @@ window.addEventListener("hashchange",function(){show(location.hash.slice(1));win
 $("tabs").addEventListener("click",function(e){var b=e.target.closest("button");if(b)go(b.getAttribute("data-t"));});
 $("chips").addEventListener("click",function(e){var b=e.target.closest(".chip");if(b)setDay(+b.getAttribute("data-n"));});
 $("day").addEventListener("click",function(e){
+  var okb=e.target.closest("[data-ok]");
+  if(okb){if(!need())return;var di="sp.dn."+UI.day+"."+okb.getAttribute("data-ok");put(di,T[di]?null:{by:ME,at:Date.now()});drawIdeas();return;}
+  var rtb=e.target.closest("[data-rate]");
+  if(rtb){if(!need())return;put("sp.rt."+UI.day+"."+ME,{v:+rtb.getAttribute("data-rate"),at:Date.now()});drawRate();return;}
   var x=e.target.closest("[data-x]");
   if(x){if(!need())return;put("sp.no."+UI.day+"."+x.getAttribute("data-x"),{by:ME,at:Date.now()});drawIdeas();drawChips();return;}
   var rs=e.target.closest("[data-rs]");
@@ -1070,15 +1244,15 @@ $("reset").addEventListener("click",function(){
   else{b.setAttribute("data-arm","1");b.textContent="Tap again to confirm (clears it for both of you)";setTimeout(function(){b.removeAttribute("data-arm");b.textContent="Uncheck everything on this list";},3500);}
 });
 $("s-prep").addEventListener("click",function(e){var b=e.target.closest("[data-id]");if(b){toggle(b.getAttribute("data-id"));drawPrep();}});
-document.addEventListener("visibilitychange",function(){if(document.hidden)commitNote();else load();});
+document.addEventListener("visibilitychange",function(){if(document.hidden)commitNote();else{load();loadWx();}});
 window.addEventListener("online",load);
 window.addEventListener("pagehide",commitNote);
 /* ---------- boot ---------- */
 if(!UI.day||UI.day<1||UI.day>11){var td=DAYS.filter(function(x){return x.date===TODAY;})[0];UI.day=td?td.n:2;}
-tick();setInterval(tick,30000);drawMap();drawWx();setNet("load");
+tick();setInterval(function(){tick();if(TAB==="trip")drawToday();},30000);drawMap();drawWx();setNet("load");
 var h0="";try{h0=location.hash.slice(1);}catch(e){}
-show(h0||(TODAY>="2026-11-22"&&TODAY<="2026-12-02"?"days":"trip"));
-load();
+show(h0||"trip");
+load();splash();loadWx();
 })();
 </script>
 </body>
