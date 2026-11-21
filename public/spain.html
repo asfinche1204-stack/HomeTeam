@@ -406,12 +406,11 @@ textarea:focus,input:focus{border-color:var(--teal)}
       <div id="home"></div>
     </div>
     <div class="card">
-      <h2>Optional tours to decide on</h2>
+      <h2>Optional tours</h2>
       <p class="lead">Sold through Gate 1. Prices are in your tour documents.</p>
       <ul class="plain">
-        <li><b>Toledo, Tue Nov 24 (afternoon).</b> Medieval hill town with Santo Tomé church and Santa María la Blanca synagogue. Worth it if you want a third city feel; skip it if you'd rather have a slow Madrid afternoon and tapas night.</li>
         <li><b>Flamenco show, Thu Nov 26 (evening).</b> Seville is the place to see it. An easy yes, or book a small tablao yourselves.</li>
-        <li><b>Montserrat, Tue Dec 1 (morning).</b> Mountain monastery outside Barcelona. It runs the same morning as your Sagrada Família tickets, so skip it.</li>
+        <li><b>Skipping:</b> Toledo (Nov 24) and Montserrat (Dec 1). That keeps Tuesday afternoon free in Madrid and the Sagrada Família morning clear.</li>
       </ul>
     </div>
     <div class="foot">Itinerary follows Gate 1's 11 Day Affordable Spain, Sunday departure. Hotels, timings and restaurant hours can change. Your Gate 1 documents win any disagreement.<br><a href="https://www.gate1travel.com/tour/spain-escorted-11daffes27.aspx" target="_blank" rel="noopener">Gate 1 tour page</a></div>
@@ -450,7 +449,7 @@ var DAYS=[
        ["Hotel rooftop","The Riu's sky bar has a 360° view over the city if you'd rather not wander far.","do"]],
  tip:"Stay awake until after dinner, even if it hurts. Sunlight and walking today fix the rest of the week."},
 {n:3,date:"2026-11-24",dow:"Tue",city:"Madrid",title:"Madrid",stay:"Madrid",hotel:"Hotel Riu Plaza España",meals:["Breakfast"],drive:"",
- set:["Morning city tour: Plaza de Cibeles, Royal Palace, Prado Museum","Optional: afternoon Toledo tour"],
+ set:["Morning city tour: Plaza de Cibeles, Royal Palace, Prado Museum"],
  free:"Afternoon and evening.",
  open:[["Retiro Park","Rowboats on the lake, the Crystal Palace, late autumn colour. Ten minutes from the Prado.","see"],
        ["Thyssen-Bornemisza","If the Prado left you wanting more. Note the Reina Sofía (Guernica) is closed on Tuesdays.","see"],
@@ -461,7 +460,7 @@ var DAYS=[
        ["Christmas lights walk","Madrid's holiday lights usually go on in late November. Sol to Plaza Mayor to Gran Vía after dark.","do"],
        ["Casa Salvador","Bullfighting tavern in Chueca, open since 1941 and a short walk from the hotel. Known for oxtail stew. Reserve; they keep a table in his honor.","eat","b"],
        ["Taberna San Mamés","Old-school Madrid cooking north of the center; tripe stew (callos) is the house dish. A taxi ride, and worth booking.","eat","b"]],
- tip:"Toledo or Madrid: you can't do both well. If you take Toledo, save the tapas crawl for tonight."},
+ tip:"With Toledo skipped, the whole afternoon and evening are yours. Retiro and a museum first, then the tapas crawl."},
 {n:4,date:"2026-11-25",dow:"Wed",city:"Córdoba → Seville",title:"Córdoba, then Seville",stay:"Seville",hotel:"Hotel Sevilla Center",meals:["Breakfast","Dinner"],drive:"Long coach day (about 5–6 hrs total)",
  set:["Drive south through La Mancha","Mezquita de Córdoba","Walking tour of the Jewish Quarter and 14th-century synagogue","Continue to Seville; dinner included"],
  free:"Lunch on your own in Córdoba, plus the evening in Seville after dinner.",
@@ -525,7 +524,7 @@ var DAYS=[
        ["Suculent or Dos Pebrots","Two sit-down dinners in the Raval from chefs out of the elBulli world. Reserve, and check which is open Monday.","eat","b"]],
  tip:"Picasso Museum is closed Mondays. Save it for tomorrow if it's on the list."},
 {n:10,date:"2026-12-01",dow:"Tue",city:"Barcelona",title:"Barcelona, our day",stay:"Barcelona",hotel:"Hotel Negresco Princess",meals:["Breakfast","Dinner"],drive:"",
- set:["Full day at leisure","Optional: half-day Montserrat tour (morning)","Evening: farewell dinner with the Tour Manager"],
+ set:["Full day at leisure","Evening: farewell dinner with the Tour Manager"],
  free:"All day until the farewell dinner.",
  open:[["Inside La Sagrada Família","Booked: guided tour at 9:45 AM, then the Passion tower at 11:15. The single best thing in Barcelona.","see"],
        ["Park Güell","Gaudí's mosaic terrace over the city. Timed entry; mornings have the best light.","see"],
@@ -537,7 +536,7 @@ var DAYS=[
        ["Quimet & Quimet","Standing-room bar in Poble Sec since 1914: montaditos built from top-shelf tinned seafood, plus vermouth. Weekdays only; go right at opening.","eat","b"],
        ["Xarcuteria La Pineda","Century-old cured-meat shop and bodega in the Gothic Quarter. Jamón and a glass of wine at the back tables.","eat","b"]],
  booked:[["09:45","Sagrada Família guided tour","English guided tour. Be at the Carrer de la Marina entrance by 9:15 AM. Bring passports: the tickets are named and they check photo ID."],["11:15","Sagrada Família, Passion tower","Tower visit on the same ticket. Lift up, stairs down."]],
- tip:"Sagrada Família takes the whole morning, so the Montserrat tour is out. Park Güell or the Gothic Quarter fits the afternoon before the farewell dinner."},
+ tip:"Sagrada Família takes the morning. Hospital de Sant Pau is a ten-minute walk from there, then Park Güell or the Gothic Quarter before the farewell dinner."},
 {n:11,date:"2026-12-02",dow:"Wed",city:"Home",title:"Fly home",stay:"Home",meals:["Breakfast"],drive:"",
  set:["Breakfast","Transfer to Barcelona airport","Flight home"],
  open:[["Liquids go in the checked bag","Olive oil, wine and anything spreadable won't clear security in a carry-on.","do"],
@@ -663,7 +662,7 @@ var BOOK=[
  ["b3","Park Güell","Tue Dec 1 afternoon, if it's on the list.","https://parkguell.barcelona/en"],
  ["b4","Paella lunch in Valencia","Booked: La Pepica, Sun Nov 29, 2:00 PM."],
  ["b5","One big Madrid dinner","Tue Nov 24. Botín or Casa Lucio book out.",""],
- ["b6","Gate 1 optional tours","Toledo, flamenco, Montserrat. Decide and add them through Gate 1.",""]
+ ["b6","Flamenco show in Seville","Thu Nov 26 evening. The only Gate 1 optional still open: add it through Gate 1, or book a tablao yourselves."]
 ];
 var HOME=[
  ["h1","Check entry rules for each passport","The EU's ETIAS travel authorization was slated to begin in late 2026. Confirm on the official EU site whether it applies yet."],
@@ -811,7 +810,6 @@ function drawMap(){
   var pts=CITIES.map(function(c){return P(c[1],c[2]);}),c=curStop(),last=pts.length-1;
   var m=P(-3.70,40.42),t=P(-4.02,39.86);
   var h='<svg viewBox="0 0 380 310" role="img" aria-label="Map of the route through Spain"><path class="land" d="'+land+'"/>'+
-    '<path class="opt" d="M'+m[0]+" "+m[1]+"L"+t[0]+" "+t[1]+'"/><circle cx="'+t[0]+'" cy="'+t[1]+'" r="2.5" fill="#9db1c9"/><text x="'+(+t[0]-8)+'" y="'+(+t[1]+4)+'" text-anchor="end" font-size="8.5" fill="#9db1c9" font-family="Outfit,sans-serif">Toledo (optional)</text>'+
     '<path class="todo" d="'+line(Math.max(c,0),last)+'"/>'+(c>0?'<path class="route" d="'+line(0,c)+'"/>':"");
   CITIES.forEach(function(ci,i){
     var q=pts[i],L=ci[4]==="L",dx=L?-10:10,an=L?"end":"start";
