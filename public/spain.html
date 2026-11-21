@@ -219,7 +219,7 @@ html.tx-l .wx .r,html.tx-xl .wx .r{grid-template-columns:minmax(0,1fr) minmax(0,
 html.tx-xl .stats{grid-template-columns:repeat(2,1fr)}html.tx-xl .stamps{grid-template-columns:repeat(2,1fr)}
 html.tx-xl .flr{grid-template-columns:1fr;text-align:center}html.tx-xl .flr .r{text-align:center}
 html.tx-xl .count div{min-width:0;flex:1}html.tx-xl .count{gap:6px}
-.txs{display:flex;align-items:center;gap:8px;margin-top:14px;flex-wrap:wrap}.txs span{font-size:.8rem;color:var(--mute)}
+.txs{display:flex;align-items:center;gap:8px;margin-top:14px;flex-wrap:wrap}.hdrtx .txs{justify-content:center;margin-top:10px}.txs span{font-size:.8rem;color:var(--mute)}
 .txs button{padding:6px 12px;border-radius:99px;border:1px solid var(--line);background:rgba(255,255,255,.05);line-height:1.1}
 .txs button.on{background:var(--teal);color:#04201d;border-color:var(--teal)}
 /* likes + comments */
@@ -260,7 +260,7 @@ html.tx-xl .count div{min-width:0;flex:1}html.tx-xl .count{gap:6px}
 
 .vonly{display:none}.visitor .vonly{display:block}
 .visitor .oonly,.visitor .tabs,.visitor .topbar,.visitor .flform,.visitor [data-goday],.visitor [data-recap],.visitor #ptr{display:none!important}
-.visitor .wrap{padding-bottom:40px}.visitor .pin{cursor:default}
+.visitor .wrap{padding-bottom:40px}.visitor .pin{cursor:pointer}
 .upd{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-top:1px solid var(--line)}.upd:first-child{border-top:0}
 .upd>div{flex:1;min-width:0}.upd p{margin:0;font-size:1rem;white-space:pre-wrap;overflow-wrap:anywhere}.upd small{font-size:.72rem;color:var(--mute)}
 .upd .x{color:var(--mute);font-size:1.2rem;padding:0 4px}
@@ -349,6 +349,9 @@ html{overscroll-behavior-y:contain}
 /* extras */
 .todo{fill:none;stroke:var(--mute);stroke-width:1.6;stroke-dasharray:4 5;opacity:.75}
 .pin.been circle.c{fill:var(--saff)}.pin.cur circle.c{fill:#fff;stroke:var(--saff);stroke-width:2.5}.pin.cur text.n{fill:#fff}
+.pin.sel circle.c{fill:var(--teal);stroke:#fff;stroke-width:2.5;r:7}.pin.sel text{fill:var(--teal2)}.pin.sel circle.h{fill:var(--teal);animation-duration:1.4s}
+#vdays .chips{position:static;margin:0 -4px 6px;padding-top:2px;background:none}#vdays .chip{background:rgba(255,255,255,.05);backdrop-filter:none;-webkit-backdrop-filter:none}#vdays .chip.on{background:linear-gradient(160deg,var(--teal),#178f86)}
+.vdt{font-family:var(--serif);font-weight:700;font-size:1.3rem}
 .coach circle{fill:rgba(8,20,40,.85);stroke:var(--saff);stroke-width:1.5}.coach text{font-size:10px}
 .todayc{border-color:rgba(245,185,66,.45);background:linear-gradient(140deg,rgba(245,185,66,.14),rgba(46,196,182,.08))}
 .todayc .k{font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;color:var(--saff);font-weight:600}
@@ -459,11 +462,27 @@ html{overscroll-behavior-y:contain}
     <div class="sub">Madrid · Córdoba · Seville · Granada · Valencia · Barcelona</div>
     <div class="count" id="count"></div>
     <div class="now" id="now"></div>
+    <div class="vonly hdrtx"><div class="txs"><span>Text size</span><button data-tx="" class="on">Normal</button><button data-tx="tx-l" style="font-size:1.1em">Large</button><button data-tx="tx-xl" style="font-size:1.25em">Massive</button></div></div>
   </header>
 
   <section id="s-trip">
-    <div class="card vonly vhello"><h2>Follow along</h2><p class="lead" style="margin:0">You are following our trip through Spain, Nov 22 to Dec 2. This page shows where we are, the weather there, our flights, our photos and anything we post.</p>
-      <div class="txs"><span>Text size</span><button data-tx="" class="on">Normal</button><button data-tx="tx-l" style="font-size:1.1em">Large</button><button data-tx="tx-xl" style="font-size:1.25em">Massive</button></div></div>
+    <div class="card">
+      <h2>The route</h2>
+      <p class="lead oonly">Tap a city to jump to that day.</p><p class="lead vonly">Tap a city to see that day's plan.</p>
+      <div class="map" id="map"></div>
+      <div class="stats">
+        <div><b>6</b><span>cities</span></div><div><b>9</b><span>nights</span></div>
+        <div><b>9</b><span>breakfasts</span></div><div><b>4</b><span>dinners</span></div>
+      </div>
+    </div>
+    <div class="card vonly" id="vdays">
+      <h2>Day by day</h2>
+      <p class="lead">Tap a day, or a city on the map above.</p>
+      <div class="chips" id="vchips"></div>
+      <div id="vday"></div>
+    </div>
+    <div class="card vonly vhello"><h2>Follow along</h2><p class="lead" style="margin:0">You are following our trip through Spain, Nov 22 to Dec 2. This page shows where we are, the weather there, our flights, our photos and anything we post.</p></div>
+    <div class="card todayc" id="today"></div>
     <div class="card">
       <h2>Updates</h2>
       <p class="lead" id="updlead"></p>
@@ -485,16 +504,6 @@ html{overscroll-behavior-y:contain}
         <div class="phprog"></div>
       </div>
     </div>
-    <div class="card">
-      <h2>The route</h2>
-      <p class="lead oonly">Tap a city to jump to that day.</p>
-      <div class="map" id="map"></div>
-      <div class="stats">
-        <div><b>6</b><span>cities</span></div><div><b>9</b><span>nights</span></div>
-        <div><b>9</b><span>breakfasts</span></div><div><b>4</b><span>dinners</span></div>
-      </div>
-    </div>
-    <div class="card todayc" id="today"></div>
     <div class="card">
       <h2>Flights</h2>
       <p class="lead">Each leg with its length, layovers and the time change worked out. Times are local to each airport.</p>
@@ -1061,7 +1070,7 @@ function drawMap(){
   var at=c<0?"0,0":c>0?"0,0":pts[0][0]+","+pts[0][1];
   h+='<g class="coach" transform="translate('+at+')"><g>'+mv+'<circle r="9"/><text y="4" text-anchor="middle">🚌</text></g></g>';
   $("map").innerHTML=h+"</svg>";
-  $("map").addEventListener("click",function(e){var g=e.target.closest(".pin");if(g){UI.day=+g.getAttribute("data-day");saveUI();go("days");}});
+  $("map").addEventListener("click",function(e){var g=e.target.closest(".pin");if(!g)return;if(VIS){vdGo(+g.getAttribute("data-day"),true);return;}UI.day=+g.getAttribute("data-day");saveUI();go("days");});
 }
 /* live forecast from Open-Meteo (free, no key); falls back to the late-November normals in WX */
 var WXC=[[40.42,-3.70],[37.88,-4.78],[37.39,-5.98],[37.18,-3.60],[39.47,-0.38],[41.39,2.17]];
@@ -1878,6 +1887,30 @@ document.addEventListener("click",function(e){
   if((t=e.target.closest("[data-cdel]"))){if(!need())return;var id=t.getAttribute("data-cdel"),pp=id.split(".");put(id,null);socRefresh(pp[2]+"."+pp[3]);}
 });
 document.addEventListener("keydown",function(e){if(e.key==="Enter"&&e.target.id==="ctext"){var f=e.target.closest(".soc");if(f)socSend(f.getAttribute("data-soc"));}});
+/* ---------- visitors: day-by-day plans, linked to the map ---------- */
+var VDAY=null;
+function vdCityIdx(n){var c=DAYS[n-1].city,o=[];CITIES.forEach(function(ci,i){if(c.indexOf(ci[0])>-1)o.push(i);});return o;}
+function vdMarkMap(){var on=vdCityIdx(VDAY);[].forEach.call(document.querySelectorAll("#map .pin"),function(g,i){g.classList.toggle("sel",on.indexOf(i)>-1);});}
+function drawVDays(){
+  var el=$("vday");if(!el||!VIS)return;
+  if(!VDAY){var td=dayToday();VDAY=td?td.n:1;}
+  $("vchips").innerHTML=DAYS.map(function(d){var dt=d.date.split("-");return'<button class="chip'+(d.n===VDAY?" on":"")+(d.date===TODAY?" today":"")+'" data-vd="'+d.n+'"><small>'+d.dow+"</small><b>"+(+dt[2])+"</b><em>"+esc(d.city.split(" ")[0])+"</em></button>";}).join("");
+  var d=DAYS[VDAY-1],dt=d.date.split("-"),w=wxFor(d.date),h='<div class="dhead"><div class="dnum"><div><small>DAY</small>'+d.n+'</div></div><div><h3 class="vdt">'+esc(d.title)+'</h3><div class="dmeta">'+d.dow+", "+MON[+dt[1]-1]+" "+(+dt[2])+(d.date===TODAY?" · today":"")+"</div></div></div>";
+  h+='<div class="tags">';d.meals.forEach(function(m){h+='<span class="tag m">'+m+" included</span>";});if(d.drive)h+='<span class="tag d">'+esc(d.drive)+"</span>";if(w)h+='<span class="tag d">'+esc(w.city)+": "+wxLine(d.date)+"</span>";h+="</div>";
+  h+='<div class="lab">The plan</div><ul class="tl">'+d.set.map(function(t){t=t.replace(/Check in at Hotel[^.]*\./,"Check in at the hotel.");return"<li"+(t.indexOf("Optional")===0?' class="op"':"")+">"+esc(t)+"</li>";}).join("")+"</ul>";
+  if(d.free)h+='<div class="lab o">Free time</div><div style="font-size:.93rem">'+esc(d.free)+"</div>";
+  var done=ideaIds(d.n).filter(function(i){return T["sp.dn."+d.n+"."+i];});
+  if(done.length)h+='<div class="lab e">They made it to</div>'+done.map(function(i){return'<div class="pk both"><span>✓ '+esc(idea(d.n,i)[0])+"</span></div>";}).join("");
+  PHL=photos();var ph=[];PHL.forEach(function(p,i){if(p.m.day===d.n)ph.push(phTile(p,i));});
+  if(ph.length)h+='<div class="lab">Photos from this day</div><div class="phg">'+ph.join("")+"</div>";
+  if(d.date>TODAY)h+='<div class="dmeta" style="margin-top:12px">Coming up. Check back on '+nice(d.date)+" for photos.</div>";
+  h+='<div class="nav2"><button data-vd="'+(d.n-1)+'"'+(d.n===1?" disabled":"")+'>← Day '+(d.n-1)+'</button><button data-vd="'+(d.n+1)+'"'+(d.n===11?" disabled":"")+">Day "+(d.n+1)+" →</button></div>";
+  el.innerHTML=h;vdMarkMap();
+  var on=$("vchips").querySelector(".on");if(on)try{$("vchips").scrollTo({left:on.offsetLeft-$("vchips").clientWidth/2+on.clientWidth/2,behavior:"smooth"});}catch(x){}
+}
+function vdGo(n,scroll){if(n<1||n>11)return;VDAY=n;drawVDays();if(scroll)$("vdays").scrollIntoView({behavior:"smooth",block:"start"});}
+document.addEventListener("click",function(e){var b=e.target.closest("[data-vd]");if(b&&VIS)vdGo(+b.getAttribute("data-vd"),false);});
+(function(){var x0=null,y0=0;document.addEventListener("touchstart",function(e){var t=e.target.closest&&e.target.closest("#vday");x0=t&&VIS?e.touches[0].clientX:null;y0=e.touches[0].clientY;},{passive:true});document.addEventListener("touchend",function(e){if(x0==null)return;var dx=e.changedTouches[0].clientX-x0,dy=e.changedTouches[0].clientY-y0;if(Math.abs(dx)>70&&Math.abs(dx)>2.2*Math.abs(dy))vdGo(VDAY+(dx<0?1:-1),false);x0=null;},{passive:true});})();
 /* ---------- updates for family, and the read-only visitor cards ----------  sp.pub.<id> {text,by,at} is public by design */
 function updates(){var o=[];Object.keys(T).forEach(function(id){if(id.indexOf("sp.pub.")===0&&T[id]&&T[id].text)o.push({id:id,d:T[id]});});o.sort(function(x,y){return(y.d.at||0)-(x.d.at||0);});return o;}
 function drawUpdates(){
@@ -1906,7 +1939,7 @@ document.addEventListener("click",function(e){
 var TABS=["trip","days","pack","us","prep"];
 function drawAll(){
   $("mebtn").innerHTML=ME?av(ME)+esc(NAMES[ME]):"Who's this?";
-  if(TAB==="trip"){drawUpdates();drawPhotos();if(VIS)drawVis();drawToday();drawFlights();drawAllBooked();drawPicks();}
+  if(TAB==="trip"){drawUpdates();drawPhotos();if(VIS){drawVis();drawVDays();}drawToday();drawFlights();drawAllBooked();drawPicks();}
   else if(TAB==="days"){drawChips();drawBooked();drawIdeas();syncNote();drawRate();drawDayPhotos();}
   else if(TAB==="pack")drawPack();
   else if(TAB==="us"){drawUs();drawGames();drawLevels();drawPaint();var rc=rchart();$("rchart").innerHTML=rc.h+(rc.any?"":'<div class="dmeta">No days rated by both of you yet.</div>');}
