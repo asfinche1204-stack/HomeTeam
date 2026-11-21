@@ -174,6 +174,7 @@ textarea:focus,input:focus{border-color:var(--teal)}
 .av.a{background:#8ab8ff}.av.b{background:var(--teal)}.av+.av{margin-left:-7px}
 .by{margin-left:auto;display:flex;align-items:center;padding-left:8px;flex:0 0 auto;flex-wrap:wrap;justify-content:flex-end;max-width:64px}
 .by small{display:block;width:100%;text-align:right;margin-top:4px;white-space:nowrap;font-size:.56rem;letter-spacing:.08em;text-transform:uppercase;color:var(--saff);font-weight:600}
+.tb{display:inline-block;margin-top:6px;font-style:normal;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;font-weight:600;color:#2a1206;background:var(--saff);padding:2px 8px;border-radius:99px}
 .idea.theirs{border:1px dashed rgba(127,227,216,.5)}
 .idea.both{background:linear-gradient(120deg,rgba(245,185,66,.22),rgba(46,196,182,.14));border-color:var(--saff);box-shadow:0 0 22px rgba(245,185,66,.18)}
 .idea.both .s{background:var(--saff);border-color:var(--saff);color:#2a1206}
@@ -307,7 +308,7 @@ var DAYS=[
  open:[["Templo de Debod at golden hour","A real Egyptian temple on a hill a few minutes' walk from the hotel, with the best sunset view in Madrid.","see"],
        ["Gran Vía stroll","Starts right outside the hotel. Good for staying awake and upright.","see"],
        ["Chocolate con churros at San Ginés","Open since 1894, thick dipping chocolate. The cure for jet lag.","eat"],
-       ["Plaza Mayor and Mercado de San Miguel","Graze the market stalls for a light late lunch: croquetas, jamón, olives, vermut.","eat"],
+       ["Plaza Mayor and Mercado de San Miguel","Graze the market stalls for a light late lunch: croquetas, jamón, olives, vermut.","eat","b"],
        ["Hotel rooftop","The Riu's sky bar has a 360° view over the city if you'd rather not wander far.","do"]],
  tip:"Stay awake until after dinner, even if it hurts. Sunlight and walking today fix the rest of the week."},
 {n:3,date:"2026-11-24",dow:"Tue",city:"Madrid",title:"Madrid",stay:"Madrid",hotel:"Hotel Riu Plaza España",meals:["Breakfast"],drive:"",
@@ -319,7 +320,9 @@ var DAYS=[
        ["Bocadillo de calamares near Plaza Mayor","Fried squid sandwich, the classic Madrid cheap lunch.","eat"],
        ["Dinner at Sobrino de Botín","Roast suckling pig in the world's oldest restaurant. Reserve ahead.","eat"],
        ["Huevos rotos at Casa Lucio","Broken eggs over potatoes, a Madrid institution. Reserve ahead.","eat"],
-       ["Christmas lights walk","Madrid's holiday lights usually go on in late November. Sol to Plaza Mayor to Gran Vía after dark.","do"]],
+       ["Christmas lights walk","Madrid's holiday lights usually go on in late November. Sol to Plaza Mayor to Gran Vía after dark.","do"],
+       ["Casa Salvador","Bullfighting tavern in Chueca, open since 1941 and a short walk from the hotel. Known for oxtail stew. Reserve; they keep a table in his honor.","eat","b"],
+       ["Taberna San Mamés","Old-school Madrid cooking north of the center; tripe stew (callos) is the house dish. A taxi ride, and worth booking.","eat","b"]],
  tip:"Toledo or Madrid: you can't do both well. If you take Toledo, save the tapas crawl for tonight."},
 {n:4,date:"2026-11-25",dow:"Wed",city:"Córdoba → Seville",title:"Córdoba, then Seville",stay:"Seville",hotel:"Hotel Sevilla Center",meals:["Breakfast","Dinner"],drive:"Long coach day (about 5–6 hrs total)",
  set:["Drive south through La Mancha","Mezquita de Córdoba","Walking tour of the Jewish Quarter and 14th-century synagogue","Continue to Seville; dinner included"],
@@ -346,7 +349,11 @@ var DAYS=[
  open:[["Mirador de San Nicolás at sunset","The view of the Alhambra against the Sierra Nevada. Take a taxi up, walk down through the Albaicín.","see"],
        ["Free tapas with every drink","Granada still does it. Bodegas Castañeda and Los Diamantes are the famous ones.","eat"],
        ["Tea houses on Calderería Nueva","Moroccan-style teterías: mint tea and pastries on a lantern-lit lane.","eat"],
-       ["Cathedral and Alcaicería","The old silk market lanes beside the Cathedral, if the Alhambra is in the afternoon.","see"]],
+       ["Cathedral and Alcaicería","The old silk market lanes beside the Cathedral, if the Alhambra is in the afternoon.","see"],
+       ["Taberna La Tana","Tiny wine bar in the Realejo, Placeta del Agua 3. He had salmon with tomato and caviar. Go early; it fills in minutes.","eat","b"],
+       ["Restaurante Oliver","Seafood on Plaza Pescadería beside the Cathedral. He ate steamed mussels, clams, and fried eggplant with honey.","eat","b"],
+       ["Bar Gallardo","Neighborhood bar on Calle Pintor Rodríguez Acosta: cheese, lamb chops, fried pastry. Well off the tourist track.","eat","b"],
+       ["Café Casa Pasteles","Pastry café up in the Albaicín. Pairs with the walk down from Mirador de San Nicolás.","eat","b"]],
  tip:"Coldest night of the trip, often near freezing. This is the hat-and-gloves stop. You'll need your passport for Alhambra entry."},
 {n:7,date:"2026-11-28",dow:"Sat",city:"Valencia",title:"North to Valencia",stay:"Valencia",hotel:"Exe Rey Don Jaime or Sercotel Sorolla Palace",meals:["Breakfast","Dinner"],drive:"Longest coach day (about 5–6 hrs)",
  set:["Drive north to Valencia","Hotel check-in","Dinner included"],
@@ -372,7 +379,10 @@ var DAYS=[
        ["El Born tapas","El Xampanyet for cava and anchovies, then Bar del Pla. Go early; they fill fast.","eat"],
        ["Passeig de Gràcia by night","Casa Batlló and La Pedrera lit up, a short walk from the hotel.","see"],
        ["Cervecería Catalana","Reliable, lively tapas near Passeig de Gràcia. No reservations, put your name down.","eat"],
-       ["Santa Maria del Mar","The fishermen's Gothic church in El Born. Quiet and beautiful.","see"]],
+       ["Santa Maria del Mar","The fishermen's Gothic church in El Born. Quiet and beautiful.","see"],
+       ["La Plata","Gothic Quarter bar with a four-item menu: fried fish, tomato salad, sausage, anchovies, and wine from the barrel.","eat","b"],
+       ["Xurreria dels Banys Nous","Churros to go from a tiny Gothic Quarter counter. Dessert on the walk.","eat","b"],
+       ["Suculent or Dos Pebrots","Two sit-down dinners in the Raval from chefs out of the elBulli world. Reserve, and check which is open Monday.","eat","b"]],
  tip:"Picasso Museum is closed Mondays. Save it for tomorrow if it's on the list."},
 {n:10,date:"2026-12-01",dow:"Tue",city:"Barcelona",title:"Barcelona, our day",stay:"Barcelona",hotel:"Hotel Negresco Princess",meals:["Breakfast","Dinner"],drive:"",
  set:["Full day at leisure","Optional: half-day Montserrat tour (morning)","Evening: farewell dinner with the Tour Manager"],
@@ -383,7 +393,9 @@ var DAYS=[
        ["Picasso Museum","His early work in five medieval palaces in El Born.","see"],
        ["Vermut hour","Late-morning vermouth with chips and olives. A Barcelona ritual.","eat"],
        ["Barceloneta beach walk","Along the sand to the W hotel and back. Seafood lunch at the port.","see"],
-       ["Last-night souvenir run","Turrón, olive oil, saffron, a tin of smoked pimentón, espadrilles.","do"]],
+       ["Last-night souvenir run","Turrón, olive oil, saffron, a tin of smoked pimentón, espadrilles.","do"],
+       ["Quimet & Quimet","Standing-room bar in Poble Sec since 1914: montaditos built from top-shelf tinned seafood, plus vermouth. Weekdays only; go right at opening.","eat","b"],
+       ["Xarcuteria La Pineda","Century-old cured-meat shop and bodega in the Gothic Quarter. Jamón and a glass of wine at the back tables.","eat","b"]],
  tip:"If you take Montserrat in the morning, book Sagrada Família for about 3 PM so the two don't collide."},
 {n:11,date:"2026-12-02",dow:"Wed",city:"Home",title:"Fly home",stay:"Home",meals:["Breakfast"],drive:"",
  set:["Breakfast","Transfer to Barcelona airport","Flight home"],
@@ -635,7 +647,7 @@ function drawIdeas(){
   d.open.forEach(function(o,i){
     var s=stars(d.n,i),mine=ME&&s.indexOf(ME)>-1,both=s.length===2;
     var ic=o[2]==="eat"?"🍴":o[2]==="see"?"◆":"✦";
-    h+='<button class="idea'+(mine?" on":"")+(both?" both":s.length&&!mine?" theirs":"")+'" data-i="'+i+'"><span class="s">★</span><span><b>'+ic+" "+esc(o[0])+"</b><span>"+esc(o[1])+"</span></span>"+
+    h+='<button class="idea'+(mine?" on":"")+(both?" both":s.length&&!mine?" theirs":"")+'" data-i="'+i+'"><span class="s">★</span><span><b>'+ic+" "+esc(o[0])+"</b><span>"+esc(o[1])+"</span>"+(o[3]==="b"?'<em class="tb">Bourdain ate here</em>':"")+"</span>"+
        (s.length?'<span class="by">'+s.map(av).join("")+(both?"<small>Both in</small>":"")+"</span>":"")+"</button>";
   });
   el.innerHTML=h;
