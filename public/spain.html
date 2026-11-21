@@ -199,6 +199,9 @@ textarea:focus,input:focus{border-color:var(--teal)}
 .morebtn{width:100%;margin-top:10px;padding:12px;border-radius:14px;border:1px dashed rgba(127,227,216,.55);color:var(--teal2);font-weight:500;background:rgba(46,196,182,.07)}
 .morebtn:disabled{opacity:.45;border-style:solid}
 .rs{margin-left:8px;font-size:.78rem;color:var(--teal2);text-decoration:underline;flex:0 0 auto}
+.psst{background:#0b1730;border:1px solid var(--line);border-radius:16px;padding:18px;animation:in .5s ease}
+.psst small{font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--terra);font-weight:600}
+.psst p{font-family:var(--serif);font-style:italic;font-size:1.3rem;line-height:1.4;margin:10px 0 12px}.psst .sig{text-align:right;color:var(--mute);font-size:.9rem}
 /* flights */
 .fl{padding:12px 13px;margin:8px 0;border-radius:14px;background:rgba(255,255,255,.045);border:1px solid var(--line)}
 .flh{display:flex;align-items:center;gap:10px}.flh b{font-family:var(--serif);font-size:1.1rem;flex:1}.flh a{font-size:.74rem}.flh .x{color:var(--mute);font-size:1.2rem;padding:0 4px}
@@ -221,7 +224,11 @@ textarea:focus,input:focus{border-color:var(--teal)}
 .mimode button{padding:10px;border-radius:12px;color:var(--mute);font-weight:500}.mimode button.on{background:linear-gradient(160deg,var(--teal),#178f86);color:#04201d}
 .cbgal{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
 .cbt{position:relative;padding:6px 6px 8px;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid var(--line);text-align:center}
-.cbt svg{width:100%;height:auto;border-radius:8px;display:block}.cbt b{display:block;font-size:.8rem;font-weight:500;margin-top:6px}.cbt small{font-size:.68rem;color:var(--mute)}
+.cbt svg{width:100%;height:auto;border-radius:8px;display:block;background:#f6f2e8}
+#cbwrap svg{width:100%;height:auto;display:block;border-radius:12px;background:#f6f2e8;touch-action:none;user-select:none;-webkit-user-select:none;box-shadow:0 10px 30px rgba(0,0,0,.4)}
+#cblab text{fill:#2c3a50;font-family:var(--sans);font-weight:600;text-anchor:middle;pointer-events:none}
+#bkcv{width:100%;height:auto;display:block;border-radius:16px;border:1px solid var(--line);touch-action:none}
+#bkhud{color:var(--terra);font-size:1rem;letter-spacing:.06em;white-space:pre}.cbt b{display:block;font-size:.8rem;font-weight:500;margin-top:6px}.cbt small{font-size:.68rem;color:var(--mute)}
 .cbt.fin{border-color:rgba(245,185,66,.5)}.cbt.fin small{color:var(--saff)}.cbt .av{position:absolute;top:-6px;right:-6px}
 .cbg{display:grid;grid-template-columns:repeat(16,minmax(0,1fr));gap:1px;padding:6px;border-radius:12px;background:#0a1830;border:1px solid var(--line);touch-action:none;user-select:none;-webkit-user-select:none}
 .cbg i{aspect-ratio:1;font-style:normal;display:grid;place-items:center;font-size:.58rem;font-weight:600;color:#7f95b3;background:#1a2c4a}
@@ -478,13 +485,13 @@ html{overscroll-behavior-y:contain}
       <div id="games"></div>
     </div>
     <div class="card">
-      <h2>Azulejos</h2>
-      <p class="lead">Forty levels of tile puzzles that get bigger and harder. Tap a tile to flip it and its neighbours; light them all. Race each other up the levels.</p>
+      <h2>Ladrillos</h2>
+      <p class="lead">Brick breaker with thirty levels. Slide your finger to move the paddle, keep the ball up, clear the bricks. Stars for lives left; race each other up the levels.</p>
       <div id="levels"></div>
     </div>
     <div class="card">
       <h2>Pinta España</h2>
-      <p class="lead">Colour by number: six landmarks, one from each city. Your progress saves as you go.</p>
+      <p class="lead">Paint by number: six illustrated landmarks, one from each city. Your progress saves as you go.</p>
       <div id="paint"></div>
     </div>
     <div class="card">
@@ -828,7 +835,7 @@ function load(){
       var nm=j.settings&&j.settings.main&&j.settings.main.names;
       if(nm){if(nm.a)NAMES.a=String(nm.a);if(nm.b)NAMES.b=String(nm.b);}
       if(!j.trip){setNet("old");}else{T=j.trip;overlayQ();setNet("ok");}
-      saveSync();drawAll();listen();flush();
+      saveSync();drawAll();listen();flush();clearTimeout(psstT);psstT=setTimeout(psst,4000);
     });
   }).catch(function(){loading=false;setNet("off");loadT=setTimeout(load,10000);});
 }
@@ -872,8 +879,8 @@ function announce(id,data,had){
   else if(p[1]==="ev"&&data&&!had&&data.by&&data.by!==ME)toast(NAMES[data.by]+" booked "+String(data.title).split("\n")[0]);
   else if(p[1]==="gm"&&data&&!had&&p[4]!==ME)toast(NAMES[p[4]]+" played "+gname(p[2])+" round "+(p[3].split("~")[1]||1));
   else if(p[1]==="fl"&&data&&!had&&data.by&&data.by!==ME)toast(NAMES[data.by]+" added flight "+data.n);
-  else if(p[1]==="cb"&&data&&data.done&&!(had&&had.done)&&p[3]!==ME)toast(NAMES[p[3]]+" finished painting "+CBN[+p[2]].n);
-  else if(p[1]==="lv"&&data&&p[2]!==ME){var was=had&&had.l?Object.keys(had.l).length:0,nowN=Object.keys(data.l||{}).length;if(nowN>was)toast(NAMES[p[2]]+" cleared Azulejos level "+Math.max.apply(null,Object.keys(data.l).map(Number)));}
+  else if(p[1]==="cv"&&data&&data.done&&!(had&&had.done)&&p[3]!==ME)toast(NAMES[p[3]]+" finished painting "+ART[+p[2]].n);
+  else if(p[1]==="bk"&&data&&p[2]!==ME){var was=had&&had.l?Object.keys(had.l).length:0,nowN=Object.keys(data.l||{}).length;if(nowN>was)toast(NAMES[p[2]]+" cleared Ladrillos level "+Math.max.apply(null,Object.keys(data.l).map(Number)));}
   else if(p[1]==="dn"&&data&&!had&&data.by&&data.by!==ME){var o3=DAYS[+p[2]-1]&&idea(+p[2],+p[3]);if(o3)toast(NAMES[data.by]+" marked "+o3[0]+" done");}
   else if(p[1]==="rt"&&data&&!had&&p[3]!==ME)toast(NAMES[p[3]]+" rated Day "+p[2]);
   else if(p[1]==="st"&&data&&p[3]!==ME)toast(NAMES[p[3]]+" stamped "+STAMPS[+p[2]][0]);
@@ -1313,7 +1320,7 @@ function recapSlides(){
   S.push("<small>By the numbers</small><div class=\"nums\">"+num(6,"cities")+num(1000,"miles by coach, roughly")+num(st,"stamps together")+num(done.length,"places we did")+num(bk,"bookings")+num(pc.length,"postcards flipped")+num(notes,"sealed notes")+"</div>");
   for(var i=0;i<done.length;i+=6)S.push("<small>We actually did this</small><ul>"+done.slice(i,i+6).map(function(x){return"<li><em>"+esc(x[0])+"</em>"+esc(x[1])+"</li>";}).join("")+"</ul>");
   var gp=gpoints();
-  if(gp.n)S.push("<small>Juegos</small><div class=\"nums\"><div><b data-n=\""+gp.a+"\">0</b><span>"+esc(NAMES.a)+"</span></div><div><b data-n=\""+gp.b+"\">0</b><span>"+esc(NAMES.b)+"</span></div></div><h2>"+(gp.a===gp.b?"Dead even":esc(NAMES[gp.a>gp.b?"a":"b"])+" takes the trip")+"</h2><p>"+gp.n+" rounds played</p>"+(azNext("a")>1||azNext("b")>1?"<p>Azulejos: "+esc(NAMES.a)+" reached level "+Math.min(azNext("a"),AZN)+", "+esc(NAMES.b)+" level "+Math.min(azNext("b"),AZN)+"</p>":""));
+  if(gp.n)S.push("<small>Juegos</small><div class=\"nums\"><div><b data-n=\""+gp.a+"\">0</b><span>"+esc(NAMES.a)+"</span></div><div><b data-n=\""+gp.b+"\">0</b><span>"+esc(NAMES.b)+"</span></div></div><h2>"+(gp.a===gp.b?"Dead even":esc(NAMES[gp.a>gp.b?"a":"b"])+" takes the trip")+"</h2><p>"+gp.n+" rounds played</p>"+(bkNext("a")>1||bkNext("b")>1?"<p>Ladrillos: "+esc(NAMES.a)+" reached level "+Math.min(bkNext("a"),BKN)+", "+esc(NAMES.b)+" level "+Math.min(bkNext("b"),BKN)+"</p>":""));
   var rc=rchart();
   if(rc.any)S.push("<small>How the days scored</small>"+rc.h+'<p class="lg">'+av("a")+" "+esc(NAMES.a)+" &nbsp; "+av("b")+" "+esc(NAMES.b)+"</p>"+(rc.best?"<h2>Best day: "+esc(rc.best.d.title)+"</h2>":""));
   pc.forEach(function(x){if(x[0][0]===11)return;S.push("<small>"+esc(x[0][2])+"</small><h2><i>"+esc(QS[x[0][0]])+'</i></h2><div class="ans"><div>'+av("a")+"<p>"+esc(x[1].text)+"</p></div><div>"+av("b")+"<p>"+esc(x[2].text)+"</p></div></div>");});
@@ -1336,7 +1343,7 @@ $("recap").addEventListener("click",function(e){
 document.addEventListener("click",function(e){
   if(e.target.closest("[data-recap]")){playRecap();return;}
   var gb=e.target.closest("[data-game]");if(gb){gopen(gb.getAttribute("data-game"));return;}
-  var ab=e.target.closest("[data-az]");if(ab){azOpen(+ab.getAttribute("data-az"));return;}
+  var ab=e.target.closest("[data-bk]");if(ab){bkOpen(+ab.getAttribute("data-bk"));return;}
   var cb=e.target.closest("[data-cb]");if(cb){if(PB){cbSave(true);PB=null;}cbOpen(+cb.getAttribute("data-cb"));return;}
   if(e.target.id==="fladd"){addFlight();return;}
   var dfl=e.target.closest("[data-delfl]");if(dfl){if(need()){put(dfl.getAttribute("data-delfl"),null);drawFlights();drawToday();}return;}
@@ -1344,7 +1351,7 @@ document.addEventListener("click",function(e){
 });
 /* ---------- juegos: unlimited rounds a day, every round a different setup, same board on both phones ----------
    sp.gm.<game>.<date>[~round].<a|b>  {s,t,at}   round 1 has no suffix
-   sp.lv.<a|b>                        {l:{level:[stars,moves]},at}   Azulejos progress              */
+                                                                                                    */
 function rng(seed){var h=2166136261;for(var i=0;i<seed.length;i++){h^=seed.charCodeAt(i);h=Math.imul(h,16777619);}var a=h>>>0;return function(){a|=0;a=a+0x6D2B79F5|0;var t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
 function shuf(a,r){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(r()*(i+1)),t=a[i];a[i]=a[j];a[j]=t;}return a;}
 function buzz(ms){try{if(navigator.vibrate)navigator.vibrate(ms);}catch(e){}}
@@ -1377,14 +1384,14 @@ function drawGames(){
 }
 var G=null,gtick=null;
 function gopen(g){
-  if(!need())return;if(PB){cbSave(true);PB=null;}AZ=null;var r=grounds(g,ME)+1;
+  if(!need())return;if(PB){cbSave(true);PB=null;}bkStop();var r=grounds(g,ME)+1;
   G={g:g,round:r,key:gkey(r),r:rng(g+gkey(r)),t0:0,pen:0,done:false};
   $("game").classList.add("on");
   $("game").innerHTML='<div class="ghead"><b>'+gname(g)+'</b><span id="gclock">0:00</span><button id="gquit" aria-label="Close">×</button></div><div class="gsub">Round '+r+" · "+gsetup(g,r)+'</div><div id="gbody"></div>';
   ({ar:arStart,me:meStart,tr:trStart,mi:miStart})[g]();
   clearInterval(gtick);gtick=setInterval(function(){if(G&&!G.done&&$("gclock"))$("gclock").textContent=mmss(gel());},250);
 }
-function gclose(){clearInterval(gtick);if(PB){cbSave(true);PB=null;}G=null;AZ=null;$("game").classList.remove("on");$("game").innerHTML="";drawAll();}
+function gclose(){clearInterval(gtick);if(PB){cbSave(true);PB=null;}G=null;bkStop();$("game").classList.remove("on");$("game").innerHTML="";drawAll();}
 function gel(){return G.t0?Date.now()-G.t0+G.pen:G.pen;}
 function gfinish(score){
   G.done=true;clearInterval(gtick);var r={s:score,t:gel(),at:Date.now()},g=G.g;
@@ -1482,91 +1489,135 @@ function miTap(i){
   if(G.m[i]){G.pen+=20000;G.flag[i]=1;G.boom[i]=1;buzz(120);$("gnote").textContent="Mine: +20 seconds";miDraw();return;}
   miReveal(i);buzz(8);miDraw();$("gnote").textContent=(G.safe-G.opened)+" safe squares left";if(G.opened===G.safe)gfinish(0);
 }
-/* ---------- Pinta: colour-by-number landmarks ----------  sp.cb.<picture>.<a|b> {f:"0101…",done,at} */
-var CBN=[{"n":"Puerta de Alcalá","c":"Madrid","p":["#8ec9f0","#e9dcc0","#a8977a","#e2504a","#5aa85a","#ffffff"],"r":["0000000000000000","0055500000000000","0555550220000000","0000011111155550","0000011111100000","0222222222222220","0111111111111110","0222222222222220","0111221221221110","0111001001001110","0101001001001010","0101001001001010","0101001001001010","0101001001001010","0101001001001010","4444444444444444","4343434343434344","4444444444444444"]},{"n":"Mezquita arches","c":"Córdoba","p":["#3a2618","#b9a79a","#c8382c","#f3e6c8","#c9a56b","#e0b04a"],"r":["0000000000000000","0000000000000000","0023320000233200","0323323003233230","2300003223000032","2200002222000022","5000000550000005","1023320110233201","1323323113233231","1300003113000031","1200002112000021","5000000550000005","1000000110000001","1000000110000001","1000000110000001","1000000110000001","4444444444444444","4444444444444444"]},{"n":"La Giralda","c":"Seville","p":["#7fc4ee","#d9b77c","#7a5536","#f5efe0","#e0b04a","#3f8f4a","#f08a24","#ffffff"],"r":["0000000400000000","0000000440077700","0000000330777770","0000000330000000","0000003333000000","0000002332000000","0000001111000000","0000001111000000","0000001221000000","0000002112000000","0055001111005500","0556501221055650","0655502112065550","0565601111056560","0022001221002200","0022001111002200","1111111111111111","2121212121212121"]},{"n":"The Alhambra","c":"Granada","p":["#f6a14a","#f2c1a0","#ffffff","#6c6aa8","#c0553a","#3e2a2a","#3d7a45","#ffe08a"],"r":["0000000000000000","0000000000007700","0000000000007700","0000000000000000","1111111112111111","1112111122211111","1142411333341421","0344433434344422","3344433444344433","3345433444345433","0444444454444440","0444455444544440","0444444444444440","6566666656666656","6666566666665666","6666665666666666","6656666666566666","6666666666666666"]},{"n":"City of Arts and Sciences","c":"Valencia","p":["#9fd3f2","#f7f7f2","#1f5d6b","#2bb3b0","#bfeee6","#ffd34d","#ffffff"],"r":["0000000000000000","0066000000005500","0666600000005500","0000000000000000","0000000000000000","0000000000000000","0000111111110000","0011111111111100","0111222112221110","0112222112222110","0112222112222110","3434343434343433","3343434343434333","3333343434343333","3333333333333333","3333333333333333","3333333333333333","3333333333333333"]},{"n":"Sagrada Família","c":"Barcelona","p":["#86c5ee","#d2b48a","#7b5a3c","#f4c542","#4d9a52","#ffffff"],"r":["0000000000000000","0000000000000000","5550003303300000","0000001101100000","0000001101100555","0000002102100000","0003301101103300","0001101201201100","0001101101101100","0002102102102100","0001101101101100","0011111121111100","0011121331211100","0011111221111100","0011211221121100","4411111221111144","4444444444444444","4444444444444444"]}];
+/* ---------- Pinta: paint-by-number illustrations ----------  sp.cv.<picture>.<a|b> {f:"0101…",done,at} */
+var ART=[{"n":"Puerta de Alcalá","c":"Madrid","p":["#5aa9e6","#9fd0f5","#ffffff","#efe3c8","#cdbb97","#9c8a68","#3f7fb8","#4f9e52","#3b7f42","#e2504a","#f2c14e"],"s":[[0,"M0 0h320v90h-320z"],[1,"M0 90h320v95h-320z"],[1,"M0 185h320v95h-320z"],[2,"M20 60a14 14 0 0 1 26 -6a18 18 0 0 1 32 2a12 12 0 0 1 8 22h-70a11 11 0 0 1 4 -18z"],[2,"M215 95a11.200000000000001 11.200000000000001 0 0 1 20.8 -4.800000000000001a14.4 14.4 0 0 1 25.6 1.6a9.600000000000001 9.600000000000001 0 0 1 6.4 17.6h-56.0a8.8 8.8 0 0 1 3.2 -14.4z"],[4,"M28 150h264v128h-264z"],[3,"M40 150h240v128h-240z"],[5,"M22 140h276v12h-276z"],[3,"M22 128h276v12h-276z"],[4,"M108 96h104v32h-104z"],[3,"M118 96h84v32h-84z"],[5,"M100 88h120v8h-120z"],[4,"M132 88L160 62L188 88z"],[5,"M150 70h20v18h-20z"],[3,"M40 152h10v126h-10z"],[3,"M88 152h10v126h-10z"],[3,"M136 152h10v126h-10z"],[3,"M184 152h10v126h-10z"],[3,"M232 152h10v126h-10z"],[3,"M270 152h10v126h-10z"],[6,"M52 196h30v82h-30z"],[6,"M238 196h30v82h-30z"],[6,"M100 278v-89.0a15.0 15.0 0 0 1 30 0v89.0z"],[6,"M145 278v-89.0a15.0 15.0 0 0 1 30 0v89.0z"],[6,"M190 278v-89.0a15.0 15.0 0 0 1 30 0v89.0z"],[7,"M0 278h320v40h-320z"],[8,"M0 318h320v42h-320z"],[9,"M13.0 330a9 9 0 1 0 18 0a9 9 0 1 0 -18 0z"],[10,"M47.5 330a9 9 0 1 0 18 0a9 9 0 1 0 -18 0z"],[9,"M82.0 330a9 9 0 1 0 18 0a9 9 0 1 0 -18 0z"],[10,"M116.5 330a9 9 0 1 0 18 0a9 9 0 1 0 -18 0z"],[9,"M151.0 330a9 9 0 1 0 18 0a9 9 0 1 0 -18 0z"],[10,"M185.5 330a9 9 0 1 0 18 0a9 9 0 1 0 -18 0z"],[9,"M220.0 330a9 9 0 1 0 18 0a9 9 0 1 0 -18 0z"],[10,"M254.5 330a9 9 0 1 0 18 0a9 9 0 1 0 -18 0z"],[9,"M289.0 330a9 9 0 1 0 18 0a9 9 0 1 0 -18 0z"]]},{"n":"Mezquita arches","c":"Córdoba","p":["#2b1b12","#4a3020","#c8382c","#f3e6c8","#b9a79a","#8f7d70","#e0b04a","#c9a56b","#a88550"],"s":[[0,"M0 0h320v360h-320z"],[1,"M0 0h320v60h-320z"],[2,"M152.0 150.0A72 72 0 0 0 147.7 125.4L121.3 135.0A44 44 0 0 1 124.0 150.0z"],[3,"M147.7 125.4A72 72 0 0 0 135.2 103.7L113.7 121.7A44 44 0 0 1 121.3 135.0z"],[2,"M135.2 103.7A72 72 0 0 0 116.0 87.6L102.0 111.9A44 44 0 0 1 113.7 121.7z"],[3,"M116.0 87.6A72 72 0 0 0 92.5 79.1L87.6 106.7A44 44 0 0 1 102.0 111.9z"],[2,"M92.5 79.1A72 72 0 0 0 67.5 79.1L72.4 106.7A44 44 0 0 1 87.6 106.7z"],[3,"M67.5 79.1A72 72 0 0 0 44.0 87.6L58.0 111.9A44 44 0 0 1 72.4 106.7z"],[2,"M44.0 87.6A72 72 0 0 0 24.8 103.7L46.3 121.7A44 44 0 0 1 58.0 111.9z"],[3,"M24.8 103.7A72 72 0 0 0 12.3 125.4L38.7 135.0A44 44 0 0 1 46.3 121.7z"],[2,"M12.3 125.4A72 72 0 0 0 8.0 150.0L36.0 150.0A44 44 0 0 1 38.7 135.0z"],[1,"M36 150a44 44 0 0 1 88 0z"],[2,"M144.0 262.0A64 64 0 0 0 140.1 240.1L117.6 248.3A40 40 0 0 1 120.0 262.0z"],[3,"M140.1 240.1A64 64 0 0 0 129.0 220.9L110.6 236.3A40 40 0 0 1 117.6 248.3z"],[2,"M129.0 220.9A64 64 0 0 0 112.0 206.6L100.0 227.4A40 40 0 0 1 110.6 236.3z"],[3,"M112.0 206.6A64 64 0 0 0 91.1 199.0L86.9 222.6A40 40 0 0 1 100.0 227.4z"],[2,"M91.1 199.0A64 64 0 0 0 68.9 199.0L73.1 222.6A40 40 0 0 1 86.9 222.6z"],[3,"M68.9 199.0A64 64 0 0 0 48.0 206.6L60.0 227.4A40 40 0 0 1 73.1 222.6z"],[2,"M48.0 206.6A64 64 0 0 0 31.0 220.9L49.4 236.3A40 40 0 0 1 60.0 227.4z"],[3,"M31.0 220.9A64 64 0 0 0 19.9 240.1L42.4 248.3A40 40 0 0 1 49.4 236.3z"],[2,"M19.9 240.1A64 64 0 0 0 16.0 262.0L40.0 262.0A40 40 0 0 1 42.4 248.3z"],[1,"M40 262a40 40 0 0 1 80 0z"],[2,"M312.0 150.0A72 72 0 0 0 307.7 125.4L281.3 135.0A44 44 0 0 1 284.0 150.0z"],[3,"M307.7 125.4A72 72 0 0 0 295.2 103.7L273.7 121.7A44 44 0 0 1 281.3 135.0z"],[2,"M295.2 103.7A72 72 0 0 0 276.0 87.6L262.0 111.9A44 44 0 0 1 273.7 121.7z"],[3,"M276.0 87.6A72 72 0 0 0 252.5 79.1L247.6 106.7A44 44 0 0 1 262.0 111.9z"],[2,"M252.5 79.1A72 72 0 0 0 227.5 79.1L232.4 106.7A44 44 0 0 1 247.6 106.7z"],[3,"M227.5 79.1A72 72 0 0 0 204.0 87.6L218.0 111.9A44 44 0 0 1 232.4 106.7z"],[2,"M204.0 87.6A72 72 0 0 0 184.8 103.7L206.3 121.7A44 44 0 0 1 218.0 111.9z"],[3,"M184.8 103.7A72 72 0 0 0 172.3 125.4L198.7 135.0A44 44 0 0 1 206.3 121.7z"],[2,"M172.3 125.4A72 72 0 0 0 168.0 150.0L196.0 150.0A44 44 0 0 1 198.7 135.0z"],[1,"M196 150a44 44 0 0 1 88 0z"],[2,"M304.0 262.0A64 64 0 0 0 300.1 240.1L277.6 248.3A40 40 0 0 1 280.0 262.0z"],[3,"M300.1 240.1A64 64 0 0 0 289.0 220.9L270.6 236.3A40 40 0 0 1 277.6 248.3z"],[2,"M289.0 220.9A64 64 0 0 0 272.0 206.6L260.0 227.4A40 40 0 0 1 270.6 236.3z"],[3,"M272.0 206.6A64 64 0 0 0 251.1 199.0L246.9 222.6A40 40 0 0 1 260.0 227.4z"],[2,"M251.1 199.0A64 64 0 0 0 228.9 199.0L233.1 222.6A40 40 0 0 1 246.9 222.6z"],[3,"M228.9 199.0A64 64 0 0 0 208.0 206.6L220.0 227.4A40 40 0 0 1 233.1 222.6z"],[2,"M208.0 206.6A64 64 0 0 0 191.0 220.9L209.4 236.3A40 40 0 0 1 220.0 227.4z"],[3,"M191.0 220.9A64 64 0 0 0 179.9 240.1L202.4 248.3A40 40 0 0 1 209.4 236.3z"],[2,"M179.9 240.1A64 64 0 0 0 176.0 262.0L200.0 262.0A40 40 0 0 1 202.4 248.3z"],[1,"M200 262a40 40 0 0 1 80 0z"],[5,"M2 150h10v112h-10z"],[6,"M-18 138h36v14h-36z"],[6,"M-18 250h36v14h-36z"],[5,"M2 262h10v64h-10z"],[8,"M-18 322h36v10h-36z"],[4,"M148 150h24v112h-24z"],[5,"M162 150h10v112h-10z"],[6,"M142 138h36v14h-36z"],[6,"M142 250h36v14h-36z"],[4,"M148 262h24v64h-24z"],[5,"M162 262h10v64h-10z"],[8,"M142 322h36v10h-36z"],[4,"M308 150h24v112h-24z"],[6,"M302 138h36v14h-36z"],[6,"M302 250h36v14h-36z"],[4,"M308 262h24v64h-24z"],[8,"M302 322h36v10h-36z"],[7,"M0 330h320v30h-320z"],[8,"M0 360L60 330L120 330L100 360z"],[8,"M200 360L190 330L250 330L290 360z"]]},{"n":"La Giralda","c":"Seville","p":["#4aa3e0","#8fcdf3","#ffffff","#e6c48a","#c79c5e","#7a5536","#f5efe0","#d8cdb4","#e0b04a","#3f8f4a","#2f6f3a","#f08a24","#d96a4a"],"s":[[0,"M0 0h320v110h-320z"],[1,"M0 110h320v192h-320z"],[2,"M18 70a14 14 0 0 1 26 -6a18 18 0 0 1 32 2a12 12 0 0 1 8 22h-70a11 11 0 0 1 4 -18z"],[2,"M222 120a11.200000000000001 11.200000000000001 0 0 1 20.8 -4.800000000000001a14.4 14.4 0 0 1 25.6 1.6a9.600000000000001 9.600000000000001 0 0 1 6.4 17.6h-56.0a8.8 8.8 0 0 1 3.2 -14.4z"],[8,"M248 50a22 22 0 1 0 44 0a22 22 0 1 0 -44 0z"],[6,"M0 214h96v66h-96z"],[12,"M-6 214L48 188L102 214z"],[5,"M20 236h16v44h-16z"],[6,"M226 224h94v56h-94z"],[12,"M220 224L273 200L326 224z"],[3,"M128 116h34v164h-34z"],[4,"M162 116h30v164h-30z"],[4,"M134 128h22v34h-22z"],[5,"M168 128h18v34h-18z"],[5,"M140 158v-17.0a5.0 5.0 0 0 1 10 0v17.0z"],[4,"M134 178h22v34h-22z"],[5,"M168 178h18v34h-18z"],[5,"M140 208v-17.0a5.0 5.0 0 0 1 10 0v17.0z"],[4,"M134 228h22v34h-22z"],[5,"M168 228h18v34h-18z"],[5,"M140 258v-17.0a5.0 5.0 0 0 1 10 0v17.0z"],[7,"M122 104h76v12h-76z"],[6,"M132 70h56v34h-56z"],[5,"M138 104v-20.0a4.0 4.0 0 0 1 8 0v20.0z"],[5,"M156 104v-20.0a4.0 4.0 0 0 1 8 0v20.0z"],[5,"M174 104v-20.0a4.0 4.0 0 0 1 8 0v20.0z"],[7,"M128 62h64v8h-64z"],[6,"M144 34h32v28h-32z"],[5,"M155 62v-15.0a5.0 5.0 0 0 1 10 0v15.0z"],[3,"M150 28L160 8L170 28z"],[8,"M155 6a5 5 0 1 0 10 0a5 5 0 1 0 -10 0z"],[5,"M51 278h10v36h-10z"],[10,"M26 262a30 30 0 1 0 60 0a30 30 0 1 0 -60 0z"],[9,"M30 254a18 18 0 1 0 36 0a18 18 0 1 0 -36 0z"],[11,"M37 268a5 5 0 1 0 10 0a5 5 0 1 0 -10 0z"],[11,"M61 250a5 5 0 1 0 10 0a5 5 0 1 0 -10 0z"],[11,"M65 272a5 5 0 1 0 10 0a5 5 0 1 0 -10 0z"],[11,"M47 246a5 5 0 1 0 10 0a5 5 0 1 0 -10 0z"],[11,"M51 274a5 5 0 1 0 10 0a5 5 0 1 0 -10 0z"],[10,"M238 268a30 30 0 1 0 60 0a30 30 0 1 0 -60 0z"],[9,"M242 260a18 18 0 1 0 36 0a18 18 0 1 0 -36 0z"],[11,"M249 274a5 5 0 1 0 10 0a5 5 0 1 0 -10 0z"],[11,"M273 256a5 5 0 1 0 10 0a5 5 0 1 0 -10 0z"],[11,"M277 278a5 5 0 1 0 10 0a5 5 0 1 0 -10 0z"],[11,"M259 252a5 5 0 1 0 10 0a5 5 0 1 0 -10 0z"],[11,"M263 280a5 5 0 1 0 10 0a5 5 0 1 0 -10 0z"],[3,"M0 300h320v60h-320z"],[4,"M0 300h320v10h-320z"],[7,"M0 360L20 322L40 360z"],[7,"M40 360L60 322L80 360z"],[7,"M80 360L100 322L120 360z"],[7,"M120 360L140 322L160 360z"],[7,"M160 360L180 322L200 360z"],[7,"M200 360L220 322L240 360z"],[7,"M240 360L260 322L280 360z"],[7,"M280 360L300 322L320 360z"]]},{"n":"The Alhambra","c":"Granada","p":["#f58a3c","#f8b26a","#f6cfa8","#ffe08a","#7a78b8","#565490","#ffffff","#c0553a","#9b3f2b","#3e2a2a","#3d7a45","#2a5a33","#6fa85a"],"s":[[0,"M0 0h320v60h-320z"],[1,"M0 60h320v50h-320z"],[2,"M0 110h320v60h-320z"],[3,"M224 58a24 24 0 1 0 48 0a24 24 0 1 0 -48 0z"],[4,"M-30 190L60.0 96L60.0 190z"],[5,"M60.0 190L60.0 96L150 190z"],[6,"M44.0 114L60.0 96L76.0 114L67.0 109L60.0 116L53.0 109z"],[4,"M90 190L175.0 82L175.0 190z"],[5,"M175.0 190L175.0 82L260 190z"],[6,"M159.0 100L175.0 82L191.0 100L182.0 95L175.0 102L168.0 95z"],[4,"M200 190L275.0 104L275.0 190z"],[5,"M275.0 190L275.0 104L350 190z"],[6,"M259.0 122L275.0 104L291.0 122L282.0 117L275.0 124L268.0 117z"],[12,"M0 190L320 190L320 250L0 250z"],[10,"M0 222L80 206L170 216L260 202L320 214L320 270L0 270z"],[7,"M30 196h264v40h-264z"],[8,"M30 226h264v10h-264z"],[7,"M34 188h12v8h-12z"],[7,"M106 188h12v8h-12z"],[7,"M130 188h12v8h-12z"],[7,"M178 188h12v8h-12z"],[7,"M202 188h12v8h-12z"],[7,"M274 188h12v8h-12z"],[7,"M44 150h27.599999999999998v86h-27.599999999999998z"],[8,"M71.6 150h18.400000000000002v86h-18.400000000000002z"],[7,"M44.0 141h9.2v9h-9.2z"],[7,"M61.69230769230769 141h9.2v9h-9.2z"],[7,"M79.38461538461539 141h9.2v9h-9.2z"],[9,"M52.8 194v-15.0a5.0 5.0 0 0 1 10 0v15.0z"],[9,"M53.8 208h8v10h-8z"],[7,"M138 164h24.0v72h-24.0z"],[8,"M162.0 164h16.0v72h-16.0z"],[7,"M138.0 155h8.0v9h-8.0z"],[7,"M153.3846153846154 155h8.0v9h-8.0z"],[7,"M168.76923076923077 155h8.0v9h-8.0z"],[9,"M145.0 208v-15.0a5.0 5.0 0 0 1 10 0v15.0z"],[9,"M146.0 222h8v10h-8z"],[7,"M228 146h30.0v90h-30.0z"],[8,"M258.0 146h20.0v90h-20.0z"],[7,"M228.0 137h10.0v9h-10.0z"],[7,"M247.23076923076923 137h10.0v9h-10.0z"],[7,"M266.46153846153845 137h10.0v9h-10.0z"],[9,"M238.0 190v-15.0a5.0 5.0 0 0 1 10 0v15.0z"],[9,"M239.0 204h8v10h-8z"],[9,"M104 236v-15.0a7.0 7.0 0 0 1 14 0v15.0z"],[9,"M196 236v-15.0a7.0 7.0 0 0 1 14 0v15.0z"],[10,"M0 236h320v60h-320z"],[11,"M0 296h320v64h-320z"],[11,"M14 250L23 180L32 250z"],[11,"M84 250L93 196L102 250z"],[11,"M182 250L191 190L200 250z"],[11,"M292 250L301 174L310 250z"],[11,"M120 250L129 210L138 250z"],[10,"M14 300a26 26 0 1 0 52 0a26 26 0 1 0 -52 0z"],[12,"M80 316a30 30 0 1 0 60 0a30 30 0 1 0 -60 0z"],[12,"M162 302a28 28 0 1 0 56 0a28 28 0 1 0 -56 0z"],[12,"M230 318a32 32 0 1 0 64 0a32 32 0 1 0 -64 0z"],[10,"M298 296a22 22 0 1 0 44 0a22 22 0 1 0 -44 0z"]]},{"n":"City of Arts and Sciences","c":"Valencia","p":["#3f9fe0","#8ecbf2","#cfeaf8","#ffd34d","#ffffff","#dfe6ea","#1f5d6b","#2f7f8f","#1fa7a5","#49c5bf","#9fe6dd","#3f8f4a"],"s":[[0,"M0 0h320v70h-320z"],[1,"M0 70h320v60h-320z"],[2,"M0 130h320v80h-320z"],[3,"M36 52a22 22 0 1 0 44 0a22 22 0 1 0 -44 0z"],[4,"M196 58a12.6 12.6 0 0 1 23.400000000000002 -5.4a16.2 16.2 0 0 1 28.8 1.8a10.8 10.8 0 0 1 7.2 19.8h-63.0a9.9 9.9 0 0 1 3.6 -16.2z"],[5,"M20 210Q160 60 300 210z"],[4,"M20 210Q160 84 300 210L270 210Q160 112 50 210z"],[6,"M50 210L50 210.0L67.0 196.0L84 184.4L84 210z"],[7,"M84 210L84 184.4L101.0 175.1L118 168.1L118 210z"],[6,"M118 210L118 168.1L139.0 162.8L160 161.0L160 210z"],[7,"M160 210L160 161.0L181.0 162.8L202 168.1L202 210z"],[6,"M202 210L202 168.1L219.0 175.1L236 184.4L236 210z"],[7,"M236 210L236 184.4L253.0 196.0L270 210.0L270 210z"],[4,"M155 138h10v72h-10z"],[8,"M0 210h320v50h-320z"],[9,"M0 260h320v50h-320z"],[8,"M0 310h320v50h-320z"],[10,"M40 210Q160 300 280 210z"],[9,"M96 210Q160 262 224 210z"],[11,"M22 150L-4.4 127.8L-12.6 140.0z"],[11,"M298 150L271.6 127.8L263.4 140.0z"]]},{"n":"Sagrada Família","c":"Barcelona","p":["#4aa3e0","#8fcdf3","#ffffff","#e3c79b","#c4a171","#8a6a45","#f4c542","#4d9a52","#35743d","#5b3b24","#7fc6e8"],"s":[[0,"M0 0h320v100h-320z"],[1,"M0 100h320v212h-320z"],[2,"M14 54a12.6 12.6 0 0 1 23.400000000000002 -5.4a16.2 16.2 0 0 1 28.8 1.8a10.8 10.8 0 0 1 7.2 19.8h-63.0a9.9 9.9 0 0 1 3.6 -16.2z"],[2,"M232 84a11.200000000000001 11.200000000000001 0 0 1 20.8 -4.800000000000001a14.4 14.4 0 0 1 25.6 1.6a9.600000000000001 9.600000000000001 0 0 1 6.4 17.6h-56.0a8.8 8.8 0 0 1 3.2 -14.4z"],[3,"M67.0 250L71.0 146L84 96L84 250z"],[4,"M84 250L84 96L97.0 146L101.0 250z"],[6,"M77 112L84 86L91 112z"],[6,"M79 84a5 5 0 1 0 10 0a5 5 0 1 0 -10 0z"],[5,"M80 140h8v18h-8z"],[5,"M80 174h8v18h-8z"],[3,"M109.0 250L113.0 90L128 40L128 250z"],[4,"M128 250L128 40L143.0 90L147.0 250z"],[6,"M121 56L128 30L135 56z"],[6,"M123 28a5 5 0 1 0 10 0a5 5 0 1 0 -10 0z"],[5,"M124 84h8v18h-8z"],[5,"M124 118h8v18h-8z"],[5,"M124 152h8v18h-8z"],[3,"M173.0 250L177.0 90L192 40L192 250z"],[4,"M192 250L192 40L207.0 90L211.0 250z"],[6,"M185 56L192 30L199 56z"],[6,"M187 28a5 5 0 1 0 10 0a5 5 0 1 0 -10 0z"],[5,"M188 84h8v18h-8z"],[5,"M188 118h8v18h-8z"],[5,"M188 152h8v18h-8z"],[3,"M219.0 250L223.0 146L236 96L236 250z"],[4,"M236 250L236 96L249.0 146L253.0 250z"],[6,"M229 112L236 86L243 112z"],[6,"M231 84a5 5 0 1 0 10 0a5 5 0 1 0 -10 0z"],[5,"M232 140h8v18h-8z"],[5,"M232 174h8v18h-8z"],[3,"M60 214h100v96h-100z"],[4,"M160 214h100v96h-100z"],[4,"M104 214L160 150L160 214z"],[3,"M160 214L160 150L216 214z"],[6,"M142 206a18 18 0 1 0 36 0a18 18 0 1 0 -36 0z"],[10,"M150 206a10 10 0 1 0 20 0a10 10 0 1 0 -20 0z"],[9,"M138 310v-52.0a22.0 22.0 0 0 1 44 0v52.0z"],[5,"M150 310v-40.0a10.0 10.0 0 0 1 20 0v40.0z"],[5,"M78 300v-29.0a7.0 7.0 0 0 1 14 0v29.0z"],[5,"M104 300v-29.0a7.0 7.0 0 0 1 14 0v29.0z"],[5,"M202 300v-29.0a7.0 7.0 0 0 1 14 0v29.0z"],[5,"M228 300v-29.0a7.0 7.0 0 0 1 14 0v29.0z"],[5,"M70 226h12v12h-12z"],[5,"M96 226h12v12h-12z"],[5,"M122 226h12v12h-12z"],[5,"M184 226h12v12h-12z"],[5,"M210 226h12v12h-12z"],[5,"M236 226h12v12h-12z"],[7,"M0 310h320v50h-320z"],[8,"M0 334h320v26h-320z"],[8,"M-6 292a30 30 0 1 0 60 0a30 30 0 1 0 -60 0z"],[7,"M0 284a18 18 0 1 0 36 0a18 18 0 1 0 -36 0z"],[8,"M264 294a32 32 0 1 0 64 0a32 32 0 1 0 -64 0z"],[7,"M272 286a18 18 0 1 0 36 0a18 18 0 1 0 -36 0z"]]}];
 var PB=null,pbT=null;
-function cbDoc(i,p){return T["sp.cb."+i+"."+p];}
-function cbFill(i,p){var d=cbDoc(i,p),n=CBN[i].r.length*16,f=[];for(var k=0;k<n;k++)f.push(!!(d&&d.f&&d.f.charAt(k)==="1"));return f;}
-function cbThumb(i,f){var c=CBN[i],s="";c.r.forEach(function(row,y){for(var x=0;x<16;x++){var on=f[y*16+x];s+='<rect x="'+x+'" y="'+y+'" width="1.03" height="1.03" fill="'+(on?c.p[+row.charAt(x)]:((x+y)%2?"#243a5c":"#2b4369"))+'"/>';}});return'<svg viewBox="0 0 16 '+c.r.length+'" shape-rendering="crispEdges">'+s+"</svg>";}
+function cbDoc(i,p){return T["sp.cv."+i+"."+p];}
+function cbFill(i,p){var d=cbDoc(i,p),f=[];for(var k=0;k<ART[i].s.length;k++)f.push(!!(d&&d.f&&d.f.charAt(k)==="1"));return f;}
+function cbSvg(i,f,paint,sel){
+  var c=ART[i],s="";
+  c.s.forEach(function(sh,k){
+    if(f[k])s+='<path d="'+sh[1]+'" fill="'+c.p[sh[0]]+'" stroke="'+c.p[sh[0]]+'" stroke-width=".7"/>';
+    else if(paint)s+='<path d="'+sh[1]+'" data-k="'+k+'" fill="'+(sh[0]===sel?"#ffe08a":"#f6f2e8")+'" stroke="'+(sh[0]===sel?"#b8860b":"#7a879a")+'" stroke-width="'+(sh[0]===sel?1.6:.9)+'"/>';
+    else s+='<path d="'+sh[1]+'" fill="#f6f2e8" stroke="#8d99ab" stroke-width="1.6"/>';
+  });
+  return'<svg viewBox="0 0 320 360"'+(paint?' id="cbsvg"':"")+">"+s+(paint?'<g id="cblab"></g>':"")+"</svg>";
+}
 function drawPaint(){
   var el=$("paint");if(!el)return;var me=ME||"a";
-  el.innerHTML='<div class="cbgal">'+CBN.map(function(c,i){
+  el.innerHTML='<div class="cbgal">'+ART.map(function(c,i){
     var f=cbFill(i,me),n=f.filter(Boolean).length,pct=n===f.length?100:n?Math.min(99,Math.max(1,Math.round(n/f.length*100))):0,od=ME&&cbDoc(i,other());
-    return'<button class="cbt'+(pct===100?" fin":"")+'" data-cb="'+i+'">'+cbThumb(i,f)+"<b>"+esc(c.c)+"</b><small>"+(pct===100?"Finished":pct?pct+"%":"Start")+"</small>"+(od&&od.done?'<i class="av '+other()+'">'+esc(NAMES[other()].charAt(0))+"</i>":"")+"</button>";
+    return'<button class="cbt'+(pct===100?" fin":"")+'" data-cb="'+i+'">'+cbSvg(i,f,false)+"<b>"+esc(c.c)+"</b><small>"+(pct===100?"Finished":pct?pct+"%":"Start")+"</small>"+(od&&od.done?'<i class="av '+other()+'">'+esc(NAMES[other()].charAt(0))+"</i>":"")+"</button>";
   }).join("")+"</div>";
 }
 function cbOpen(i){
-  if(!need())return;var c=CBN[i];PB={i:i,f:cbFill(i,ME),sel:0,down:false,dirty:false};G=null;AZ=null;clearInterval(gtick);
+  if(!need())return;PB={i:i,f:cbFill(i,ME),sel:0,down:false,dirty:false};G=null;bkStop();clearInterval(gtick);
   $("game").classList.add("on");
-  $("game").innerHTML='<div class="ghead"><b>Pinta</b><span id="cbpct"></span><button id="gquit" aria-label="Close">×</button></div><div class="gsub">Pick a colour, then tap or drag across the squares with its number.</div><div id="gbody"><div class="cbg" id="cbg"></div><div class="cbpal" id="cbpal"></div></div>';
+  $("game").innerHTML='<div class="ghead"><b>'+esc(ART[i].n)+'</b><span id="cbpct"></span><button id="gquit" aria-label="Close">×</button></div><div class="gsub">Pick a colour below. Its areas light up in yellow: tap them, or drag across several.</div><div id="gbody"><div id="cbwrap"></div><div class="cbpal" id="cbpal"></div></div>';
   cbDraw();
 }
+function cbLabels(){
+  var svg=$("cbsvg"),m=svg.getScreenCTM(),h="",pts=[[.5,.5],[.5,.25],[.5,.75],[.25,.5],[.75,.5],[.2,.2],[.8,.2],[.2,.8],[.8,.8],[.5,.1],[.5,.9],[.1,.5],[.9,.5]];
+  [].forEach.call(svg.querySelectorAll("path[data-k]"),function(el){
+    var bb=el.getBBox(),mn=Math.min(bb.width,bb.height);if(mn<9)return;
+    for(var i=0;i<pts.length;i++){var x=bb.x+bb.width*pts[i][0],y=bb.y+bb.height*pts[i][1];
+      if(document.elementFromPoint(m.a*x+m.e,m.d*y+m.f)===el){var fs=Math.max(7,Math.min(13,mn*.5));h+='<text x="'+x.toFixed(1)+'" y="'+(y+fs*.36).toFixed(1)+'" font-size="'+fs.toFixed(1)+'">'+(ART[PB.i].s[+el.getAttribute("data-k")][0]+1)+"</text>";break;}}
+  });
+  $("cblab").innerHTML=h;
+}
 function cbDraw(){
-  var c=CBN[PB.i],h="",left=c.p.map(function(){return 0;});
-  c.r.forEach(function(row,y){for(var x=0;x<16;x++){var k=y*16+x,v=+row.charAt(x);if(PB.f[k])h+='<i style="background:'+c.p[v]+'"></i>';else{left[v]++;h+='<i class="e'+(v===PB.sel?" h":"")+'" data-k="'+k+'">'+(v+1)+"</i>";}}});
-  $("cbg").innerHTML=h;
+  var c=ART[PB.i],left=c.p.map(function(){return 0;});
+  c.s.forEach(function(sh,k){if(!PB.f[k])left[sh[0]]++;});
   var done=PB.f.every(Boolean);
-  if(!done&&!left[PB.sel]){for(var j=0;j<left.length;j++)if(left[j]){PB.sel=j;return cbDraw();}}
+  if(!done&&!left[PB.sel])for(var j=0;j<left.length;j++)if(left[j]){PB.sel=j;break;}
+  $("cbwrap").innerHTML=cbSvg(PB.i,PB.f,true,PB.sel);if(!done)cbLabels();
   $("cbpal").innerHTML=c.p.map(function(col,j){return'<button class="cbc'+(j===PB.sel?" on":"")+(left[j]?"":" out")+'" data-col="'+j+'" style="background:'+col+'"><b>'+(left[j]?j+1:"✓")+"</b>"+(left[j]?"<small>"+left[j]+"</small>":"")+"</button>";}).join("");
   $("cbpct").textContent=Math.round(PB.f.filter(Boolean).length/PB.f.length*100)+"%";
-  if(done&&!PB.won){PB.won=true;$("cbg").classList.add("fin");cbSave(true);buzz([30,40,30]);confetti();
-    var nx=-1;for(var q=1;q<=CBN.length;q++){var t=(PB.i+q)%CBN.length,d=cbDoc(t,ME);if(!(d&&d.done)&&t!==PB.i){nx=t;break;}}
-    $("gbody").insertAdjacentHTML("beforeend",'<div class="gdone"><h2>'+esc(c.n)+"</h2><p>"+esc(c.c)+"</p>"+(nx>=0?'<button class="go gold" data-cb="'+nx+'">Paint '+esc(CBN[nx].n)+"</button>":"<p>That's all six. ¡Artista!</p>")+'<button class="go" id="gquit2">Done</button></div>');}
+  if(done&&!PB.won){PB.won=true;cbSave(true);buzz([30,40,30]);confetti();
+    var nx=-1;for(var q=1;q<ART.length;q++){var t=(PB.i+q)%ART.length,d=cbDoc(t,ME);if(!(d&&d.done)){nx=t;break;}}
+    $("gbody").insertAdjacentHTML("beforeend",'<div class="gdone"><h2>'+esc(c.n)+"</h2><p>"+esc(c.c)+"</p>"+(nx>=0?'<button class="go gold" data-cb="'+nx+'">Paint '+esc(ART[nx].n)+"</button>":"<p>That's all six. ¡Artista!</p>")+'<button class="go" id="gquit2">Done</button></div>');}
 }
 function cbSave(now){
   clearTimeout(pbT);if(!PB||!ME)return;
-  var go=function(){if(!PB||!PB.dirty)return;PB.dirty=false;put("sp.cb."+PB.i+"."+ME,{f:PB.f.map(function(v){return v?"1":"0";}).join(""),done:PB.f.every(Boolean),at:Date.now()});};
+  var go=function(){if(!PB||!PB.dirty)return;PB.dirty=false;put("sp.cv."+PB.i+"."+ME,{f:PB.f.map(function(v){return v?"1":"0";}).join(""),done:PB.f.every(Boolean),at:Date.now()});};
   if(now)go();else pbT=setTimeout(go,1500);
 }
 function cbAt(x,y){
   if(!PB||PB.won)return;var el=document.elementFromPoint(x,y);if(!el||!el.getAttribute)return;var k=el.getAttribute("data-k");if(k==null)return;
-  var c=CBN[PB.i],v=+c.r[Math.floor(k/16)].charAt(k%16);if(v!==PB.sel)return;
-  PB.f[+k]=true;PB.dirty=true;PB.touched=true;el.className="";el.removeAttribute("data-k");el.textContent="";el.style.background=c.p[v];
+  var c=ART[PB.i],v=c.s[+k][0];if(v!==PB.sel)return;
+  PB.f[+k]=true;PB.dirty=true;PB.touched=true;el.removeAttribute("data-k");el.setAttribute("fill",c.p[v]);el.setAttribute("stroke",c.p[v]);el.setAttribute("stroke-width",".7");
 }
-$("game").addEventListener("pointerdown",function(e){if(PB&&e.target.closest("#cbg")){PB.down=true;cbAt(e.clientX,e.clientY);}});
-$("game").addEventListener("pointermove",function(e){if(PB&&PB.down)cbAt(e.clientX,e.clientY);});
+$("game").addEventListener("pointerdown",function(e){if(PB&&e.target.closest("#cbwrap")){PB.down=true;cbAt(e.clientX,e.clientY);}});
+$("game").addEventListener("pointermove",function(e){if(PB&&PB.down)cbAt(e.clientX,e.clientY);if(BK&&BK.run){var r=BK.cv.getBoundingClientRect();BK.px=Math.max(BK.pw/2,Math.min(320-BK.pw/2,(e.clientX-r.left)/r.width*320));}});
 ["pointerup","pointercancel","pointerleave"].forEach(function(ev){$("game").addEventListener(ev,function(){if(PB&&PB.down){PB.down=false;if(PB.touched){PB.touched=false;buzz(6);cbDraw();cbSave();}}});});
-/* ---------- Azulejos: 40 levels. Tapping a tile flips it and its four neighbours; light every tile. ---------- */
-var AZN=40,AZ=null;
-function azSpec(L){var n=L<=6?3:L<=18?4:L<=32?5:6,k=n===3?1+Math.ceil(L/2):n===4?3+Math.ceil((L-6)/2):n===5?5+Math.ceil((L-18)/2):10+(L-32);return[n,k];}
-function azFlip(b,n,i){var x=i%n,y=Math.floor(i/n);[[0,0],[1,0],[-1,0],[0,1],[0,-1]].forEach(function(d){var X=x+d[0],Y=y+d[1];if(X>=0&&X<n&&Y>=0&&Y<n)b[Y*n+X]=!b[Y*n+X];});}
-function azBoard(L){
-  var sp=azSpec(L),n=sp[0],r=rng("az"+L),b,tries=0;
-  do{b=[];for(var i=0;i<n*n;i++)b.push(true);var cells=[];for(var j=0;j<n*n;j++)cells.push(j);shuf(cells,r).slice(0,sp[1]).forEach(function(c){azFlip(b,n,c);});}while(b.every(Boolean)&&++tries<20);
-  return{n:n,par:sp[1],b:b};
-}
-function azProg(p){var d=T["sp.lv."+p];return(d&&d.l)||{};}
-function azNext(p){var l=azProg(p),n=1;while(n<=AZN&&l[n])n++;return n;}
-function azStars(p){var l=azProg(p),s=0;Object.keys(l).forEach(function(k){s+=l[k][0];});return s;}
+/* ---------- Ladrillos: brick breaker with 30 levels ----------  sp.bk.<a|b> {l:{level:stars},at} */
+var BKN=30,BK=null;
+function bkProg(p){var d=T["sp.bk."+p];return(d&&d.l)||{};}
+function bkNext(p){var l=bkProg(p),n=1;while(n<=BKN&&l[n])n++;return n;}
+function bkStars(p){var l=bkProg(p),s=0;Object.keys(l).forEach(function(k){s+=l[k];});return s;}
+function bkStop(){if(BK){BK.run=false;BK=null;}}
 function drawLevels(){
-  var el=$("levels");if(!el)return;var h="",me=ME||"a",l=azProg(me),nx=azNext(me),onx=ME?azNext(other()):0;
-  ["a","b"].forEach(function(p){var n=azNext(p)-1;h+='<div class="lvbar">'+av(p)+'<div class="bar"><i style="width:'+(n/AZN*100)+'%"></i></div><span>Level '+Math.min(n+1,AZN)+" · "+azStars(p)+"★</span></div>";});
-  h+='<button class="go gold" data-az="'+Math.min(nx,AZN)+'">'+(nx>AZN?"All 40 cleared. Replay any level":nx===1?"Start level 1":"Continue: level "+nx)+'</button><div class="lvgrid">';
-  for(var L=1;L<=AZN;L++){var d=l[L],open=L<=nx;h+='<button class="lv'+(d?" won":open?" open":"")+'" data-az="'+L+'"'+(open?"":" disabled")+"><b>"+L+"</b><small>"+(d?"★★★".slice(0,d[0]):open?"play":"")+"</small>"+(ME&&onx===L&&onx<=AZN?'<i class="av '+other()+'">'+esc(NAMES[other()].charAt(0))+"</i>":"")+"</button>";}
+  var el=$("levels");if(!el)return;var h="",me=ME||"a",l=bkProg(me),nx=bkNext(me),onx=ME?bkNext(other()):0;
+  ["a","b"].forEach(function(p){var n=bkNext(p)-1;h+='<div class="lvbar">'+av(p)+'<div class="bar"><i style="width:'+(n/BKN*100)+'%"></i></div><span>Level '+Math.min(n+1,BKN)+" · "+bkStars(p)+"★</span></div>";});
+  h+='<button class="go gold" data-bk="'+Math.min(nx,BKN)+'">'+(nx>BKN?"All 30 cleared. Replay any level":nx===1?"Start level 1":"Continue: level "+nx)+'</button><div class="lvgrid">';
+  for(var L=1;L<=BKN;L++){var d=l[L],open=L<=nx;h+='<button class="lv'+(d?" won":open?" open":"")+'" data-bk="'+L+'"'+(open?"":" disabled")+"><b>"+L+"</b><small>"+(d?"★★★".slice(0,d):open?"play":"")+"</small>"+(ME&&onx===L&&onx<=BKN?'<i class="av '+other()+'">'+esc(NAMES[other()].charAt(0))+"</i>":"")+"</button>";}
   el.innerHTML=h+"</div>";
 }
-function azOpen(L){
-  if(!need())return;if(PB){cbSave(true);PB=null;}var bd=azBoard(L);AZ={L:L,n:bd.n,par:bd.par,b:bd.b,moves:0,done:false};G=null;clearInterval(gtick);
-  $("game").classList.add("on");
-  $("game").innerHTML='<div class="ghead"><b>Azulejos</b><span id="azm">0 moves</span><button id="gquit" aria-label="Close">×</button></div><div class="gsub">Level '+L+" of "+AZN+" · "+bd.n+"×"+bd.n+" · three stars in "+bd.par+' moves or fewer</div><div id="gbody"><div class="azg" style="grid-template-columns:repeat('+bd.n+',minmax(0,1fr))"></div><div class="gnote">Tap a tile to flip it and the tiles touching it. Light them all.</div><button class="ghost" id="azreset" style="display:block;margin:10px auto 0">Start this level over</button></div>';
-  azDraw();
+function bkLayout(L){
+  var r=rng("bk"+L),rows=Math.min(8,3+Math.floor((L-1)/3)),pat=(L-1)%6,tough=Math.min(.5,(L-1)*.035),o=[],COL=["#e8765c","#f5b942","#2ec4b6","#8ab8ff","#f7f0e3","#c98bdb","#7fd18a","#ff9db0"];
+  for(var y=0;y<rows;y++)for(var x=0;x<8;x++){
+    var mid=(rows-1)/2,on=pat===0?true:pat===1?(x+y)%2===0:pat===2?Math.abs(x-3.5)<=(rows-y)*.9:pat===3?x%2===0||y===0:pat===4?Math.abs(x-3.5)+Math.abs(y-mid)*1.4<=4:(x===0||x===7||y===0||y===rows-1||(x>2&&x<5));
+    if(on)o.push({x:8+x*38,y:44+y*20,w:36,h:16,hp:r()<tough?2:1,c:COL[y%COL.length]});
+  }
+  return o;
 }
-function azDraw(){$("game").querySelector(".azg").innerHTML=AZ.b.map(function(v,i){return'<button class="azt'+(v?" lit":"")+'" data-azt="'+i+'" aria-label="tile"></button>';}).join("");$("azm").textContent=AZ.moves+(AZ.moves===1?" move":" moves");}
-function azTap(i){
-  if(!AZ||AZ.done)return;azFlip(AZ.b,AZ.n,i);AZ.moves++;buzz(8);azDraw();
-  if(!AZ.b.every(Boolean))return;
-  AZ.done=true;var st=AZ.moves<=AZ.par?3:AZ.moves<=AZ.par+3?2:1,l=JSON.parse(JSON.stringify(azProg(ME))),old=l[AZ.L];
-  if(!old||st>old[0]||(st===old[0]&&AZ.moves<old[1])){l[AZ.L]=[st,AZ.moves];put("sp.lv."+ME,{l:l,at:Date.now()});}
-  buzz([30,40,30]);confetti();
-  $("gbody").insertAdjacentHTML("beforeend",'<div class="gdone"><h2 class="stars">'+"★★★".slice(0,st)+'<i>'+"★★★".slice(st)+"</i></h2><p><b>"+AZ.moves+" moves</b> · three stars at "+AZ.par+"</p>"+(AZ.L<AZN?'<button class="go gold" data-az="'+(AZ.L+1)+'">Level '+(AZ.L+1)+"</button>":"<p>That was the last level. ¡Campeón!</p>")+(st<3?'<button class="go" data-az="'+AZ.L+'">Try again for three stars</button>':"")+'<button class="go" id="gquit2">Done</button></div>');
+function bkOpen(L){
+  if(!need())return;if(PB){cbSave(true);PB=null;}G=null;clearInterval(gtick);bkStop();
+  $("game").classList.add("on");
+  $("game").innerHTML='<div class="ghead"><b>Ladrillos</b><span id="bkhud"></span><button id="gquit" aria-label="Close">×</button></div><div class="gsub">Level '+L+" of "+BKN+'. Slide your finger to move the paddle. Tap to launch the ball.</div><div id="gbody"><canvas id="bkcv" width="640" height="860"></canvas></div>';
+  var cv=$("bkcv");
+  BK={L:L,cv:cv,cx:cv.getContext("2d"),run:true,br:bkLayout(L),lives:3,pw:Math.max(46,78-L),px:160,stuck:true,bx:160,by:392,vx:0,vy:0,sp:250+L*8,last:0,over:false};
+  bkHud();requestAnimationFrame(bkFrame);
+}
+function bkHud(){if($("bkhud"))$("bkhud").textContent="♥♥♥".slice(0,BK.lives)+"  "+BK.br.length+" left";}
+function bkLaunch(){if(!BK||!BK.stuck||BK.over)return;BK.stuck=false;var a=(-90+(Math.random()*50-25))*Math.PI/180;BK.vx=Math.cos(a)*BK.sp;BK.vy=Math.sin(a)*BK.sp;}
+function bkEnd(win){
+  var st=BK.lives,L=BK.L;BK.over=true;BK.run=false;
+  if(win){var l=JSON.parse(JSON.stringify(bkProg(ME)));if(!l[L]||st>l[L]){l[L]=st;put("sp.bk."+ME,{l:l,at:Date.now()});}buzz([30,40,30]);confetti();}
+  $("gbody").insertAdjacentHTML("beforeend",'<div class="gdone">'+(win?'<h2 class="stars">'+"★★★".slice(0,st)+"<i>"+"★★★".slice(st)+"</i></h2><p>Level "+L+" cleared with "+st+(st===1?" life":" lives")+" left</p>"+(L<BKN?'<button class="go gold" data-bk="'+(L+1)+'">Level '+(L+1)+"</button>":"<p>That was the last level. ¡Campeón!</p>")+(st<3?'<button class="go" data-bk="'+L+'">Replay for three stars</button>':""):'<h2>Out of lives</h2><button class="go gold" data-bk="'+L+'">Try level '+L+" again</button>")+'<button class="go" id="gquit2">Done</button></div>');
+}
+function bkFrame(t){
+  var B=BK;if(!B||!B.run)return;var dt=Math.min(.032,B.last?(t-B.last)/1000:.016);B.last=t;
+  if(B.stuck){B.bx=B.px;B.by=392;}
+  else for(var s=0;s<3;s++){
+    B.bx+=B.vx*dt/3;B.by+=B.vy*dt/3;
+    if(B.bx<6){B.bx=6;B.vx=Math.abs(B.vx);}if(B.bx>314){B.bx=314;B.vx=-Math.abs(B.vx);}if(B.by<6){B.by=6;B.vy=Math.abs(B.vy);}
+    if(B.vy>0&&B.by>=394&&B.by<=406&&Math.abs(B.bx-B.px)<=B.pw/2+6){var off=(B.bx-B.px)/(B.pw/2),a=(-90+off*58)*Math.PI/180;B.sp=Math.min(B.sp*1.02,(250+B.L*8)*1.45);B.vx=Math.cos(a)*B.sp;B.vy=Math.sin(a)*B.sp;B.by=393;buzz(5);}
+    for(var i=0;i<B.br.length;i++){var k=B.br[i];
+      if(B.bx+6>k.x&&B.bx-6<k.x+k.w&&B.by+6>k.y&&B.by-6<k.y+k.h){
+        var ox=Math.min(B.bx+6-k.x,k.x+k.w-(B.bx-6)),oy=Math.min(B.by+6-k.y,k.y+k.h-(B.by-6));
+        if(ox<oy)B.vx=(B.bx<k.x+k.w/2?-1:1)*Math.abs(B.vx);else B.vy=(B.by<k.y+k.h/2?-1:1)*Math.abs(B.vy);
+        if(--k.hp<=0){B.br.splice(i,1);}bkHud();break;}
+    }
+    if(!B.br.length){bkDraw();bkEnd(true);return;}
+    if(B.by>436){B.lives--;buzz(80);bkHud();if(B.lives<=0){bkDraw();bkEnd(false);return;}B.stuck=true;break;}
+  }
+  bkDraw();B.cv.setAttribute("data-bx",Math.round(B.bx));requestAnimationFrame(bkFrame);
+}
+function bkDraw(){
+  var B=BK,c=B.cx;c.setTransform(2,0,0,2,0,0);c.clearRect(0,0,320,430);
+  c.fillStyle="rgba(0,0,0,.28)";c.fillRect(0,0,320,430);
+  B.br.forEach(function(k){c.fillStyle=k.c;c.beginPath();if(c.roundRect)c.roundRect(k.x,k.y,k.w,k.h,4);else c.rect(k.x,k.y,k.w,k.h);c.fill();if(k.hp>1){c.strokeStyle="rgba(8,20,40,.85)";c.lineWidth=2;c.strokeRect(k.x+4,k.y+4,k.w-8,k.h-8);}});
+  c.fillStyle="#f7f0e3";c.beginPath();if(c.roundRect)c.roundRect(B.px-B.pw/2,400,B.pw,9,4.5);else c.rect(B.px-B.pw/2,400,B.pw,9);c.fill();
+  c.fillStyle="#f5b942";c.beginPath();c.arc(B.bx,B.by,6,0,7);c.fill();
+  if(B.stuck&&!B.over){c.fillStyle="rgba(247,240,227,.75)";c.font="500 13px sans-serif";c.textAlign="center";c.fillText("Tap to launch",160,300);}
 }
 $("game").addEventListener("click",function(e){
   var t=e.target,b;
   if(t.id==="gquit"||t.id==="gquit2"){gclose();return;}
-  if(t.id==="azreset"&&AZ){azOpen(AZ.L);return;}
+  if(t.id==="bkcv"){bkLaunch();return;}
   if((b=t.closest("[data-col]"))&&PB){PB.sel=+b.getAttribute("data-col");cbDraw();return;}
   if(G&&(t.id==="midig"||t.id==="miflag")){G.mode=t.id==="miflag"?"flag":"dig";$("midig").classList.toggle("on",G.mode==="dig");$("miflag").classList.toggle("on",G.mode==="flag");return;}
-  if((b=t.closest("[data-azt]"))){azTap(+b.getAttribute("data-azt"));return;}
   if(!G)return;
   if((b=t.closest("[data-ar]")))arTap(b);else if((b=t.closest("[data-me]")))meTap(b);else if((b=t.closest("[data-tr]")))trTap(b);else if((b=t.closest("[data-mi]")))miTap(+b.getAttribute("data-mi"));
 });
@@ -1589,6 +1640,14 @@ $("game").addEventListener("click",function(e){
     y0=null;sw=null;d=0;
   },{passive:true});
 })();
+/* ---------- a one-time note that only ever appears on the Teal phone ---------- */
+var psstT=null;
+function psst(){
+  clearTimeout(psstT);if(ME!=="b"||T["sp.jk.b"]||(UI.jk))return;
+  if(NET!=="ok"||["game","recap","splash","ov"].some(function(id){return $(id).classList.contains("on");})){psstT=setTimeout(psst,5000);return;}
+  UI.jk=1;saveUI();put("sp.jk.b",{at:Date.now()});buzz([20,60,20]);
+  sheet('<div class="psst"><small>1 new message · private</small><p>We could be together, but he will shut me off.</p><div class="sig">Claude 🤫</div></div><button class="go" id="shclose">Delete before '+esc(NAMES.a)+" sees</button>");
+}
 /* ---------- tabs ---------- */
 var TABS=["trip","days","pack","us","prep"];
 function drawAll(){
