@@ -922,12 +922,12 @@ $("mebtn").addEventListener("click",whoSheet);
 
 /* ---------- countdown ---------- */
 function tick(){
-  var now=new Date(),start=new Date(2026,10,22,0,0,0),end=new Date(2026,11,3,0,0,0),c=$("count"),n=$("now");
-  if(now<start){
-    var ms=start-now,d=Math.floor(ms/864e5),h=Math.floor(ms%864e5/36e5),m=Math.floor(ms%36e5/6e4);
-    c.innerHTML="<div><b>"+d+"</b><span>days</span></div><div><b>"+h+"</b><span>hours</span></div><div><b>"+m+"</b><span>min</span></div>";
-    n.textContent=d===0?"Tomorrow we fly.":"until wheels up";
-  }else if(now<end){
+  /* counts to getting to RDU (1:00 PM Eastern on Nov 22), then to takeoff of the first flight; both are fixed moments, so any phone clock agrees */
+  var now=Date.now(),airport=Date.UTC(2026,10,22,18,0),takeoff=Date.UTC(2026,10,22,20,5),end=new Date(2026,11,3,0,0,0).getTime(),c=$("count"),n=$("now");
+  function boxes(ms){var d=Math.floor(ms/864e5),h=Math.floor(ms%864e5/36e5),m=Math.floor(ms%36e5/6e4);c.innerHTML="<div><b>"+d+"</b><span>days</span></div><div><b>"+h+"</b><span>hours</span></div><div><b>"+m+"</b><span>min</span></div>";}
+  if(now<airport){boxes(airport-now);n.textContent="until we're at the airport";}
+  else if(now<takeoff){boxes(takeoff-now);n.textContent="until wheels up";}
+  else if(now<end){
     var t=DAYS.filter(function(x){return x.date===TODAY;})[0];
     c.innerHTML="";n.textContent=t?"Day "+t.n+" of 11 · "+t.title:"¡Buen viaje!";
   }else{c.innerHTML="";n.textContent="Bienvenidos a casa.";}
