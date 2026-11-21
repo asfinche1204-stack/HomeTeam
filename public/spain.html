@@ -2,7 +2,13 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="manifest" href="/spain.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="España">
+<link rel="apple-touch-icon" href="/icon-180.png">
 <title>España 2026 · Trip Planner</title>
 <meta name="description" content="Our Spain trip, Nov 22 – Dec 2: day-by-day planner, open-time ideas, and packing lists.">
 <meta property="og:type" content="website">
@@ -193,6 +199,38 @@ textarea:focus,input:focus{border-color:var(--teal)}
 .morebtn{width:100%;margin-top:10px;padding:12px;border-radius:14px;border:1px dashed rgba(127,227,216,.55);color:var(--teal2);font-weight:500;background:rgba(46,196,182,.07)}
 .morebtn:disabled{opacity:.45;border-style:solid}
 .rs{margin-left:8px;font-size:.78rem;color:var(--teal2);text-decoration:underline;flex:0 0 auto}
+/* games + phone */
+html{overscroll-behavior-y:contain}
+.hero{padding-top:calc(34px + env(safe-area-inset-top))}
+.tabs{bottom:calc(14px + env(safe-area-inset-bottom))}
+.ptr{position:fixed;top:calc(8px + env(safe-area-inset-top));left:50%;transform:translate(-50%,0);z-index:30;opacity:0;pointer-events:none;padding:7px 14px;border-radius:99px;background:rgba(8,20,40,.9);border:1px solid var(--line);font-size:.74rem;color:var(--mute);transition:opacity .15s}
+.ptr.go{color:var(--teal2);border-color:var(--teal)}.ptr.spin span::after{content:" …"}
+.score{display:flex;align-items:center;justify-content:space-around;padding:12px;border-radius:16px;background:rgba(0,0,0,.25);border:1px solid var(--line);margin-bottom:8px}
+.score>div{display:flex;align-items:center;gap:8px}.score b{font-family:var(--serif);font-size:2rem;line-height:1}.score span{font-size:.8rem;color:var(--mute)}.score em{font-style:normal;font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--saff)}
+.gm{display:flex;gap:12px;align-items:center;padding:12px 0;border-top:1px solid var(--line)}.gm>div{flex:1;min-width:0}.gm .go{width:auto;margin:0;padding:10px 16px;flex:0 0 auto}
+.game{position:fixed;inset:0;z-index:64;display:none;background:radial-gradient(120% 80% at 50% 0%,#14345f,#081428 60%,#050b16);padding:calc(14px + env(safe-area-inset-top)) 16px calc(20px + env(safe-area-inset-bottom));overflow:auto}
+.game.on{display:block}
+.ghead{display:flex;align-items:center;gap:12px;max-width:460px;margin:0 auto}.ghead b{font-family:var(--serif);font-size:1.5rem;flex:1}
+#gclock{font-variant-numeric:tabular-nums;font-size:1.1rem;color:var(--saff);font-weight:500}#gquit{font-size:1.8rem;width:44px;height:44px;color:var(--mute)}
+.gsub{max-width:460px;margin:0 auto 14px;font-size:.8rem;color:var(--mute)}
+#gbody{max-width:460px;margin:0 auto;position:relative}
+.gnote{text-align:center;margin-top:14px;color:var(--mute);font-size:.9rem}
+.arg{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;padding:10px;border-radius:18px;background:rgba(0,0,0,.28);border:1px solid var(--line);overflow:hidden}
+.arg>*{aspect-ratio:1}
+.arw{border-radius:12px;background:rgba(255,255,255,.07);display:grid;place-items:center;transition:transform .38s cubic-bezier(.5,0,.9,.4),opacity .38s}
+.arw svg{width:62%;height:62%}.arw.d0 svg{fill:var(--teal)}.arw.d1 svg{fill:var(--saff)}.arw.d2 svg{fill:var(--terra)}.arw.d3 svg{fill:#8ab8ff}
+.arw.fly{transform:translate(calc(var(--dx)*340px),calc(var(--dy)*340px));opacity:0;pointer-events:none}
+.arw.no{animation:shake .35s}
+@keyframes shake{25%{transform:translateX(-5px)}50%{transform:translateX(5px)}75%{transform:translateX(-3px)}}
+.meg{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.mem{aspect-ratio:1;border-radius:14px;background:linear-gradient(140deg,#13305a,#0b6e68);border:1px solid var(--line);font-size:2rem;display:grid;place-items:center;transition:transform .25s}
+.mem span{opacity:0;transition:opacity .15s}.mem.up{background:rgba(247,240,227,.12);transform:rotateY(180deg)}.mem.up span{opacity:1;transform:rotateY(180deg)}
+.mem.ok{background:rgba(245,185,66,.2);border-color:var(--saff)}
+.trq small{font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--saff);font-weight:600}.trq h2{margin:8px 0 16px;font-size:1.35rem}
+.tro{display:block;width:100%;text-align:left;padding:14px 16px;margin:8px 0;border-radius:14px;background:rgba(255,255,255,.06);border:1px solid var(--line);font-size:1rem}
+.tro.ok{background:rgba(46,196,182,.25);border-color:var(--teal)}.tro.no{background:rgba(232,118,92,.25);border-color:var(--terra)}
+.gdone{text-align:center;margin-top:18px;padding:18px;border-radius:18px;background:rgba(245,185,66,.12);border:1px solid rgba(245,185,66,.45);animation:in .4s ease}
+.gdone h2{font-size:1.8rem}.gdone p{margin:6px 0}.gdone b{font-family:var(--serif);font-size:1.5rem;color:var(--saff)}
 /* extras */
 .todo{fill:none;stroke:var(--mute);stroke-width:1.6;stroke-dasharray:4 5;opacity:.75}
 .pin.been circle.c{fill:var(--saff)}.pin.cur circle.c{fill:#fff;stroke:var(--saff);stroke-width:2.5}.pin.cur text.n{fill:#fff}
@@ -378,6 +416,11 @@ textarea:focus,input:focus{border-color:var(--teal)}
       <div class="dmeta" id="stampn" style="text-align:center;margin-top:10px"></div>
     </div>
     <div class="card">
+      <h2>Juegos</h2>
+      <p class="lead">Three quick games, the same board on both phones. Play your own, then see who took the point.</p>
+      <div id="games"></div>
+    </div>
+    <div class="card">
       <h2>Postales</h2>
       <p class="lead">One question a day. Answer in secret. The postcard only flips once we have both answered.</p>
       <div id="pcs"></div>
@@ -417,6 +460,8 @@ textarea:focus,input:focus{border-color:var(--teal)}
   </section>
 </div>
 
+<div class="ptr" id="ptr"><span>Pull to refresh</span></div>
+<div class="game" id="game"></div>
 <div class="recap" id="recap"></div>
 <div class="splash" id="splash"></div>
 <div class="ov" id="ov"><div class="sheet" id="sheet"></div></div>
@@ -758,6 +803,7 @@ function announce(id,data,had){
   else if((p[1]==="pk"||p[1]==="pr")&&data&&!had&&data.by&&data.by!==ME)toast(NAMES[data.by]+" checked off "+(LBL[id]||"an item"));
   else if(p[1]==="no"&&data&&!had&&data.by&&data.by!==ME){var o2=DAYS[+p[2]-1]&&idea(+p[2],+p[3]);if(o2)toast(NAMES[data.by]+" dismissed "+o2[0]);}
   else if(p[1]==="ev"&&data&&!had&&data.by&&data.by!==ME)toast(NAMES[data.by]+" booked "+String(data.title).split("\n")[0]);
+  else if(p[1]==="gm"&&data&&!had&&p[4]!==ME)toast(NAMES[p[4]]+" played today's "+gname(p[2]));
   else if(p[1]==="dn"&&data&&!had&&data.by&&data.by!==ME){var o3=DAYS[+p[2]-1]&&idea(+p[2],+p[3]);if(o3)toast(NAMES[data.by]+" marked "+o3[0]+" done");}
   else if(p[1]==="rt"&&data&&!had&&p[3]!==ME)toast(NAMES[p[3]]+" rated Day "+p[2]);
   else if(p[1]==="st"&&data&&p[3]!==ME)toast(NAMES[p[3]]+" stamped "+STAMPS[+p[2]][0]);
@@ -1028,6 +1074,7 @@ function usTodo(){
   STAMPS.forEach(function(s,i){if(TODAY>=s[1]&&!T["sp.st."+i+"."+ME])n++;});
   PCS.forEach(function(q){if((!q[1]||TODAY>=q[1])&&!T["sp.pc."+q[0]+"."+ME])n++;});
   myNotes().forEach(function(x){if(TODAY>=DAYS[x.day-1].date&&!T["sp.op."+x.rest])n++;});
+  ["ar","me","tr"].forEach(function(g){if(!T["sp.gm."+g+"."+TODAY+"."+ME])n++;});
   return n;
 }
 function drawUs(){
@@ -1077,7 +1124,7 @@ $("s-us").addEventListener("change",function(e){if(e.target.id==="snday")DRAFT.s
 $("s-us").addEventListener("focusout",function(){setTimeout(function(){if(usDirty&&TAB==="us")drawUs();},150);});
 $("s-us").addEventListener("click",function(e){
   var t=e.target,b;
-  if((b=t.closest("[data-st]"))){if(!need())return;var i=b.getAttribute("data-st"),id="sp.st."+i+"."+ME;if(T[id])return;lastStamp=i+ME;put(id,{at:Date.now()});var both=T["sp.st."+i+"."+other()];drawUs();if(both)confetti();setTimeout(function(){lastStamp=null;},900);return;}
+  if((b=t.closest("[data-st]"))){if(!need())return;var i=b.getAttribute("data-st"),id="sp.st."+i+"."+ME;if(T[id])return;lastStamp=i+ME;buzz(25);put(id,{at:Date.now()});var both=T["sp.st."+i+"."+other()];drawUs();if(both)confetti();setTimeout(function(){lastStamp=null;},900);return;}
   if((b=t.closest("[data-sendpc]"))){if(!need())return;var k=b.getAttribute("data-sendpc"),v=(DRAFT["pc"+k]||"").trim();if(!v)return;delete DRAFT["pc"+k];put("sp.pc."+k+"."+ME,{text:v.slice(0,500),at:Date.now()});drawUs();return;}
   if((b=t.closest("[data-unpc]"))){if(!need())return;var k2=b.getAttribute("data-unpc"),cur=T["sp.pc."+k2+"."+ME];if(cur)DRAFT["pc"+k2]=cur.text;put("sp.pc."+k2+"."+ME,null);drawUs();return;}
   if(t.id==="snsend"){if(!need())return;var tx=(DRAFT.sn||"").trim(),dy=+($("snday").value);if(!tx||!dy)return;put("sp.sn."+dy+"."+ME+"."+Date.now().toString(36),{text:tx.slice(0,1500),at:Date.now()});DRAFT.sn="";drawUs();toast("Sealed until "+nice(DAYS[dy-1].date));return;}
@@ -1158,6 +1205,8 @@ function recapSlides(){
   function num(n,l){return n?'<div><b data-n="'+n+'">0</b><span>'+l+"</span></div>":"";}
   S.push("<small>By the numbers</small><div class=\"nums\">"+num(6,"cities")+num(1000,"miles by coach, roughly")+num(st,"stamps together")+num(done.length,"places we did")+num(bk,"bookings")+num(pc.length,"postcards flipped")+num(notes,"sealed notes")+"</div>");
   for(var i=0;i<done.length;i+=6)S.push("<small>We actually did this</small><ul>"+done.slice(i,i+6).map(function(x){return"<li><em>"+esc(x[0])+"</em>"+esc(x[1])+"</li>";}).join("")+"</ul>");
+  var gp=gpoints();
+  if(gp.n)S.push("<small>Juegos</small><div class=\"nums\"><div><b data-n=\""+gp.a+"\">0</b><span>"+esc(NAMES.a)+"</span></div><div><b data-n=\""+gp.b+"\">0</b><span>"+esc(NAMES.b)+"</span></div></div><h2>"+(gp.a===gp.b?"Dead even":esc(NAMES[gp.a>gp.b?"a":"b"])+" takes the trip")+"</h2><p>"+gp.n+" games played</p>");
   var rc=rchart();
   if(rc.any)S.push("<small>How the days scored</small>"+rc.h+'<p class="lg">'+av("a")+" "+esc(NAMES.a)+" &nbsp; "+av("b")+" "+esc(NAMES.b)+"</p>"+(rc.best?"<h2>Best day: "+esc(rc.best.d.title)+"</h2>":""));
   pc.forEach(function(x){if(x[0][0]===11)return;S.push("<small>"+esc(x[0][2])+"</small><h2><i>"+esc(QS[x[0][0]])+'</i></h2><div class="ans"><div>'+av("a")+"<p>"+esc(x[1].text)+"</p></div><div>"+av("b")+"<p>"+esc(x[2].text)+"</p></div></div>");});
@@ -1179,8 +1228,142 @@ $("recap").addEventListener("click",function(e){
 });
 document.addEventListener("click",function(e){
   if(e.target.closest("[data-recap]")){playRecap();return;}
+  var gb=e.target.closest("[data-game]");if(gb){gopen(gb.getAttribute("data-game"));return;}
   var gd=e.target.closest("[data-goday]");if(gd){UI.day=+gd.getAttribute("data-goday");saveUI();go("days");}
 });
+/* ---------- juegos: one scored board per game per day, same board on both phones ----------
+   sp.gm.<game>.<date>.<a|b>  {s,t,at}  s = score (turns or right answers), t = milliseconds        */
+function rng(seed){var h=2166136261;for(var i=0;i<seed.length;i++){h^=seed.charCodeAt(i);h=Math.imul(h,16777619);}var a=h>>>0;return function(){a|=0;a=a+0x6D2B79F5|0;var t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+function shuf(a,r){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(r()*(i+1)),t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function buzz(ms){try{if(navigator.vibrate)navigator.vibrate(ms);}catch(e){}}
+var GAMES=[["ar","Flechas","Tap an arrow to fire it off the board. It only goes if nothing is in its way. Fastest clear wins; a blocked tap costs 5 seconds."],["me","Memoria","Find the eight pairs. Fewest turns wins."],["tr","¿Sabías?","Five questions about Spain. Most right wins; speed breaks ties."]];
+function gname(g){return GAMES.filter(function(x){return x[0]===g;})[0][1];}
+function gres(g,date,p){return T["sp.gm."+g+"."+date+"."+p];}
+function gval(g,r){return g==="tr"?-r.s*1e7+r.t:g==="me"?r.s*1e7+r.t:r.t;}
+function mmss(ms){var s=Math.round(ms/1000);return Math.floor(s/60)+":"+("0"+s%60).slice(-2);}
+function gfmt(g,r){return g==="ar"?mmss(r.t):g==="me"?r.s+" turns":r.s+" of 5";}
+function gpoints(){var pt={a:0,b:0,n:0};Object.keys(T).forEach(function(id){var p=id.split(".");if(p[1]!=="gm"||p[4]!=="a")return;var a=T[id],b=gres(p[2],p[3],"b");if(!b)return;var va=gval(p[2],a),vb=gval(p[2],b);pt.n++;if(va<=vb)pt.a++;if(vb<=va)pt.b++;});return pt;}
+function drawGames(){
+  var el=$("games");if(!el)return;var pt=gpoints(),O=ME?NAMES[other()]:"your partner";
+  var h='<div class="score"><div>'+av("a")+"<b>"+pt.a+"</b><span>"+esc(NAMES.a)+"</span></div><em>"+(pt.n?pt.n+" played":"vs")+"</em><div>"+av("b")+"<b>"+pt.b+"</b><span>"+esc(NAMES.b)+"</span></div></div>";
+  GAMES.forEach(function(g){
+    var mine=ME&&gres(g[0],TODAY,ME),th=ME&&gres(g[0],TODAY,other()),st;
+    if(mine&&th){var d=gval(g[0],mine)-gval(g[0],th);st="You "+gfmt(g[0],mine)+" · "+esc(O)+" "+gfmt(g[0],th)+" · <b>"+(d<0?"You win":d>0?esc(O)+" wins":"Tie")+"</b>";}
+    else if(mine)st="You: "+gfmt(g[0],mine)+". Hidden from "+esc(O)+" until they play.";
+    else st=(th?"<b>"+esc(O)+" has played.</b> ":"")+esc(g[2]);
+    h+='<div class="gm"><div><h3>'+g[1]+'</h3><div class="dmeta">'+st+'</div></div><button class="go" data-game="'+g[0]+'">'+(mine?"Practice":"Play")+"</button></div>";
+  });
+  el.innerHTML=h+'<div class="dmeta" style="margin-top:8px">New boards every day. Your first play each day is the one that counts; one point per game won.</div>';
+}
+var G=null,gtick=null;
+function gopen(g){
+  if(!need())return;var scored=!gres(g,TODAY,ME);
+  G={g:g,scored:scored,r:rng(scored?g+TODAY:g+Date.now()),t0:0,pen:0,done:false};
+  $("game").classList.add("on");
+  $("game").innerHTML='<div class="ghead"><b>'+gname(g)+'</b><span id="gclock">0:00</span><button id="gquit" aria-label="Close">×</button></div><div class="gsub">'+(scored?"Today's board. This one counts.":"Practice round. It doesn't count.")+'</div><div id="gbody"></div>';
+  ({ar:arStart,me:meStart,tr:trStart})[g]();
+  clearInterval(gtick);gtick=setInterval(function(){if(G&&!G.done&&$("gclock"))$("gclock").textContent=mmss(gel());},250);
+}
+function gclose(){clearInterval(gtick);G=null;$("game").classList.remove("on");$("game").innerHTML="";drawAll();}
+function gel(){return G.t0?Date.now()-G.t0+G.pen:G.pen;}
+function gfinish(score){
+  G.done=true;clearInterval(gtick);var r={s:score,t:gel(),at:Date.now()};
+  if(G.scored&&ME&&!gres(G.g,TODAY,ME))put("sp.gm."+G.g+"."+TODAY+"."+ME,r);
+  buzz([30,40,30]);confetti();
+  var th=ME&&gres(G.g,TODAY,other()),msg="";
+  if(G.scored&&th){var d=gval(G.g,r)-gval(G.g,th);msg=esc(NAMES[other()])+" got "+gfmt(G.g,th)+". "+(d<0?"You take the point.":d>0?"Point to "+esc(NAMES[other()])+".":"A tie: a point each.");}
+  else if(G.scored)msg="Saved. You'll see who won once "+esc(ME?NAMES[other()]:"your partner")+" plays.";
+  $("gbody").insertAdjacentHTML("beforeend",'<div class="gdone"><h2>¡Hecho!</h2><p><b>'+gfmt(G.g,r)+"</b>"+(G.g!=="ar"?" in "+mmss(r.t):"")+"</p><p>"+msg+'</p><button class="go" id="gquit2">Done</button></div>');
+}
+/* Flechas: built in reverse so it can always be cleared, and removing an arrow never blocks another */
+var AD=[[0,-1],[1,0],[0,1],[-1,0]];
+function arClear(i,d){var N=G.N,x=i%N+AD[d][0],y=Math.floor(i/N)+AD[d][1];while(x>=0&&x<N&&y>=0&&y<N){if(G.grid[y*N+x]!=null)return false;x+=AD[d][0];y+=AD[d][1];}return true;}
+function arStart(){
+  var N=6,cells=[],n=0;for(var i=0;i<N*N;i++)cells.push(i);G.N=N;G.grid={};
+  shuf(cells,G.r).forEach(function(i){if(n>=28)return;var ds=shuf([0,1,2,3],G.r);for(var k=0;k<4;k++)if(arClear(i,ds[k])){G.grid[i]=ds[k];n++;return;}});
+  G.left=n;var h='<div class="arg">';
+  for(var c=0;c<N*N;c++)h+=G.grid[c]!=null?'<button class="arw d'+G.grid[c]+'" data-ar="'+c+'" aria-label="arrow"><svg viewBox="0 0 24 24" style="transform:rotate('+G.grid[c]*90+'deg)"><path d="M12 3l7 8h-4.5v10h-5V11H5z"/></svg></button>':"<span></span>";
+  $("gbody").innerHTML=h+'</div><div class="gnote" id="gnote">'+n+" arrows to clear</div>";
+}
+function arTap(b){
+  var i=+b.getAttribute("data-ar"),d=G.grid[i];if(d==null||G.done)return;if(!G.t0)G.t0=Date.now();
+  if(!arClear(i,d)){G.pen+=5000;b.classList.remove("no");void b.offsetWidth;b.classList.add("no");buzz(60);$("gnote").textContent="Blocked: +5 seconds";return;}
+  delete G.grid[i];G.left--;buzz(10);b.style.setProperty("--dx",AD[d][0]);b.style.setProperty("--dy",AD[d][1]);b.classList.add("fly");b.removeAttribute("data-ar");
+  $("gnote").textContent=G.left?G.left+" to go":"Clear!";if(!G.left)gfinish(0);
+}
+/* Memoria */
+function meStart(){
+  var E=["🥘","🍊","💃","🏰","🎸","🍷","🌞","🐂"];G.deck=shuf(E.concat(E),G.r);G.open=[];G.turns=0;G.found=0;G.lock=false;
+  $("gbody").innerHTML='<div class="meg">'+G.deck.map(function(e,i){return'<button class="mem" data-me="'+i+'"><span>'+e+"</span></button>";}).join("")+'</div><div class="gnote" id="gnote">0 turns</div>';
+}
+function meTap(b){
+  if(G.lock||G.done||b.classList.contains("up"))return;if(!G.t0)G.t0=Date.now();
+  b.classList.add("up");G.open.push(b);buzz(8);if(G.open.length<2)return;
+  G.turns++;$("gnote").textContent=G.turns+(G.turns===1?" turn":" turns");
+  var x=G.open[0],y=G.open[1];G.open=[];
+  if(G.deck[+x.getAttribute("data-me")]===G.deck[+y.getAttribute("data-me")]){x.classList.add("ok");y.classList.add("ok");if(++G.found===8)gfinish(G.turns);}
+  else{G.lock=true;setTimeout(function(){x.classList.remove("up");y.classList.remove("up");if(G)G.lock=false;},750);}
+}
+/* ¿Sabías? */
+var TQ=[
+["What is the Mezquita of Córdoba used as today?",["A cathedral","A mosque","A museum only"],0],["Who designed the Sagrada Família?",["Antoni Gaudí","Santiago Calatrava","Pablo Picasso"],0],["When did work on the Sagrada Família begin?",["1782","1882","1932"],1],
+["'Alhambra' comes from the Arabic for…",["The red one","The high garden","The water palace"],0],["Where was paella born?",["Seville","Valencia","Barcelona"],1],["A traditional paella valenciana has…",["Shrimp and mussels","Chorizo","Chicken and rabbit"],2],
+["Flamenco comes from which region?",["Catalonia","Andalusia","Galicia"],1],["Seville's Giralda bell tower began life as a…",["Lighthouse","Minaret","Watchtower"],1],["Whose tomb is in Seville Cathedral?",["Christopher Columbus","Cervantes","El Cid"],0],
+["'Granada' is also the Spanish word for which fruit?",["Fig","Pomegranate","Orange"],1],["Who painted 'Las Meninas', the star of the Prado?",["Goya","El Greco","Velázquez"],2],["Who painted 'Guernica'?",["Picasso","Dalí","Miró"],0],
+["Where was Picasso born?",["Barcelona","Málaga","Madrid"],1],["Madrid's emblem shows a bear and a…",["Strawberry tree","Olive tree","Orange tree"],0],["What was Spain's currency before the euro?",["Escudo","Peseta","Real"],1],
+["Which river runs through Seville?",["Ebro","Tagus","Guadalquivir"],2],["Valencian horchata is made from…",["Almonds","Tiger nuts","Rice"],1],["'Tapa' literally means…",["Small","Lid","Snack"],1],
+["Which of these cities has Park Güell?",["Barcelona","Valencia","Granada"],0],["La Tomatina, the giant tomato fight, happens near…",["Madrid","Valencia","Seville"],1],["Las Fallas, with its burning sculptures, is which city's festival?",["Valencia","Córdoba","Barcelona"],0],
+["Where do the bulls run each July?",["Pamplona","Seville","Madrid"],0],["Who wrote 'Don Quixote'?",["Lope de Vega","Cervantes","Lorca"],1],["Don Quixote came from which region?",["La Mancha","Andalusia","Aragon"],0],
+["Mulhacén, mainland Spain's highest peak, rises above…",["Granada","Madrid","Barcelona"],0],["How many autonomous communities does Spain have?",["12","17","21"],1],["The best jamón ibérico comes from pigs fattened on…",["Chestnuts","Acorns","Corn"],1],
+["Gazpacho is served…",["Cold","Hot","Frozen"],0],["Salmorejo, the thick tomato soup, comes from…",["Córdoba","Bilbao","Valencia"],0],["Churros are traditionally dunked in…",["Honey","Thick hot chocolate","Coffee"],1],
+["Seville's Alcázar stood in for Dorne in which series?",["The Crown","Game of Thrones","Money Heist"],1],["Seville's Plaza de España was built for an exposition in…",["1888","1929","1992"],1],["Who designed Valencia's City of Arts and Sciences?",["Santiago Calatrava","Antoni Gaudí","Frank Gehry"],0],
+["The Reconquista ended in 1492 with the fall of…",["Córdoba","Seville","Granada"],2],["Which dynasty built most of the Alhambra?",["Nasrid","Umayyad","Bourbon"],0],["The sardana is a circle dance from…",["Catalonia","Andalusia","Castile"],0],
+["Spain is the world's largest producer of…",["Olive oil","Coffee","Rice"],0],["Spain's national anthem is unusual because it has…",["No official lyrics","Two melodies","Four languages"],0],["A tortilla española is made mainly of eggs and…",["Corn","Potatoes","Cheese"],1],
+["Barcelona hosted the Summer Olympics in…",["1988","1992","1996"],1],["Manchego cheese is made from the milk of…",["Goats","Cows","Sheep"],2],["Turrón, the almond and honey sweet, belongs to which holiday?",["Easter","Christmas","All Saints"],1],
+["At midnight on New Year's Eve, Spaniards eat twelve…",["Grapes","Olives","Almonds"],0],["The Camino de Santiago ends in…",["Santiago de Compostela","Salamanca","San Sebastián"],0],["When a Spaniard says 'vale', they mean…",["OK","Goodbye","Thanks"],0],
+["The Mezquita's famous arches are striped in…",["Blue and white","Red and white","Green and gold"],1],["The oranges on Seville's street trees are mostly…",["Bitter","Sweet","Seedless"],0],["Valencia Cathedral claims to hold which relic?",["The Holy Grail","The True Cross","The Spear of Destiny"],0],
+["Which language is co-official in Barcelona alongside Spanish?",["Basque","Catalan","Galician"],1],["Sangria is built on…",["Red wine","Sherry","Cider"],0]
+];
+function trStart(){
+  var pool=shuf(TQ,rng("pool")),p=TODAY.split("-"),di=Math.round((new Date(+p[0],+p[1]-1,+p[2])-new Date(2026,10,20))/864e5);
+  var start=G.scored?((di%10+10)%10)*5:Math.floor(G.r()*pool.length);G.qs=[];for(var i=0;i<5;i++)G.qs.push(pool[(start+i)%pool.length]);
+  G.qi=0;G.right=0;G.t0=Date.now();trShow();
+}
+function trShow(){
+  var q=G.qs[G.qi],ord=shuf([0,1,2],G.r);G.lock=false;
+  $("gbody").innerHTML='<div class="trq"><small>Question '+(G.qi+1)+" of 5</small><h2>"+esc(q[0])+"</h2>"+ord.map(function(k){return'<button class="tro" data-tr="'+k+'">'+esc(q[1][k])+"</button>";}).join("")+"</div>";
+}
+function trTap(b){
+  if(G.lock||G.done)return;G.lock=true;var q=G.qs[G.qi],k=+b.getAttribute("data-tr"),ok=k===q[2];
+  if(ok)G.right++;buzz(ok?10:60);b.classList.add(ok?"ok":"no");
+  [].forEach.call($("gbody").querySelectorAll(".tro"),function(x){if(+x.getAttribute("data-tr")===q[2])x.classList.add("ok");});
+  setTimeout(function(){if(!G)return;if(++G.qi<5)trShow();else{$("gbody").innerHTML="";gfinish(G.right);}},950);
+}
+$("game").addEventListener("click",function(e){
+  var t=e.target,b;
+  if(t.id==="gquit"||t.id==="gquit2"){gclose();return;}
+  if(!G)return;
+  if((b=t.closest("[data-ar]")))arTap(b);else if((b=t.closest("[data-me]")))meTap(b);else if((b=t.closest("[data-tr]")))trTap(b);
+});
+/* ---------- phone niceties: pull to refresh, swipe between days ---------- */
+(function(){
+  var y0=null,x0=0,d=0,bar=$("ptr"),sw=null;
+  function overlay(){return $("game").classList.contains("on")||$("recap").classList.contains("on")||$("splash").classList.contains("on")||$("ov").classList.contains("on");}
+  document.addEventListener("touchstart",function(e){
+    var t=e.touches[0];y0=(window.scrollY<=0&&!overlay())?t.clientY:null;d=0;
+    sw=(TAB==="days"&&!overlay()&&!/TEXTAREA|INPUT|SELECT/.test(e.target.tagName)&&!e.target.closest(".chips"))?{x:t.clientX,y:t.clientY}:null;
+  },{passive:true});
+  document.addEventListener("touchmove",function(e){
+    if(y0==null)return;d=Math.max(0,(e.touches[0].clientY-y0)*.5);if(window.scrollY>0){d=0;}
+    bar.style.transform="translate(-50%,"+Math.min(d,90)+"px)";bar.style.opacity=Math.min(1,d/60);bar.classList.toggle("go",d>=60);bar.firstChild.textContent=d>=60?"Release to refresh":"Pull to refresh";
+  },{passive:true});
+  document.addEventListener("touchend",function(e){
+    if(y0!=null&&d>=60){bar.firstChild.textContent="Refreshing";bar.classList.add("spin");buzz(15);commitNote();flush();setTimeout(function(){if(navigator.onLine===false){bar.classList.remove("spin");bar.style.transform="";bar.style.opacity=0;toast("Offline. Showing the saved copy.");}else location.reload();},450);}
+    else{bar.style.transform="";bar.style.opacity=0;}
+    if(sw&&d<10){var t=e.changedTouches[0],dx=t.clientX-sw.x,dy=t.clientY-sw.y;if(Math.abs(dx)>70&&Math.abs(dx)>2.2*Math.abs(dy)){var n=UI.day+(dx<0?1:-1);if(n>=1&&n<=11){setDay(n);window.scrollTo(0,0);}}}
+    y0=null;sw=null;d=0;
+  },{passive:true});
+})();
 /* ---------- tabs ---------- */
 var TABS=["trip","days","pack","us","prep"];
 function drawAll(){
@@ -1188,7 +1371,7 @@ function drawAll(){
   if(TAB==="trip"){drawToday();drawAllBooked();drawPicks();}
   else if(TAB==="days"){drawChips();drawBooked();drawIdeas();syncNote();drawRate();}
   else if(TAB==="pack")drawPack();
-  else if(TAB==="us"){drawUs();var rc=rchart();$("rchart").innerHTML=rc.h+(rc.any?"":'<div class="dmeta">No days rated by both of you yet.</div>');}
+  else if(TAB==="us"){drawUs();drawGames();var rc=rchart();$("rchart").innerHTML=rc.h+(rc.any?"":'<div class="dmeta">No days rated by both of you yet.</div>');}
   else drawPrep();
   var td=$("usdot");if(td)td.style.display=usTodo()?"block":"none";
 }
