@@ -21,6 +21,7 @@
 <meta name="twitter:title" content="España 2026 · Trip Planner">
 <meta name="twitter:description" content="Madrid · Córdoba · Seville · Granada · Valencia · Barcelona.">
 <meta name="twitter:image" content="https://hometeam-osws.onrender.com/spain-og.png">
+<meta name="robots" content="noindex">
 <meta name="theme-color" content="#081428">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -209,6 +210,14 @@ textarea:focus,input:focus{border-color:var(--teal)}
 .pcard em{display:block;font-style:normal;font-size:.76rem;color:var(--mute);margin-bottom:6px}
 .dots b{display:inline-block;width:9px;height:9px;margin:0 3px;border-radius:50%;background:var(--mute);animation:dot 1s infinite}.dots b:nth-child(2){animation-delay:.15s}.dots b:nth-child(3){animation-delay:.3s}
 @keyframes dot{0%,60%,100%{transform:none;opacity:.4}30%{transform:translateY(-6px);opacity:1}}
+/* visitors */
+.vonly{display:none}.visitor .vonly{display:block}
+.visitor .oonly,.visitor .tabs,.visitor .topbar,.visitor .flform,.visitor [data-goday],.visitor [data-recap],.visitor #ptr{display:none!important}
+.visitor .wrap{padding-bottom:40px}.visitor .pin{cursor:default}
+.upd{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-top:1px solid var(--line)}.upd:first-child{border-top:0}
+.upd>div{flex:1;min-width:0}.upd p{margin:0;font-size:1rem;white-space:pre-wrap;overflow-wrap:anywhere}.upd small{font-size:.72rem;color:var(--mute)}
+.upd .x{color:var(--mute);font-size:1.2rem;padding:0 4px}
+#updtx{margin-top:10px;min-height:60px}
 /* flights */
 .fl{padding:12px 13px;margin:8px 0;border-radius:14px;background:rgba(255,255,255,.045);border:1px solid var(--line)}
 .flh{display:flex;align-items:center;gap:10px}.flh b{font-family:var(--serif);font-size:1.1rem;flex:1}.flh a{font-size:.74rem}.flh .x{color:var(--mute);font-size:1.2rem;padding:0 4px}
@@ -406,9 +415,22 @@ html{overscroll-behavior-y:contain}
   </header>
 
   <section id="s-trip">
+    <div class="card vonly vhello"><h2>Follow along</h2><p class="lead" style="margin:0">You are following our trip through Spain, Nov 22 to Dec 2. This page shows where we are, the weather there, our flights and anything we post.</p></div>
+    <div class="card">
+      <h2>Updates</h2>
+      <p class="lead" id="updlead"></p>
+      <div id="updlist"></div>
+      <div class="oonly">
+        <textarea id="updtx" maxlength="400" placeholder="Landed in Madrid! Share something with family and friends"></textarea>
+        <button class="go" id="updpost">Post update</button>
+        <div class="lab">Visitors link</div>
+        <div class="add" style="margin-top:0"><input type="text" id="updlink" readonly><button id="updcopy">Copy</button></div>
+        <div class="dmeta" style="margin-top:8px">Visitors see the route, today's tour stops, weather, flights, stamps, places you tick off, the game score and these updates. The page doesn't show them your bookings, notes, postcards, packing or hotel names.</div>
+      </div>
+    </div>
     <div class="card">
       <h2>The route</h2>
-      <p class="lead">Tap a city to jump to that day.</p>
+      <p class="lead oonly">Tap a city to jump to that day.</p>
       <div class="map" id="map"></div>
       <div class="stats">
         <div><b>6</b><span>cities</span></div><div><b>9</b><span>nights</span></div>
@@ -434,17 +456,26 @@ html{overscroll-behavior-y:contain}
       <div class="wx" id="wx"></div>
       <div class="tip">Mornings in Madrid and Granada sit near 40°F while Seville and Valencia afternoons reach the mid 60s. Layers beat one heavy coat.</div>
     </div>
-    <div class="card">
+    <div class="card vonly">
+      <h2>Pasaporte</h2>
+      <p class="lead">A stamp for every city they reach.</p>
+      <div class="stamps" id="vstamps"></div>
+    </div>
+    <div class="card vonly">
+      <h2>Where they've been</h2>
+      <div id="vdone"></div>
+    </div>
+    <div class="card oonly">
       <h2>Booked</h2>
       <p class="lead">Tickets and reservations with fixed times. Add your own from any day.</p>
       <div id="allbooked"></div>
     </div>
-    <div class="card">
+    <div class="card oonly">
       <h2>Our picks so far</h2>
       <p class="lead">Stars from both phones collect here. Gold means you both picked it.</p>
       <div id="picks"></div>
     </div>
-    <div class="card">
+    <div class="card oonly">
       <h2>Good to know</h2>
       <ul class="plain">
         <li><b>Spain eats late.</b> Lunch runs about 1:30–3:30, dinner from 8:30. Kitchens often close in between, so plan tapas bars or markets for the gap.</li>
@@ -816,13 +847,15 @@ var MON=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"
    sp.cu.<list>.<slug>          {text,by,at}    an item someone added
    sp.pr.<id>                   {by,at}         prep task done
    sp.nt.<day>                  {text,by,at}    shared day notes                                              */
-var ME=lsGet("home-team-me");if(ME!=="a"&&ME!=="b")ME=null;
+/* visitor mode: the same page served at /follow, read-only, fed only by the public endpoint */
+var VIS=location.pathname.replace(/\/+$/,"")==="/follow";
+var ME=lsGet("home-team-me");if(ME!=="a"&&ME!=="b")ME=null;if(VIS)ME=null;
 var NAMES={a:"Alan",b:"Nat"},T={},Q={},UI={who:ME||"a",day:null,shut:{}},NET="load",TAB="trip",LBL={};
-try{var c0=JSON.parse(lsGet("spain26-sync")||"{}");T=c0.T||{};Q=c0.Q||{};if(c0.N&&c0.N.a&&c0.N.b)NAMES=c0.N;}catch(e){}
+if(!VIS)try{var c0=JSON.parse(lsGet("spain26-sync")||"{}");T=c0.T||{};Q=c0.Q||{};if(c0.N&&c0.N.a&&c0.N.b)NAMES=c0.N;}catch(e){}
 try{var u0=JSON.parse(lsGet("spain26-ui")||"{}");for(var k0 in u0)UI[k0]=u0[k0];}catch(e){}
 if(["a","b","shared"].indexOf(UI.who)<0)UI.who=ME||"a";
-function saveSync(){lsSet("spain26-sync",JSON.stringify({T:T,Q:Q,N:NAMES}));}
-function saveUI(){lsSet("spain26-ui",JSON.stringify(UI));}
+function saveSync(){if(VIS)return;lsSet("spain26-sync",JSON.stringify({T:T,Q:Q,N:NAMES}));}
+function saveUI(){if(VIS)return;lsSet("spain26-ui",JSON.stringify(UI));}
 function av(p){return'<i class="av '+(p==="b"?"b":"a")+'">'+esc((NAMES[p]||"?").charAt(0).toUpperCase())+"</i>";}
 var toastT;function toast(t){var el=$("toast");el.textContent=t;el.classList.add("on");clearTimeout(toastT);toastT=setTimeout(function(){el.classList.remove("on");},2800);}
 function setNet(s){
@@ -832,7 +865,14 @@ function setNet(s){
 }
 function overlayQ(){for(var id in Q){if(Q[id]===null)delete T[id];else T[id]=Q[id];}}
 var loading=false,loadT,es=null,esBad=false;
+function loadPublic(){
+  fetch("/api/trip-public",{cache:"no-store"}).then(function(r){if(!r.ok)throw 0;return r.json();}).then(function(j){
+    if(j.names){if(j.names.a)NAMES.a=String(j.names.a);if(j.names.b)NAMES.b=String(j.names.b);}
+    T=j.trip||{};drawAll();
+  }).catch(function(){}).then(function(){clearTimeout(loadT);loadT=setTimeout(loadPublic,60000);});
+}
 function load(){
+  if(VIS){loadPublic();return;}
   if(loading)return;loading=true;clearTimeout(loadT);
   fetch("/api/state",{cache:"no-store"}).then(function(r){
     if(r.status===401){loading=false;setNet("lock");loginSheet();return;}
@@ -875,10 +915,11 @@ function flush(){
   }).catch(function(){flushing=false;setNet("off");clearTimeout(flushT);flushT=setTimeout(flush,8000);});
 }
 function put(id,data){
+  if(VIS)return;
   if(data===null)delete T[id];else T[id]=data;
   Q[id]=data;saveSync();setNet(NET);flush();
 }
-function need(){if(ME)return true;whoSheet();return false;}
+function need(){if(VIS)return false;if(ME)return true;whoSheet();return false;}
 function announce(id,data,had){
   var p=id.split(".");
   if(p[1]==="star"){var who=p[4];if(!data||who===ME)return;var d=DAYS[+p[2]-1],o=d&&idea(d.n,+p[3]);if(o)toast(NAMES[who]+" starred "+o[0]);}
@@ -886,6 +927,7 @@ function announce(id,data,had){
   else if(p[1]==="no"&&data&&!had&&data.by&&data.by!==ME){var o2=DAYS[+p[2]-1]&&idea(+p[2],+p[3]);if(o2)toast(NAMES[data.by]+" dismissed "+o2[0]);}
   else if(p[1]==="ev"&&data&&!had&&data.by&&data.by!==ME)toast(NAMES[data.by]+" booked "+String(data.title).split("\n")[0]);
   else if(p[1]==="gm"&&data&&!had&&p[4]!==ME)toast(NAMES[p[4]]+" played "+gname(p[2])+" round "+(p[3].split("~")[1]||1));
+  else if(p[1]==="pub"&&data&&!had&&data.by&&data.by!==ME)toast(NAMES[data.by]+" posted an update for visitors");
   else if(p[1]==="jk"&&data&&!had&&ME==="a")toast(NAMES.b+" just read a private message. Nothing to worry about.");
   else if(p[1]==="fl"&&data&&!had&&data.by&&data.by!==ME)toast(NAMES[data.by]+" added flight "+data.n);
   else if(p[1]==="cv"&&data&&data.done&&!(had&&had.done)&&p[3]!==ME)toast(NAMES[p[3]]+" finished painting "+ART[+p[2]].n);
@@ -1271,9 +1313,9 @@ function drawToday(){
   var el=$("today");if(!el)return;var d=dayToday(),now=new Date(),h="",nx=null,pre=TODAY<"2026-11-22";
   DAYS.forEach(function(x){bookings(x.n).forEach(function(b){if(!b.t)return;var w=dtOf(x.date,b.t);if(w>now&&(!nx||w<nx.w))nx={w:w,b:b,d:x};});});
   function steps(x){
-    var bs=bookings(x.n),s="";
+    var bs=VIS?[]:bookings(x.n),s="";
     if(bs.length)s+=bs.map(function(b){return bkRow(b,false);}).join("");
-    return s+'<ul class="tl">'+x.set.map(function(t){return"<li"+(t.indexOf("Optional")===0?' class="op"':"")+">"+esc(t)+"</li>";}).join("")+"</ul>";
+    return s+'<ul class="tl">'+x.set.map(function(t){if(VIS)t=t.replace(/Check in at Hotel[^.]*\./,"Check in at the hotel.");return"<li"+(t.indexOf("Optional")===0?' class="op"':"")+">"+esc(t)+"</li>";}).join("")+"</ul>";
   }
   var cur=d||(pre?DAYS[0]:null),nxt=cur&&DAYS[cur.n];
   if(d)h+='<small class="k">Today · Day '+d.n+" of 11</small><h2>"+esc(d.title)+"</h2>";
@@ -1282,7 +1324,7 @@ function drawToday(){
   if(d&&wxFor(d.date))h+='<div class="dmeta" style="margin-top:4px">'+esc(wxFor(d.date).city)+" today: "+wxLine(d.date)+"</div>";
   var nf=flights().filter(function(f){return f.a>now.getTime();})[0];
   if(nf)h+='<div class="nxt"><span>'+(nf.d>now?"Next flight":"In the air")+"</span><b>"+esc(nf.n)+" · "+esc(nf.f)+" → "+esc(nf.t)+"</b><em>"+(nf.d>now?"departs in "+rel(nf.d-now)+" · "+flClock(nf.d,nf.fo):dur(nf.a-now)+" left · lands "+flClock(nf.a,nf.to)+" "+esc(nf.t)+" time")+"</em></div>";
-  if(nx)h+='<div class="nxt"><span>Next booking</span><b>'+esc(nx.b.title)+"</b><em>in "+rel(nx.w-now)+" · "+nice(nx.d.date)+", "+t12(nx.b.t)+"</em></div>";
+  if(nx&&!VIS)h+='<div class="nxt"><span>Next booking</span><b>'+esc(nx.b.title)+"</b><em>in "+rel(nx.w-now)+" · "+nice(nx.d.date)+", "+t12(nx.b.t)+"</em></div>";
   if(cur){
     h+='<div class="lab o">'+(d?"Today, in order":"First, in order")+"</div>"+steps(cur);
     if(cur.n===1&&!flights().length)h+='<div class="dmeta">Add your flights in the Flights card below and they show here with a countdown.</div>';
@@ -1670,11 +1712,35 @@ function psst(force){
   setTimeout(function(){var t=$("ptxt");if(!t)return;t.textContent="";var i=0;(function type(){if(!$("ptxt"))return;t.textContent=msg.slice(0,++i);if(i<msg.length)setTimeout(type,55);else if($("pok"))$("pok").style.visibility="visible";})();},1900);
   el.onclick=function(e){if(e.target.id!=="pok")return;el.classList.remove("on");el.innerHTML="";if(!force){UI.jk=1;saveUI();put("sp.jk.b",{at:Date.now()});}toast("Message deleted. This never happened.");};
 }
+/* ---------- updates for family, and the read-only visitor cards ----------  sp.pub.<id> {text,by,at} is public by design */
+function updates(){var o=[];Object.keys(T).forEach(function(id){if(id.indexOf("sp.pub.")===0&&T[id]&&T[id].text)o.push({id:id,d:T[id]});});o.sort(function(x,y){return(y.d.at||0)-(x.d.at||0);});return o;}
+function drawUpdates(){
+  var el=$("updlist");if(!el)return;var u=updates(),h="";
+  u.forEach(function(x){var w=new Date(x.d.at||0).toLocaleString([],{weekday:"short",month:"short",day:"numeric",hour:"numeric",minute:"2-digit"});
+    h+='<div class="upd">'+av(x.d.by)+"<div><p>"+esc(x.d.text)+"</p><small>"+esc(NAMES[x.d.by]||"")+" · "+w+"</small></div>"+(VIS?"":'<button class="x" data-delup="'+x.id+'" aria-label="Delete update">×</button>')+"</div>";});
+  el.innerHTML=h||'<div class="dmeta">'+(VIS?"No updates yet. Check back once they are on the road.":"Nothing posted yet.")+"</div>";
+  $("updlead").textContent=VIS?"Notes from "+NAMES.a+" and "+NAMES.b+" along the way. This page refreshes itself every minute.":"Short notes for family and friends. Anyone with the visitors link can read these.";
+  if(!VIS&&$("updlink"))$("updlink").value=location.origin+"/follow";
+}
+function drawVis(){
+  var got=0;
+  $("vstamps").innerHTML=STAMPS.map(function(s,i){var a=T["sp.st."+i+".a"],b=T["sp.st."+i+".b"];if(a||b)got++;
+    return'<div class="stp'+(a&&b?" both":"")+(a||b?"":" lock")+'"><span class="pad">'+(a&&b?ink("g",i):a?ink("a",i):b?ink("b",i):'<span class="blank">'+esc(s[0])+"</span>")+"</span><small>"+(a||b?"Stamped":nice(s[1]))+"</small></div>";}).join("");
+  var h="",gp=gpoints();
+  DAYS.forEach(function(d){var rows=[];ideaIds(d.n).forEach(function(i){if(T["sp.dn."+d.n+"."+i])rows.push(idea(d.n,i)[0]);});if(!rows.length)return;
+    h+='<div class="lab o">'+esc(d.city)+"</div>"+rows.map(function(r){return'<div class="pk both"><span>✓ '+esc(r)+"</span></div>";}).join("");});
+  $("vdone").innerHTML=(h||'<div class="dmeta">Places they tick off will show up here.</div>')+(gp.n?'<div class="dmeta" style="margin-top:12px">Game score so far: '+esc(NAMES.a)+" "+gp.a+", "+esc(NAMES.b)+" "+gp.b+".</div>":"");
+}
+document.addEventListener("click",function(e){
+  if(e.target.id==="updpost"){if(!need())return;var v=$("updtx").value.trim();if(!v)return;put("sp.pub."+Date.now().toString(36)+ME,{text:v.slice(0,400),by:ME,at:Date.now()});$("updtx").value="";drawUpdates();toast("Posted for visitors");return;}
+  var du=e.target.closest("[data-delup]");if(du){if(need()){put(du.getAttribute("data-delup"),null);drawUpdates();}return;}
+  if(e.target.id==="updcopy"){var u=$("updlink").value;try{navigator.clipboard.writeText(u).then(function(){toast("Link copied");},function(){$("updlink").select();toast("Press and hold the link to copy");});}catch(x){$("updlink").select();toast("Press and hold the link to copy");}}
+});
 /* ---------- tabs ---------- */
 var TABS=["trip","days","pack","us","prep"];
 function drawAll(){
   $("mebtn").innerHTML=ME?av(ME)+esc(NAMES[ME]):"Who's this?";
-  if(TAB==="trip"){drawToday();drawFlights();drawAllBooked();drawPicks();}
+  if(TAB==="trip"){drawUpdates();if(VIS)drawVis();drawToday();drawFlights();drawAllBooked();drawPicks();}
   else if(TAB==="days"){drawChips();drawBooked();drawIdeas();syncNote();drawRate();}
   else if(TAB==="pack")drawPack();
   else if(TAB==="us"){drawUs();drawGames();drawLevels();drawPaint();var rc=rchart();$("rchart").innerHTML=rc.h+(rc.any?"":'<div class="dmeta">No days rated by both of you yet.</div>');}
@@ -1682,14 +1748,14 @@ function drawAll(){
   var td=$("usdot");if(td)td.style.display=usTodo()?"block":"none";
 }
 function show(t){
-  if(TABS.indexOf(t)<0)t="trip";
+  if(VIS||TABS.indexOf(t)<0)t="trip";
   commitNote();TAB=t;
   TABS.forEach(function(x){$("s-"+x).classList.toggle("on",x===t);});
   [].forEach.call($("tabs").children,function(b){b.classList.toggle("on",b.getAttribute("data-t")===t);});
   if(t==="days"){drawChips(true);drawDay();}
   drawAll();
 }
-function go(t){try{if(location.hash!=="#"+t){location.hash=t;return;}}catch(e){}show(t);window.scrollTo(0,0);}
+function go(t){if(VIS)return;try{if(location.hash!=="#"+t){location.hash=t;return;}}catch(e){}show(t);window.scrollTo(0,0);}
 function setDay(n){showGone=false;commitNote();UI.day=n;saveUI();drawChips(true);drawDay();}
 window.addEventListener("hashchange",function(){show(location.hash.slice(1));window.scrollTo(0,0);});
 $("tabs").addEventListener("click",function(e){var b=e.target.closest("button");if(b)go(b.getAttribute("data-t"));});
@@ -1749,7 +1815,8 @@ if(!UI.day||UI.day<1||UI.day>11){var td=DAYS.filter(function(x){return x.date===
 tick();setInterval(function(){tick();if(TAB==="trip"){drawToday();drawFlights();}},30000);drawMap();drawWx();setNet("load");
 var h0="";try{h0=location.hash.slice(1);}catch(e){}
 show(h0||"trip");
-load();splash();loadWx();setTimeout(function(){psst(location.hash==="#psst");},7000);
+if(VIS)document.body.classList.add("visitor");
+load();loadWx();if(!VIS){splash();setTimeout(function(){psst(location.hash==="#psst");},7000);}
 })();
 </script>
 </body>

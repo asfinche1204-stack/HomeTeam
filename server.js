@@ -242,6 +242,14 @@ async function handle(req, res) {
     const secure = (req.headers['x-forwarded-proto'] || '').includes('https') ? '; Secure' : '';
     return send(res, 200, { ok: true }, { 'set-cookie': 'ht=' + makeCookie() + '; Path=/; Max-Age=' + 30 * 86400 + '; HttpOnly; SameSite=Lax' + secure });
   }
+  // Public, read-only feed for the visitors page (/follow). Only what is safe to share:
+  // posted updates, passport stamps, places ticked off, game results and level progress. Never bookings, notes, postcards or packing.
+  if (p === '/api/trip-public' && m === 'GET') {
+    const pub = {}, keep = /^sp\.(pub|st|dn|gm|bk)\./;
+    Object.keys(DB.trip || {}).forEach(id => { if (keep.test(id)) pub[id] = DB.trip[id]; });
+    return send(res, 200, { names: names(), trip: pub }, { 'cache-control': 'no-store' });
+  }
+  if (p === '/follow' || p === '/follow/') return serveStatic(req, res, '/spain.html');
   if (p === '/api/logout' && m === 'POST') return send(res, 200, { ok: true }, { 'set-cookie': 'ht=; Path=/; Max-Age=0' });
   if (p.startsWith('/api/')) {
     if (!cookieOk(req)) return send(res, 401, { error: 'locked', needsKey: !!KEY });
