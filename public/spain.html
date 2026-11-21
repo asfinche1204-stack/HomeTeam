@@ -562,12 +562,12 @@ html{overscroll-behavior-y:contain}
 /* ---------- data ---------- */
 var DAYS=[
 {n:1,date:"2026-11-22",dow:"Sun",city:"Fly",title:"Depart for Spain",stay:"Overnight flight",meals:[],drive:"",
- set:["Leave for the airport. For an international flight, aim to be there 3 hours before departure","Check bags, clear security, find the gate","Overnight flight to Madrid. Set your watch to Spain time and try to sleep"],
+ set:["Be at RDU by about 1:00 PM","3:05 PM: DL 2026 to Atlanta, landing 4:35 PM","Atlanta layover of 3 hours 5 minutes: time for dinner before the long flight","7:40 PM: DL 108 overnight to Madrid. Set your watch 6 hours ahead and try to sleep"],
  open:[["Sleep on the plane","Eat before boarding, skip the movie, eye mask on. Landing rested is worth more than the in-flight dinner.","do"],
        ["Set watches to Madrid time at the gate","Spain is 6 hours ahead of Durham.","do"]],
  tip:"Wear the bulky shoes and jacket on the plane to save suitcase space. Passports, meds and one change of clothes go in the carry-on."},
 {n:2,date:"2026-11-23",dow:"Mon",city:"Madrid",title:"Arrive Madrid",stay:"Madrid",hotel:"Hotel Riu Plaza España",meals:["Dinner"],drive:"",
- set:["Land in Madrid: passport control, then collect bags","Meet the Gate 1 representative in arrivals for the transfer to the hotel","Check in at Hotel Riu Plaza España. Rooms may not be ready if you land early; the hotel can hold bags","Free time until the evening","About 7 PM: orientation meeting with the Tour Manager","Welcome dinner"],
+ set:["9:45 AM: land in Madrid after 8 hours 5 minutes in the air. Passport control, then collect bags","Meet the Gate 1 representative in arrivals for the transfer to the hotel","Check in at Hotel Riu Plaza España. Rooms may not be ready if you land early; the hotel can hold bags","Free time until the evening","About 7 PM: orientation meeting with the Tour Manager","Welcome dinner"],
  free:"Arrival until 7 PM. Rooms may not be ready if you land early.",
  open:[["Templo de Debod at golden hour","A real Egyptian temple on a hill a few minutes' walk from the hotel, with the best sunset view in Madrid.","see"],
        ["Gran Vía stroll","Starts right outside the hotel. Good for staying awake and upright.","see"],
@@ -665,7 +665,7 @@ var DAYS=[
  booked:[["09:45","Sagrada Família guided tour","English guided tour. Be at the Carrer de la Marina entrance by 9:15 AM. Bring passports: the tickets are named and they check photo ID."],["11:15","Sagrada Família, Passion tower","Tower visit on the same ticket. Lift up, stairs down."]],
  tip:"Sagrada Família takes the morning. Hospital de Sant Pau is a ten-minute walk from there, then Park Güell or the Gothic Quarter before the farewell dinner."},
 {n:11,date:"2026-12-02",dow:"Wed",city:"Home",title:"Fly home",stay:"Home",meals:["Breakfast"],drive:"",
- set:["Breakfast","Transfer to Barcelona airport","Flight home"],
+ set:["Early breakfast","Gate 1 transfer to Barcelona airport","10:35 AM: DL 169 to New York JFK, 9 hours, landing 1:35 PM Eastern","At JFK: immigration, collect and re-check bags. Layover of 3 hours 9 minutes","4:44 PM: DL 5150 to Raleigh-Durham, landing 6:42 PM"],
  open:[["Liquids go in the checked bag","Olive oil, wine and anything spreadable won't clear security in a carry-on.","do"],
        ["Spend the coins","Airport coffee and one last jamón sandwich.","eat"]],
  tip:"Confirm your transfer time with the Tour Manager at the farewell dinner."}
@@ -1230,8 +1230,11 @@ var APT={};
 function flMs(local,off){var m=/^(\d{4})-(\d\d)-(\d\d)T(\d\d):(\d\d)/.exec(local||"");return m?Date.UTC(+m[1],+m[2]-1,+m[3],+m[4],+m[5])-off*36e5:NaN;}
 function flClock(ms,off){var d=new Date(ms+off*36e5),h=d.getUTCHours();return["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][d.getUTCDay()]+" "+(h%12||12)+":"+("0"+d.getUTCMinutes()).slice(-2)+" "+(h<12?"AM":"PM");}
 function dur(ms){var m=Math.max(0,Math.round(ms/6e4));return Math.floor(m/60)+"h "+("0"+m%60).slice(-2)+"m";}
+/* the booked itinerary, built in so both phones have it; anything added in the app is listed with it */
+var FLX=[["DL 2026","RDU","ATL","2026-11-22T15:05","2026-11-22T16:35",-5,-5],["DL 108","ATL","MAD","2026-11-22T19:40","2026-11-23T09:45",-5,1],["DL 169","BCN","JFK","2026-12-02T10:35","2026-12-02T13:35",1,-5],["DL 5150","JFK","RDU","2026-12-02T16:44","2026-12-02T18:42",-5,-5]];
 function flights(){
-  var o=[];Object.keys(T).forEach(function(id){if(id.indexOf("sp.fl.")!==0)return;var f=T[id],d=flMs(f.dl,f.fo),a=flMs(f.al,f.to);if(isNaN(d)||isNaN(a))return;o.push({id:id,n:f.n||"Flight",f:f.f,t:f.t,d:d,a:a,fo:f.fo,to:f.to,by:f.by});});
+  var o=FLX.map(function(f){return{id:null,n:f[0],f:f[1],t:f[2],d:flMs(f[3],f[5]),a:flMs(f[4],f[6]),fo:f[5],to:f[6]};});
+  Object.keys(T).forEach(function(id){if(id.indexOf("sp.fl.")!==0)return;var f=T[id],d=flMs(f.dl,f.fo),a=flMs(f.al,f.to);if(isNaN(d)||isNaN(a))return;o.push({id:id,n:f.n||"Flight",f:f.f,t:f.t,d:d,a:a,fo:f.fo,to:f.to,by:f.by});});
   o.sort(function(x,y){return x.d-y.d;});return o;
 }
 function drawFlights(){
@@ -1243,7 +1246,7 @@ function drawFlights(){
     if(now<f.d)st="Departs in <b>"+rel(f.d-now)+"</b>";
     else if(now<f.a){pct=(now-f.d)/(f.a-f.d)*100;st="In the air · <b>"+dur(f.a-now)+" left</b>";}
     else{pct=100;st="Landed";}
-    h+='<div class="fl"><div class="flh"><b>'+esc(f.n)+'</b><a href="https://www.google.com/search?q='+encodeURIComponent(f.n+" flight status")+'" target="_blank" rel="noopener">Live status ↗</a><button class="x" data-delfl="'+f.id+'" aria-label="Remove flight">×</button></div>'+
+    h+='<div class="fl"><div class="flh"><b>'+esc(f.n)+'</b><a href="https://www.google.com/search?q='+encodeURIComponent(f.n+" flight status")+'" target="_blank" rel="noopener">Live status ↗</a>'+(f.id?'<button class="x" data-delfl="'+f.id+'" aria-label="Remove flight">×</button>':"")+"</div>"+
        '<div class="flr"><div><em>'+esc(f.f)+"</em><span>"+flClock(f.d,f.fo)+'</span></div><div class="flp"><small>'+dur(f.a-f.d)+'</small><div class="bar"><i style="width:'+pct.toFixed(1)+'%"></i><u style="left:'+pct.toFixed(1)+'%">✈</u></div></div><div class="r"><em>'+esc(f.t)+"</em><span>"+flClock(f.a,f.to)+"</span></div></div>"+
        '<div class="dmeta">'+st+(diff?" · "+esc(f.t)+" is "+Math.abs(diff)+"h "+(diff>0?"ahead of":"behind")+" "+esc(f.f)+" · lands "+flClock(f.a,f.fo).split(" ").slice(1).join(" ")+" "+esc(f.f)+" time":"")+"</div></div>";
   });
