@@ -435,12 +435,12 @@ textarea:focus,input:focus{border-color:var(--teal)}
 /* ---------- data ---------- */
 var DAYS=[
 {n:1,date:"2026-11-22",dow:"Sun",city:"Fly",title:"Depart for Spain",stay:"Overnight flight",meals:[],drive:"",
- set:["Overnight flight to Madrid"],
+ set:["Leave for the airport. For an international flight, aim to be there 3 hours before departure","Check bags, clear security, find the gate","Overnight flight to Madrid. Set your watch to Spain time and try to sleep"],
  open:[["Sleep on the plane","Eat before boarding, skip the movie, eye mask on. Landing rested is worth more than the in-flight dinner.","do"],
        ["Set watches to Madrid time at the gate","Spain is 6 hours ahead of Durham.","do"]],
  tip:"Wear the bulky shoes and jacket on the plane to save suitcase space. Passports, meds and one change of clothes go in the carry-on."},
 {n:2,date:"2026-11-23",dow:"Mon",city:"Madrid",title:"Arrive Madrid",stay:"Madrid",hotel:"Hotel Riu Plaza España",meals:["Dinner"],drive:"",
- set:["Airport transfer to the hotel","About 7 PM: orientation meeting with the Tour Manager","Welcome dinner"],
+ set:["Land in Madrid: passport control, then collect bags","Meet the Gate 1 representative in arrivals for the transfer to the hotel","Check in at Hotel Riu Plaza España. Rooms may not be ready if you land early; the hotel can hold bags","Free time until the evening","About 7 PM: orientation meeting with the Tour Manager","Welcome dinner"],
  free:"Arrival until 7 PM. Rooms may not be ready if you land early.",
  open:[["Templo de Debod at golden hour","A real Egyptian temple on a hill a few minutes' walk from the hotel, with the best sunset view in Madrid.","see"],
        ["Gran Vía stroll","Starts right outside the hotel. Good for staying awake and upright.","see"],
@@ -1093,19 +1093,26 @@ function dtOf(date,t){var p=date.split("-"),m=/^(\d{1,2}):(\d{2})$/.exec(t||"");
 function dayToday(){return DAYS.filter(function(d){return d.date===TODAY;})[0];}
 function rel(ms){var m=Math.max(1,Math.round(ms/6e4));if(m<60)return m+" min";var h=Math.floor(m/60);if(h<24)return h+"h "+(m%60)+"m";var d=Math.round(h/24);return d+(d===1?" day":" days");}
 function drawToday(){
-  var el=$("today");if(!el)return;var d=dayToday(),now=new Date(),h="",nx=null;
+  var el=$("today");if(!el)return;var d=dayToday(),now=new Date(),h="",nx=null,pre=TODAY<"2026-11-22";
   DAYS.forEach(function(x){bookings(x.n).forEach(function(b){if(!b.t)return;var w=dtOf(x.date,b.t);if(w>now&&(!nx||w<nx.w))nx={w:w,b:b,d:x};});});
+  function steps(x){
+    var bs=bookings(x.n),s="";
+    if(bs.length)s+=bs.map(function(b){return bkRow(b,false);}).join("");
+    return s+'<ul class="tl">'+x.set.map(function(t){return"<li"+(t.indexOf("Optional")===0?' class="op"':"")+">"+esc(t)+"</li>";}).join("")+"</ul>";
+  }
+  var cur=d||(pre?DAYS[0]:null),nxt=cur&&DAYS[cur.n];
   if(d)h+='<small class="k">Today · Day '+d.n+" of 11</small><h2>"+esc(d.title)+"</h2>";
-  else if(TODAY<"2026-11-22")h+='<small class="k">Coming up</small><h2>First stop: Madrid</h2>';
+  else if(pre)h+='<small class="k">Coming up · '+nice(DAYS[0].date)+"</small><h2>"+esc(DAYS[0].title)+"</h2>";
   else h+='<small class="k">Home again</small><h2>What a trip.</h2>';
   if(d&&wxFor(d.date))h+='<div class="dmeta" style="margin-top:4px">'+esc(wxFor(d.date).city)+" today: "+wxLine(d.date)+"</div>";
   if(nx)h+='<div class="nxt"><span>Next booking</span><b>'+esc(nx.b.title)+"</b><em>in "+rel(nx.w-now)+" · "+nice(nx.d.date)+", "+t12(nx.b.t)+"</em></div>";
-  if(d){
-    var bs=bookings(d.n),st=ideaIds(d.n).filter(function(i){return shown(d.n,i)&&stars(d.n,i).length;});
-    if(bs.length)h+='<div class="lab o">Booked today</div>'+bs.map(function(x){return bkRow(x,false);}).join("");
-    h+='<div class="lab">Set by the tour</div><ul class="tl">'+d.set.map(function(s){return"<li"+(s.indexOf("Optional")===0?' class="op"':"")+">"+esc(s)+"</li>";}).join("")+"</ul>";
-    if(st.length)h+='<div class="lab e">Starred for today</div>'+st.map(function(i){var dn=T["sp.dn."+d.n+"."+i];return'<div class="pk'+(dn?" both":"")+'"><span>'+(dn?"✓ ":"")+esc(idea(d.n,i)[0])+'</span><span class="by">'+stars(d.n,i).map(av).join("")+"</span></div>";}).join("");
-    h+='<button class="go" id="gotoday">Open today</button>';
+  if(cur){
+    h+='<div class="lab o">'+(d?"Today, in order":"First, in order")+"</div>"+steps(cur);
+    if(cur.n===1&&!bookings(1).length)h+='<div class="dmeta">Add your flight under Booked on Day 1 with its departure time, and it shows here with a countdown.</div>';
+    if(d){var st=ideaIds(d.n).filter(function(i){return shown(d.n,i)&&stars(d.n,i).length;});
+      if(st.length)h+='<div class="lab e">Starred for today</div>'+st.map(function(i){var dn=T["sp.dn."+d.n+"."+i];return'<div class="pk'+(dn?" both":"")+'"><span>'+(dn?"✓ ":"")+esc(idea(d.n,i)[0])+'</span><span class="by">'+stars(d.n,i).map(av).join("")+"</span></div>";}).join("");}
+    if(nxt)h+='<div class="lab">'+(d?"Tomorrow":"Then")+" · "+nice(nxt.date)+" · "+esc(nxt.title)+"</div>"+(wxFor(nxt.date)?'<div class="dmeta" style="margin-bottom:8px">'+esc(wxFor(nxt.date).city)+": "+wxLine(nxt.date)+"</div>":"")+steps(nxt);
+    h+='<button class="go" data-goday="'+cur.n+'">Open '+(d?"today":"Day 1")+"</button>";
   }
   if(TODAY>="2026-12-01")h+='<button class="go gold" data-recap="1">▶ Play our recap</button>';
   el.innerHTML=h;
@@ -1168,7 +1175,7 @@ $("recap").addEventListener("click",function(e){
 });
 document.addEventListener("click",function(e){
   if(e.target.closest("[data-recap]")){playRecap();return;}
-  if(e.target.id==="gotoday"){var d=dayToday();if(d){UI.day=d.n;saveUI();}go("days");}
+  var gd=e.target.closest("[data-goday]");if(gd){UI.day=+gd.getAttribute("data-goday");saveUI();go("days");}
 });
 /* ---------- tabs ---------- */
 var TABS=["trip","days","pack","us","prep"];
