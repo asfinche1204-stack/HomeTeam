@@ -181,7 +181,7 @@ textarea:focus,input:focus{border-color:var(--teal)}
 .bk b{font-weight:500;display:block;font-size:.95rem}.bk span.d{font-size:.83rem;color:var(--mute);display:block}
 .bk .x{margin-left:auto;color:var(--mute);padding:0 4px;font-size:1.2rem}
 .bk .by{padding-left:4px}
-.bkadd{display:grid;grid-template-columns:104px 1fr auto;gap:8px;margin-top:8px}
+.bkadd{display:grid;grid-template-columns:1fr auto;gap:8px;margin-top:8px}.bkadd textarea{grid-column:1/-1;grid-row:1;min-height:64px}.bk span.d{white-space:pre-wrap}.bk>div{min-width:0;overflow-wrap:anywhere}
 .bkadd input{padding:10px 11px;min-width:0}
 .bkadd input[type=time]{font:inherit;color:var(--cream);background:rgba(0,0,0,.25);border:1px solid var(--line);border-radius:14px;color-scheme:dark}
 .bkadd button{padding:0 16px;border-radius:14px;background:var(--saff);color:#2a1206;font-weight:600}
@@ -757,7 +757,7 @@ function announce(id,data,had){
   if(p[1]==="star"){var who=p[4];if(!data||who===ME)return;var d=DAYS[+p[2]-1],o=d&&idea(d.n,+p[3]);if(o)toast(NAMES[who]+" starred "+o[0]);}
   else if((p[1]==="pk"||p[1]==="pr")&&data&&!had&&data.by&&data.by!==ME)toast(NAMES[data.by]+" checked off "+(LBL[id]||"an item"));
   else if(p[1]==="no"&&data&&!had&&data.by&&data.by!==ME){var o2=DAYS[+p[2]-1]&&idea(+p[2],+p[3]);if(o2)toast(NAMES[data.by]+" dismissed "+o2[0]);}
-  else if(p[1]==="ev"&&data&&!had&&data.by&&data.by!==ME)toast(NAMES[data.by]+" booked "+data.title);
+  else if(p[1]==="ev"&&data&&!had&&data.by&&data.by!==ME)toast(NAMES[data.by]+" booked "+String(data.title).split("\n")[0]);
   else if(p[1]==="dn"&&data&&!had&&data.by&&data.by!==ME){var o3=DAYS[+p[2]-1]&&idea(+p[2],+p[3]);if(o3)toast(NAMES[data.by]+" marked "+o3[0]+" done");}
   else if(p[1]==="rt"&&data&&!had&&p[3]!==ME)toast(NAMES[p[3]]+" rated Day "+p[2]);
   else if(p[1]==="st"&&data&&p[3]!==ME)toast(NAMES[p[3]]+" stamped "+STAMPS[+p[2]][0]);
@@ -877,7 +877,7 @@ function drawDay(){
   if(d.drive)h+='<span class="tag d">'+esc(d.drive)+"</span>";
   if(d.stay)h+='<span class="tag">Sleep: '+esc(d.stay)+"</span>";
   if(wxFor(d.date))h+='<span class="tag d" id="wxtag">'+wxLine(d.date)+"</span>";
-  h+='</div><div class="lab o">Booked</div><div id="booked"></div><div class="bkadd"><input type="time" id="evtime" aria-label="Time"><input type="text" id="evtitle" maxlength="80" placeholder="Add a ticket or reservation"><button id="evadd">Add</button></div>';
+  h+='</div><div class="lab o">Booked</div><div id="booked"></div><div class="bkadd"><input type="time" id="evtime" aria-label="Time"><textarea id="evtitle" maxlength="600" rows="2" placeholder="Add a ticket or reservation. First line is the title; add details on the lines below."></textarea><button id="evadd">Add</button></div>';
   h+='<div class="lab">Set by the tour</div><ul class="tl">'+d.set.map(function(s){return"<li"+(s.indexOf("Optional")===0?' class="op"':"")+">"+esc(s)+"</li>";}).join("")+"</ul>";
   if(d.free)h+='<div class="lab o">Open time</div><div style="font-size:.93rem">'+esc(d.free)+"</div>";
   h+='<div class="lab e">Ideas · tap to star, × to dismiss</div><div id="ideas"></div>';
@@ -931,7 +931,7 @@ function drawPicks(){
 function t12(t){var m=/^(\d{1,2}):(\d{2})$/.exec(t||"");if(!m)return"";var h=+m[1];return(h%12||12)+":"+m[2]+" "+(h<12?"AM":"PM");}
 function bookings(n){
   var o=(DAYS[n-1].booked||[]).map(function(b){return{t:b[0],title:b[1],d:b[2]};}),pre="sp.ev."+n+".";
-  Object.keys(T).forEach(function(id){if(id.indexOf(pre)===0&&T[id]&&T[id].title)o.push({t:T[id].t||"",title:T[id].title,by:T[id].by,id:id});});
+  Object.keys(T).forEach(function(id){if(id.indexOf(pre)===0&&T[id]&&T[id].title){var ln=String(T[id].title).split("\n");o.push({t:T[id].t||"",title:ln[0],d:ln.slice(1).join("\n").trim(),by:T[id].by,id:id});}});
   o.sort(function(x,y){return(x.t||"99")<(y.t||"99")?-1:(x.t||"99")>(y.t||"99")?1:0;});return o;
 }
 function bkRow(b,rm){return'<div class="bk"><time>'+(t12(b.t)||"Any time")+"</time><div><b>"+esc(b.title)+"</b>"+(b.d?'<span class="d">'+esc(b.d)+"</span>":"")+"</div>"+(b.by?'<span class="by">'+av(b.by)+"</span>":"")+(rm&&b.id?'<button class="x" data-ev="'+b.id+'" aria-label="Remove">×</button>':"")+"</div>";}
@@ -943,7 +943,7 @@ function drawAllBooked(){
 }
 function addEvent(){
   var ti=$("evtitle"),tm=$("evtime");if(!ti)return;var v=ti.value.trim();if(!v||!need())return;
-  put("sp.ev."+UI.day+"."+Date.now().toString(36)+ME,{t:tm.value||"",title:v.slice(0,80),by:ME,at:Date.now()});
+  put("sp.ev."+UI.day+"."+Date.now().toString(36)+ME,{t:tm.value||"",title:v.slice(0,600),by:ME,at:Date.now()});
   ti.value="";tm.value="";drawBooked();drawChips();
 }
 /* ---------- packing ---------- */
@@ -1224,7 +1224,6 @@ $("day").addEventListener("input",function(e){
   if(e.target.id!=="note")return;if(!ME){e.target.blur();whoSheet();return;}
   notePend={day:UI.day,text:e.target.value};clearTimeout(noteT);noteT=setTimeout(commitNote,900);
 });
-$("day").addEventListener("keydown",function(e){if(e.key==="Enter"&&e.target.id==="evtitle")addEvent();});
 $("day").addEventListener("focusout",function(e){if(e.target.id==="note")commitNote();});
 $("who").addEventListener("click",function(e){var b=e.target.closest("button");if(b){UI.who=b.getAttribute("data-w");saveUI();drawPack();}});
 $("cats").addEventListener("click",function(e){
