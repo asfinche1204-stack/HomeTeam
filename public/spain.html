@@ -175,6 +175,16 @@ textarea:focus,input:focus{border-color:var(--teal)}
 .by{margin-left:auto;display:flex;align-items:center;padding-left:8px;flex:0 0 auto;flex-wrap:wrap;justify-content:flex-end;max-width:64px}
 .by small{display:block;width:100%;text-align:right;margin-top:4px;white-space:nowrap;font-size:.56rem;letter-spacing:.08em;text-transform:uppercase;color:var(--saff);font-weight:600}
 .tb{display:inline-block;margin-top:6px;font-style:normal;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;font-weight:600;color:#2a1206;background:var(--saff);padding:2px 8px;border-radius:99px}
+.bk{display:flex;gap:12px;align-items:flex-start;padding:12px 13px;margin:7px 0;border-radius:14px;background:linear-gradient(120deg,rgba(245,185,66,.16),rgba(232,118,92,.1));border:1px solid rgba(245,185,66,.45)}
+.bk time{flex:0 0 auto;min-width:64px;font-family:var(--serif);font-weight:700;color:var(--saff);font-size:1rem;line-height:1.35}
+.bk b{font-weight:500;display:block;font-size:.95rem}.bk span.d{font-size:.83rem;color:var(--mute);display:block}
+.bk .x{margin-left:auto;color:var(--mute);padding:0 4px;font-size:1.2rem}
+.bk .by{padding-left:4px}
+.bkadd{display:grid;grid-template-columns:104px 1fr auto;gap:8px;margin-top:8px}
+.bkadd input{padding:10px 11px;min-width:0}
+.bkadd input[type=time]{font:inherit;color:var(--cream);background:rgba(0,0,0,.25);border:1px solid var(--line);border-radius:14px;color-scheme:dark}
+.bkadd button{padding:0 16px;border-radius:14px;background:var(--saff);color:#2a1206;font-weight:600}
+.chip i.dot{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--saff);margin-left:4px;vertical-align:middle}
 .idea.theirs{border:1px dashed rgba(127,227,216,.5)}
 .idea.both{background:linear-gradient(120deg,rgba(245,185,66,.22),rgba(46,196,182,.14));border-color:var(--saff);box-shadow:0 0 22px rgba(245,185,66,.18)}
 .idea.both .s{background:var(--saff);border-color:var(--saff);color:#2a1206}
@@ -219,6 +229,11 @@ textarea:focus,input:focus{border-color:var(--teal)}
       <p class="lead">Typical late-November highs and lows (°F). Check the real forecast the day before you fly.</p>
       <div class="wx" id="wx"></div>
       <div class="tip">Mornings in Madrid and Granada sit near 40°F while Seville and Valencia afternoons reach the mid 60s. Layers beat one heavy coat.</div>
+    </div>
+    <div class="card">
+      <h2>Booked</h2>
+      <p class="lead">Tickets and reservations with fixed times. Add your own from any day.</p>
+      <div id="allbooked"></div>
     </div>
     <div class="card">
       <h2>Our picks so far</h2>
@@ -276,7 +291,7 @@ textarea:focus,input:focus{border-color:var(--teal)}
       <ul class="plain">
         <li><b>Toledo, Tue Nov 24 (afternoon).</b> Medieval hill town with Santo Tomé church and Santa María la Blanca synagogue. Worth it if you want a third city feel; skip it if you'd rather have a slow Madrid afternoon and tapas night.</li>
         <li><b>Flamenco show, Thu Nov 26 (evening).</b> Seville is the place to see it. An easy yes, or book a small tablao yourselves.</li>
-        <li><b>Montserrat, Tue Dec 1 (morning).</b> Mountain monastery outside Barcelona. It takes half of your only free Barcelona day, so pair it with an afternoon Sagrada Família slot.</li>
+        <li><b>Montserrat, Tue Dec 1 (morning).</b> Mountain monastery outside Barcelona. It runs the same morning as your Sagrada Família tickets, so skip it.</li>
       </ul>
     </div>
     <div class="foot">Itinerary follows Gate 1's 11 Day Affordable Spain, Sunday departure. Hotels, timings and restaurant hours can change. Your Gate 1 documents win any disagreement.<br><a href="https://www.gate1travel.com/tour/spain-escorted-11daffes27.aspx" target="_blank" rel="noopener">Gate 1 tour page</a></div>
@@ -335,13 +350,14 @@ var DAYS=[
 {n:5,date:"2026-11-26",dow:"Thu",city:"Seville",title:"Seville",stay:"Seville",hotel:"Hotel Sevilla Center",meals:["Breakfast"],drive:"",
  set:["City tour: Plaza de España, María Luisa Park, Barrio Santa Cruz","Seville Cathedral and the Giralda","Optional: evening flamenco show"],
  free:"Rest of the day after the tour.",
- open:[["Real Alcázar","Moorish palace and gardens, right beside the Cathedral. Timed tickets, so book for mid-afternoon.","see"],
+ open:[["Real Alcázar","Booked for 2:30 PM. Moorish palace and gardens, right beside the Cathedral. Allow two hours.","see"],
        ["Las Setas at sunset","The giant wooden 'mushrooms' with a rooftop walkway over the old town.","see"],
        ["Cross to Triana","Over the Isabel II bridge to the ceramics and flamenco neighbourhood. Tile shops and riverside bars.","see"],
        ["El Rinconcillo","Seville's oldest bar, 1670. Tab chalked on the counter. Spinach with chickpeas, jamón.","eat"],
        ["Bodega Santa Cruz (Las Columnas)","Loud, cheap, standing room. Order the pringá montadito.","eat"],
        ["Eslava","Modern tapas, worth the wait. Go right at opening.","eat"],
        ["Thanksgiving dinner, Spanish style","It's Thanksgiving back home. Make tonight the long, good dinner.","do"]],
+ booked:[["14:30","Real Alcázar","Two general tickets. Enter by the Puerta del León between 2:15 and 3:00 PM. Tickets are in the purchase email; have them ready on your phones."]],
  tip:"Seville is the warmest stop. The jacket can stay in the room this afternoon."},
 {n:6,date:"2026-11-27",dow:"Fri",city:"Granada",title:"Granada and the Alhambra",stay:"Granada",hotel:"Gran Hotel Luna de Granada",meals:["Breakfast"],drive:"About 3 hrs by coach",
  set:["Drive to Granada","Guided visit to the Alhambra (entry time is assigned by the site)"],
@@ -387,7 +403,7 @@ var DAYS=[
 {n:10,date:"2026-12-01",dow:"Tue",city:"Barcelona",title:"Barcelona, our day",stay:"Barcelona",hotel:"Hotel Negresco Princess",meals:["Breakfast","Dinner"],drive:"",
  set:["Full day at leisure","Optional: half-day Montserrat tour (morning)","Evening: farewell dinner with the Tour Manager"],
  free:"All day until the farewell dinner.",
- open:[["Inside La Sagrada Família","The tour only shows the outside. The interior is the single best thing in Barcelona. Timed tickets sell out, so book now.","see"],
+ open:[["Inside La Sagrada Família","Booked: guided tour at 9:45 AM, then the Passion tower at 11:15. The single best thing in Barcelona.","see"],
        ["Park Güell","Gaudí's mosaic terrace over the city. Timed entry; mornings have the best light.","see"],
        ["La Boqueria","Market off Las Ramblas. Go before noon; eat at a counter like El Quim.","eat"],
        ["Picasso Museum","His early work in five medieval palaces in El Born.","see"],
@@ -396,7 +412,8 @@ var DAYS=[
        ["Last-night souvenir run","Turrón, olive oil, saffron, a tin of smoked pimentón, espadrilles.","do"],
        ["Quimet & Quimet","Standing-room bar in Poble Sec since 1914: montaditos built from top-shelf tinned seafood, plus vermouth. Weekdays only; go right at opening.","eat","b"],
        ["Xarcuteria La Pineda","Century-old cured-meat shop and bodega in the Gothic Quarter. Jamón and a glass of wine at the back tables.","eat","b"]],
- tip:"If you take Montserrat in the morning, book Sagrada Família for about 3 PM so the two don't collide."},
+ booked:[["09:45","Sagrada Família guided tour","English guided tour. Be at the Carrer de la Marina entrance by 9:15 AM. Bring passports: the tickets are named and they check photo ID."],["11:15","Sagrada Família, Passion tower","Tower visit on the same ticket. Lift up, stairs down."]],
+ tip:"Sagrada Família takes the whole morning, so the Montserrat tour is out. Park Güell or the Gothic Quarter fits the afternoon before the farewell dinner."},
 {n:11,date:"2026-12-02",dow:"Wed",city:"Home",title:"Fly home",stay:"Home",meals:["Breakfast"],drive:"",
  set:["Breakfast","Transfer to Barcelona airport","Flight home"],
  open:[["Liquids go in the checked bag","Olive oil, wine and anything spreadable won't clear security in a carry-on.","do"],
@@ -459,9 +476,9 @@ var SHARED=[
   ["Foldable extra bag","Souvenir overflow"]]]
 ];
 var BOOK=[
- ["b1","Sagrada Família interior","Tue Dec 1. Timed entry; pick about 3 PM if you're doing Montserrat that morning.","https://sagradafamilia.org/en/tickets"],
- ["b2","Real Alcázar, Seville","Thu Nov 26, mid-afternoon after the city tour.","https://www.alcazarsevilla.org/en/"],
- ["b3","Park Güell","Tue Dec 1 morning, if it's on the list.","https://parkguell.barcelona/en"],
+ ["b1","Sagrada Família interior","Booked: Tue Dec 1, guided tour 9:45 AM, Passion tower 11:15."],
+ ["b2","Real Alcázar, Seville","Booked: Thu Nov 26, 2:30 PM."],
+ ["b3","Park Güell","Tue Dec 1 afternoon, if it's on the list.","https://parkguell.barcelona/en"],
  ["b4","Paella lunch in Valencia","Sun Nov 29, about 2 PM. Casa Carmela or La Pepica.",""],
  ["b5","One big Madrid dinner","Tue Nov 24. Botín or Casa Lucio book out.",""],
  ["b6","Gate 1 optional tours","Toledo, flamenco, Montserrat. Decide and add them through Gate 1.",""]
@@ -558,6 +575,7 @@ function announce(id,data,had){
   var p=id.split(".");
   if(p[1]==="star"){var who=p[4];if(!data||who===ME)return;var d=DAYS[+p[2]-1],o=d&&d.open[+p[3]];if(o)toast(NAMES[who]+" starred "+o[0]);}
   else if((p[1]==="pk"||p[1]==="pr")&&data&&!had&&data.by&&data.by!==ME)toast(NAMES[data.by]+" checked off "+(LBL[id]||"an item"));
+  else if(p[1]==="ev"&&data&&!had&&data.by&&data.by!==ME)toast(NAMES[data.by]+" booked "+data.title);
   else if(p[1]==="cu"&&data&&!had&&data.by&&data.by!==ME)toast(NAMES[data.by]+" added "+data.text);
 }
 /* ---------- sheets ---------- */
@@ -624,7 +642,7 @@ function dayStars(n){var c=0;DAYS[n-1].open.forEach(function(o,i){if(stars(n,i).
 function drawChips(scroll){
   $("chips").innerHTML=DAYS.map(function(d){
     var dt=d.date.split("-"),c=dayStars(d.n);
-    return'<button class="chip'+(d.n===UI.day?" on":"")+(d.date===TODAY?" today":"")+'" data-n="'+d.n+'"><small>'+d.dow+"</small><b>"+(+dt[2])+"</b><em>"+esc(d.city.split(" ")[0])+(c?" ★"+c:"")+"</em></button>";
+    return'<button class="chip'+(d.n===UI.day?" on":"")+(d.date===TODAY?" today":"")+'" data-n="'+d.n+'"><small>'+d.dow+"</small><b>"+(+dt[2])+"</b><em>"+esc(d.city.split(" ")[0])+(c?" ★"+c:"")+(bookings(d.n).length?'<i class="dot"></i>':"")+"</em></button>";
   }).join("");
   if(scroll){var on=$("chips").querySelector(".on");if(on&&on.scrollIntoView)try{on.scrollIntoView({inline:"center",block:"nearest"});}catch(e){}}
 }
@@ -634,13 +652,14 @@ function drawDay(){
   d.meals.forEach(function(m){h+='<span class="tag m">'+m+" included</span>";});
   if(d.drive)h+='<span class="tag d">'+esc(d.drive)+"</span>";
   if(d.stay)h+='<span class="tag">Sleep: '+esc(d.stay)+"</span>";
-  h+='</div><div class="lab">Set by the tour</div><ul class="tl">'+d.set.map(function(s){return"<li"+(s.indexOf("Optional")===0?' class="op"':"")+">"+esc(s)+"</li>";}).join("")+"</ul>";
+  h+='</div><div class="lab o">Booked</div><div id="booked"></div><div class="bkadd"><input type="time" id="evtime" aria-label="Time"><input type="text" id="evtitle" maxlength="80" placeholder="Add a ticket or reservation"><button id="evadd">Add</button></div>';
+  h+='<div class="lab">Set by the tour</div><ul class="tl">'+d.set.map(function(s){return"<li"+(s.indexOf("Optional")===0?' class="op"':"")+">"+esc(s)+"</li>";}).join("")+"</ul>";
   if(d.free)h+='<div class="lab o">Open time</div><div style="font-size:.93rem">'+esc(d.free)+"</div>";
   h+='<div class="lab e">Ideas · tap to star</div><div id="ideas"></div>';
   if(d.tip)h+='<div class="tip">'+esc(d.tip)+"</div>";
   h+='<div class="lab">Our notes</div><textarea id="note" maxlength="4000" placeholder="Reservations, meeting times, things we want to remember"></textarea><div class="dmeta" id="notemeta"></div>';
   h+='<div class="nav2"><button id="prev"'+(d.n===1?" disabled":"")+">← Day "+(d.n-1)+'</button><button id="next"'+(d.n===11?" disabled":"")+">Day "+(d.n+1)+" →</button></div></div>";
-  $("day").innerHTML=h;drawIdeas();syncNote(true);
+  $("day").innerHTML=h;drawBooked();drawIdeas();syncNote(true);
 }
 function drawIdeas(){
   var d=DAYS[UI.day-1],h="",el=$("ideas");if(!el)return;
@@ -673,6 +692,25 @@ function drawPicks(){
     h+='<div class="lab o">Day '+d.n+" · "+esc(d.city)+"</div>"+rows.map(function(r){return'<div class="pk'+(r[0].length===2?" both":"")+'"><span>'+esc(r[1])+'</span><span class="by">'+r[0].map(av).join("")+"</span></div>";}).join("");
   });
   $("picks").innerHTML=h||'<div class="dmeta">Nothing starred yet. Open a day and tap the ideas you want.</div>';
+}
+/* ---------- bookings: fixed ones from the tickets, plus sp.ev.<day>.<id> {t,title,by,at} added by either phone ---------- */
+function t12(t){var m=/^(\d{1,2}):(\d{2})$/.exec(t||"");if(!m)return"";var h=+m[1];return(h%12||12)+":"+m[2]+" "+(h<12?"AM":"PM");}
+function bookings(n){
+  var o=(DAYS[n-1].booked||[]).map(function(b){return{t:b[0],title:b[1],d:b[2]};}),pre="sp.ev."+n+".";
+  Object.keys(T).forEach(function(id){if(id.indexOf(pre)===0&&T[id]&&T[id].title)o.push({t:T[id].t||"",title:T[id].title,by:T[id].by,id:id});});
+  o.sort(function(x,y){return(x.t||"99")<(y.t||"99")?-1:(x.t||"99")>(y.t||"99")?1:0;});return o;
+}
+function bkRow(b,rm){return'<div class="bk"><time>'+(t12(b.t)||"Any time")+"</time><div><b>"+esc(b.title)+"</b>"+(b.d?'<span class="d">'+esc(b.d)+"</span>":"")+"</div>"+(b.by?'<span class="by">'+av(b.by)+"</span>":"")+(rm&&b.id?'<button class="x" data-ev="'+b.id+'" aria-label="Remove">×</button>':"")+"</div>";}
+function drawBooked(){var el=$("booked");if(!el)return;var b=bookings(UI.day);el.innerHTML=b.length?b.map(function(x){return bkRow(x,true);}).join(""):'<div class="dmeta">Nothing booked this day yet.</div>';}
+function drawAllBooked(){
+  var h="";DAYS.forEach(function(d){var b=bookings(d.n);if(!b.length)return;var dt=d.date.split("-");
+    h+='<div class="lab o">'+d.dow+", "+MON[+dt[1]-1]+" "+(+dt[2])+" · "+esc(d.city)+"</div>"+b.map(function(x){return bkRow(x,false);}).join("");});
+  $("allbooked").innerHTML=h||'<div class="dmeta">Nothing booked yet.</div>';
+}
+function addEvent(){
+  var ti=$("evtitle"),tm=$("evtime");if(!ti)return;var v=ti.value.trim();if(!v||!need())return;
+  put("sp.ev."+UI.day+"."+Date.now().toString(36)+ME,{t:tm.value||"",title:v.slice(0,80),by:ME,at:Date.now()});
+  ti.value="";tm.value="";drawBooked();drawChips();
 }
 /* ---------- packing ---------- */
 function lists(l){return l==="shared"?SHARED:PERSON;}
@@ -718,8 +756,8 @@ function toggle(id){if(!need())return;put(id,T[id]?null:{by:ME,at:Date.now()});}
 var TABS=["trip","days","pack","prep"];
 function drawAll(){
   $("mebtn").innerHTML=ME?av(ME)+esc(NAMES[ME]):"Who's this?";
-  if(TAB==="trip")drawPicks();
-  else if(TAB==="days"){drawChips();drawIdeas();syncNote();}
+  if(TAB==="trip"){drawAllBooked();drawPicks();}
+  else if(TAB==="days"){drawChips();drawBooked();drawIdeas();syncNote();}
   else if(TAB==="pack")drawPack();
   else drawPrep();
 }
@@ -739,6 +777,9 @@ $("chips").addEventListener("click",function(e){var b=e.target.closest(".chip");
 $("day").addEventListener("click",function(e){
   var b=e.target.closest(".idea");
   if(b){if(!need())return;var id=sid(UI.day,+b.getAttribute("data-i"),ME);put(id,T[id]?null:{at:Date.now()});drawIdeas();drawChips();return;}
+  if(e.target.id==="evadd"){addEvent();return;}
+  var rmv=e.target.closest("[data-ev]");
+  if(rmv){if(!need())return;put(rmv.getAttribute("data-ev"),null);drawBooked();drawChips();return;}
   if(e.target.id==="prev"&&UI.day>1){setDay(UI.day-1);window.scrollTo(0,0);}
   if(e.target.id==="next"&&UI.day<11){setDay(UI.day+1);window.scrollTo(0,0);}
 });
@@ -746,6 +787,7 @@ $("day").addEventListener("input",function(e){
   if(e.target.id!=="note")return;if(!ME){e.target.blur();whoSheet();return;}
   notePend={day:UI.day,text:e.target.value};clearTimeout(noteT);noteT=setTimeout(commitNote,900);
 });
+$("day").addEventListener("keydown",function(e){if(e.key==="Enter"&&e.target.id==="evtitle")addEvent();});
 $("day").addEventListener("focusout",function(e){if(e.target.id==="note")commitNote();});
 $("who").addEventListener("click",function(e){var b=e.target.closest("button");if(b){UI.who=b.getAttribute("data-w");saveUI();drawPack();}});
 $("cats").addEventListener("click",function(e){
