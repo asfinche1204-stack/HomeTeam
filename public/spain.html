@@ -192,6 +192,49 @@ textarea:focus,input:focus{border-color:var(--teal)}
 .morebtn{width:100%;margin-top:10px;padding:12px;border-radius:14px;border:1px dashed rgba(127,227,216,.55);color:var(--teal2);font-weight:500;background:rgba(46,196,182,.07)}
 .morebtn:disabled{opacity:.45;border-style:solid}
 .rs{margin-left:8px;font-size:.78rem;color:var(--teal2);text-decoration:underline;flex:0 0 auto}
+/* juntos */
+#usdot{display:none;position:absolute;top:6px;right:22%;width:8px;height:8px;border-radius:50%;background:var(--terra);box-shadow:0 0 8px var(--terra)}
+.tabs button{font-size:.66rem}
+.stamps{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.stp{padding:6px 2px 8px;border-radius:16px;background:rgba(247,240,227,.06);border:1px solid var(--line);text-align:center}
+.stp small{display:block;font-size:.62rem;color:var(--mute);margin-top:2px;letter-spacing:.04em}
+.stp.both{border-color:var(--saff);background:rgba(245,185,66,.1);box-shadow:0 0 20px rgba(245,185,66,.18)}.stp.both small{color:var(--saff)}
+.stp.lock{opacity:.5}
+.pad{display:block;position:relative;width:100%;aspect-ratio:1}
+.blank{position:absolute;inset:10%;border:1.5px dashed var(--mute);border-radius:50%;display:grid;place-items:center;font-family:var(--serif);font-size:.8rem;color:var(--mute)}
+.ink{position:absolute;inset:4%;width:92%;height:92%;fill:none;stroke-width:2.2;mix-blend-mode:screen}
+.ink.a{stroke:#8ab8ff;transform:rotate(-9deg) translate(-3%,-2%)}.ink.b{stroke:var(--teal);transform:rotate(8deg) translate(3%,2%)}
+.ink text{stroke:none;font-family:var(--sans);font-weight:600}.ink.a text{fill:#8ab8ff}.ink.b text{fill:var(--teal)}
+.ink.g{stroke:var(--saff);transform:rotate(-6deg);filter:drop-shadow(0 0 6px rgba(245,185,66,.5))}.ink.g text{fill:var(--saff)}
+.ink .arc{font-size:10.5px;letter-spacing:1.5px}.ink .arc.sm{font-size:7px;letter-spacing:1.2px}.ink .dt{font-family:var(--serif);font-size:13px;font-weight:700}.ink .yr{font-size:7.5px;letter-spacing:2px}
+.ink.fresh{animation:thunk .55s cubic-bezier(.2,1.6,.4,1) both}
+@keyframes thunk{0%{opacity:0;scale:2.4}60%{opacity:1;scale:.92}100%{scale:1}}
+.pc{position:relative;padding:16px;margin:10px 0;border-radius:16px;background:linear-gradient(135deg,rgba(247,240,227,.1),rgba(247,240,227,.03));border:1px solid var(--line)}
+.pc>small{font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--teal2);font-weight:600}
+.pc h3{margin:4px 0 12px;font-style:italic}
+.pc textarea{min-height:64px}
+.pc.rev{border-color:rgba(245,185,66,.5);background:linear-gradient(135deg,rgba(245,185,66,.14),rgba(46,196,182,.08))}
+.pc.flip{animation:flip .9s ease both}
+@keyframes flip{0%{transform:perspective(900px) rotateY(88deg);opacity:0}100%{transform:none;opacity:1}}
+.ans>div{display:flex;gap:10px;align-items:flex-start;margin-top:10px}.ans p{margin:0;font-size:.95rem;white-space:pre-wrap}
+.wait{font-size:.88rem;color:var(--mute);display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.seal{color:var(--saff)}
+.envs{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.env{position:relative;aspect-ratio:4/3;border-radius:10px;background:linear-gradient(180deg,#efe6d2,#dccfb4);overflow:hidden;box-shadow:0 8px 20px rgba(0,0,0,.35)}
+.env .flap{position:absolute;inset:0;background:linear-gradient(180deg,#e3d6ba,#cdbf9f);clip-path:polygon(0 0,100% 0,50% 58%)}
+.env .wax{position:absolute;left:50%;top:50%;width:30px;height:30px;margin:-15px 0 0 -15px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#e0563f,#9c2415);color:#f7d9c8;font-family:var(--serif);font-weight:700;display:grid;place-items:center;font-size:.9rem;box-shadow:0 2px 6px rgba(0,0,0,.4)}
+.env small{position:absolute;left:0;right:0;bottom:4px;font-size:.58rem;color:#5b4a2c;font-weight:600}
+.env.lock{filter:saturate(.6) brightness(.75)}
+.env.ready{animation:wig 1.6s ease-in-out infinite}.env.read .wax{opacity:.35}
+@keyframes wig{0%,100%{transform:rotate(0)}8%{transform:rotate(-3deg)}16%{transform:rotate(3deg)}24%{transform:rotate(0)}}
+#snday{width:100%;font:inherit;color:var(--cream);background:rgba(0,0,0,.25);border:1px solid var(--line);border-radius:14px;padding:11px 13px;margin-bottom:8px;color-scheme:dark}
+.letter{background:#f4ecd9;color:#2b2416;border-radius:6px;padding:22px 20px;font-family:var(--serif);box-shadow:0 10px 30px rgba(0,0,0,.4);animation:unfold .7s ease both;transform-origin:top;max-height:60vh;overflow:auto}
+.letter small{font-family:var(--sans);font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:#8a7650}
+.letter p{white-space:pre-wrap;font-size:1.05rem;line-height:1.6;margin:10px 0 14px}.letter .sig{text-align:right;font-style:italic}
+@keyframes unfold{0%{transform:scaleY(.1);opacity:0}100%{transform:none;opacity:1}}
+.confetti{position:fixed;inset:0;pointer-events:none;z-index:60;overflow:hidden}
+.confetti i{position:absolute;top:-14px;height:11px;border-radius:2px;animation:fall linear both}
+@keyframes fall{to{top:105%;rotate:720deg}}
 .idea.theirs{border:1px dashed rgba(127,227,216,.5)}
 .idea.both{background:linear-gradient(120deg,rgba(245,185,66,.22),rgba(46,196,182,.14));border-color:var(--saff);box-shadow:0 0 22px rgba(245,185,66,.18)}
 .idea.both .s{background:var(--saff);border-color:var(--saff);color:#2a1206}
@@ -282,6 +325,25 @@ textarea:focus,input:focus{border-color:var(--teal)}
     </div>
   </section>
 
+  <section id="s-us">
+    <div class="card">
+      <h2>Pasaporte</h2>
+      <p class="lead">A stamp unlocks the day we reach each city. Each of us stamps it; it turns gold when we both have.</p>
+      <div class="stamps" id="stamps"></div>
+      <div class="dmeta" id="stampn" style="text-align:center;margin-top:10px"></div>
+    </div>
+    <div class="card">
+      <h2>Postales</h2>
+      <p class="lead">One question a day. Answer in secret. The postcard only flips once we have both answered.</p>
+      <div id="pcs"></div>
+    </div>
+    <div class="card">
+      <h2>Sobres</h2>
+      <p class="lead">Sealed notes for each other that cannot be opened until the day you choose.</p>
+      <div id="notes"></div>
+    </div>
+  </section>
+
   <section id="s-prep">
     <div class="card">
       <h2>Book before you fly</h2>
@@ -311,6 +373,7 @@ textarea:focus,input:focus{border-color:var(--teal)}
   <button data-t="trip"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/></svg>Trip</button>
   <button data-t="days"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>Days</button>
   <button data-t="pack"><svg viewBox="0 0 24 24"><rect x="5" y="7" width="14" height="13" rx="2.5"/><path d="M9 7V5a1.5 1.5 0 011.5-1.5h3A1.5 1.5 0 0115 5v2M9.5 11v5M14.5 11v5"/></svg>Pack</button>
+  <button data-t="us" style="position:relative"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 017-2.5A4 4 0 0119 10c0 5.6-7 10-7 10z"/></svg>Us<i id="usdot"></i></button>
   <button data-t="prep"><svg viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11M3.5 6l1.2 1.2L7 5M3.5 12l1.2 1.2L7 11M3.5 18l1.2 1.2L7 17"/></svg>Prep</button>
 </nav>
 
@@ -642,6 +705,10 @@ function announce(id,data,had){
   else if((p[1]==="pk"||p[1]==="pr")&&data&&!had&&data.by&&data.by!==ME)toast(NAMES[data.by]+" checked off "+(LBL[id]||"an item"));
   else if(p[1]==="no"&&data&&!had&&data.by&&data.by!==ME){var o2=DAYS[+p[2]-1]&&idea(+p[2],+p[3]);if(o2)toast(NAMES[data.by]+" dismissed "+o2[0]);}
   else if(p[1]==="ev"&&data&&!had&&data.by&&data.by!==ME)toast(NAMES[data.by]+" booked "+data.title);
+  else if(p[1]==="st"&&data&&p[3]!==ME)toast(NAMES[p[3]]+" stamped "+STAMPS[+p[2]][0]);
+  else if(p[1]==="pc"&&data&&!had&&p[3]!==ME)toast(NAMES[p[3]]+" sealed a postcard answer");
+  else if(p[1]==="sn"&&data&&!had&&p[3]!==ME)toast(NAMES[p[3]]+" left you a sealed note");
+  else if(p[1]==="op"&&data&&!had&&p[3]===ME)toast(NAMES[other()]+" opened your note ♥");
   else if(p[1]==="cu"&&data&&!had&&data.by&&data.by!==ME)toast(NAMES[data.by]+" added "+data.text);
 }
 /* ---------- sheets ---------- */
@@ -660,6 +727,7 @@ $("ov").addEventListener("click",function(e){
   var b=e.target.closest("[data-me]");
   if(b){var first=!ME;ME=b.getAttribute("data-me");lsSet("home-team-me",ME);if(first)UI.who=ME;saveUI();closeSheet();drawAll();return;}
   if(e.target.id==="pwgo"){tryLogin();return;}
+  if(e.target.id==="shclose"){closeSheet();return;}
   if(e.target===this&&NET!=="lock"&&ME)closeSheet();
 });
 $("ov").addEventListener("keydown",function(e){if(e.key==="Enter"&&e.target.id==="pw")tryLogin();});
@@ -833,14 +901,116 @@ function drawPrep(){
   $("book").innerHTML=BOOK.map(r).join("");$("home").innerHTML=HOME.map(r).join("");
 }
 function toggle(id){if(!need())return;put(id,T[id]?null:{by:ME,at:Date.now()});}
+/* ---------- Juntos: passport stamps, blind postcards, sealed notes ----------
+   sp.st.<city>.<a|b>            {at}        a passport stamp, one per person per city
+   sp.pc.<key>.<a|b>             {text,at}   postcard answer; hidden on the other phone until both exist
+   sp.sn.<day>.<from>.<id>       {text,at}   sealed note for the other person; opens on that day's date
+   sp.op.<day>.<from>.<id>       {at}        the note was opened                                          */
+var STAMPS=[["Madrid","2026-11-23"],["Córdoba","2026-11-25"],["Sevilla","2026-11-25"],["Granada","2026-11-27"],["València","2026-11-28"],["Barcelona","2026-11-30"]];
+var QS={pre:"What are you most looking forward to?",1:"One thing you hope we do that isn't on any list?",2:"Your first impression of Spain, in five words.",3:"Best thing you ate today?",4:"What stopped you in your tracks today?",5:"It's Thanksgiving. What are you thankful for this year?",6:"Describe the Alhambra to someone who will never see it.",7:"Funniest moment of the trip so far?",8:"Paella verdict, with a score out of 10.",9:"A moment from today you want to remember in ten years.",10:"Favorite day of the whole trip, and why?",11:"Where are we going next?"};
+var PCS=[["pre",null,"Before we go"]].concat(DAYS.map(function(d){return[d.n,d.date,"Day "+d.n+" · "+d.city];}));
+var DRAFT={},lastStamp=null,usDirty=false;
+function other(){return ME==="a"?"b":"a";}
+function nice(ds){var p=ds.split("-"),d=new Date(+p[0],+p[1]-1,+p[2]);return["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][d.getDay()]+", "+MON[+p[1]-1]+" "+(+p[2]);}
+function ink(p,i){
+  var s=STAMPS[i],d=s[1].split("-"),u=i+p,fr=lastStamp&&lastStamp.charAt(0)===String(i);
+  return'<svg class="ink '+p+(fr?" fresh":"")+'" viewBox="0 0 100 100" aria-hidden="true"><defs><path id="st'+u+'" d="M14,50 a36,36 0 1,1 72,0"/><path id="sb'+u+'" d="M7,50 a43,43 0 0,0 86,0"/></defs>'+
+    '<circle cx="50" cy="50" r="47.5"/><circle cx="50" cy="50" r="30" stroke-dasharray="2 2.5"/>'+
+    '<text class="arc"><textPath href="#st'+u+'" startOffset="50%" text-anchor="middle">'+esc(s[0].toUpperCase())+'</textPath></text>'+
+    '<text class="arc sm"><textPath href="#sb'+u+'" startOffset="50%" text-anchor="middle">★ ESPAÑA ★</textPath></text>'+
+    '<text class="dt" x="50" y="51" text-anchor="middle">'+(+d[2])+" "+MON[+d[1]-1].toUpperCase()+'</text><text class="yr" x="50" y="62" text-anchor="middle">'+d[0]+"</text></svg>";
+}
+function confetti(){
+  if(window.matchMedia&&window.matchMedia("(prefers-reduced-motion:reduce)").matches)return;
+  var box=document.createElement("div");box.className="confetti";var cols=["#f5b942","#2ec4b6","#e8765c","#8ab8ff","#fcd116","#ce1126","#f7f0e3"];
+  for(var i=0;i<70;i++){var s=document.createElement("i");s.style.left=Math.random()*100+"%";s.style.background=cols[i%cols.length];s.style.animationDelay=Math.random()*.5+"s";s.style.animationDuration=1.8+Math.random()*1.6+"s";s.style.transform="rotate("+Math.random()*360+"deg)";s.style.width=6+Math.random()*6+"px";box.appendChild(s);}
+  document.body.appendChild(box);setTimeout(function(){box.remove();},4200);
+}
+function myNotes(){ /* notes addressed to me */
+  var o=[];Object.keys(T).forEach(function(id){var p=id.split(".");if(p[1]==="sn"&&ME&&p[3]!==ME&&T[id]&&T[id].text)o.push({id:id,day:+p[2],from:p[3],rest:p.slice(2).join("."),d:T[id]});});
+  o.sort(function(x,y){return x.day-y.day||(x.d.at||0)-(y.d.at||0);});return o;
+}
+function sentNotes(){
+  var o=[];Object.keys(T).forEach(function(id){var p=id.split(".");if(p[1]==="sn"&&p[3]===ME&&T[id]&&T[id].text)o.push({id:id,day:+p[2],rest:p.slice(2).join("."),d:T[id]});});
+  o.sort(function(x,y){return x.day-y.day||(x.d.at||0)-(y.d.at||0);});return o;
+}
+function usTodo(){
+  if(!ME)return 0;var n=0;
+  STAMPS.forEach(function(s,i){if(TODAY>=s[1]&&!T["sp.st."+i+"."+ME])n++;});
+  PCS.forEach(function(q){if((!q[1]||TODAY>=q[1])&&!T["sp.pc."+q[0]+"."+ME])n++;});
+  myNotes().forEach(function(x){if(TODAY>=DAYS[x.day-1].date&&!T["sp.op."+x.rest])n++;});
+  return n;
+}
+function drawUs(){
+  var ae=document.activeElement;
+  if(ae&&ae.closest&&ae.closest("#s-us")&&/TEXTAREA|SELECT/.test(ae.tagName)){usDirty=true;return;}
+  usDirty=false;var O=ME?NAMES[other()]:"your partner";
+  /* stamps */
+  var got=0;
+  $("stamps").innerHTML=STAMPS.map(function(s,i){
+    var open=TODAY>=s[1],a=T["sp.st."+i+".a"],b=T["sp.st."+i+".b"],mine=ME&&T["sp.st."+i+"."+ME];if(a&&b)got++;
+    return'<button class="stp'+(open?"":" lock")+(a&&b?" both":"")+'" data-st="'+i+'"'+(open?"":" disabled")+'><span class="pad">'+(a&&b?ink("g",i):a?ink("a",i):b?ink("b",i):"")+(!a&&!b?'<span class="blank">'+esc(s[0])+"</span>":"")+"</span><small>"+(open?(a&&b?"Juntos ★":mine?"Waiting on "+esc(O):"Tap to stamp"):"Opens "+nice(s[1]))+"</small></button>";
+  }).join("");
+  $("stampn").textContent=got+" of 6 stamped together";
+  /* postcards */
+  var h="",next=null;
+  PCS.slice().reverse().forEach(function(q){
+    var k=q[0],open=!q[1]||TODAY>=q[1];if(!open){next=q;return;}
+    var a=T["sp.pc."+k+".a"],b=T["sp.pc."+k+".b"],mine=ME&&T["sp.pc."+k+"."+ME],theirs=ME&&T["sp.pc."+k+"."+other()];
+    h+='<div class="pc'+(a&&b?" rev":"")+(a&&b&&!(UI.seen||{})[k]?" flip":"")+'" data-k="'+k+'"><small>'+esc(q[2])+"</small><h3>"+esc(QS[k])+"</h3>";
+    if(a&&b)h+='<div class="ans"><div>'+av("a")+"<p>"+esc(a.text)+"</p></div><div>"+av("b")+"<p>"+esc(b.text)+"</p></div></div>";
+    else if(mine)h+='<div class="wait"><span class="seal">✦</span>Your answer is sealed. It flips when '+esc(O)+' answers.<button class="rs" data-unpc="'+k+'">Change mine</button></div>';
+    else h+=(theirs?'<div class="wait"><span class="seal">✦</span>'+esc(O)+" has answered. No peeking until you do.</div>":"")+'<textarea data-pc="'+k+'" maxlength="500" placeholder="Only you can see this until you have both answered">'+esc(DRAFT["pc"+k]||"")+'</textarea><button class="go" data-sendpc="'+k+'">Seal my answer</button>';
+    h+="</div>";
+  });
+  if(next)h='<div class="dmeta" style="margin-bottom:8px">Next postcard opens '+nice(next[1])+".</div>"+h;
+  $("pcs").innerHTML=h;
+  var fl=$("pcs").querySelector(".flip");
+  if(fl){UI.seen=UI.seen||{};[].forEach.call($("pcs").querySelectorAll(".flip"),function(e){UI.seen[e.getAttribute("data-k")]=1;});saveUI();confetti();}
+  /* sealed notes */
+  var n="",mine2=myNotes(),sent=sentNotes(),days=DAYS.filter(function(d){return d.date>=TODAY;});
+  if(mine2.length){
+    n+='<div class="lab o">For you</div><div class="envs">'+mine2.map(function(x){
+      var d=DAYS[x.day-1],open=TODAY>=d.date,read=T["sp.op."+x.rest];
+      return'<button class="env'+(open?(read?" read":" ready"):" lock")+'" data-env="'+x.id+'"'+(open?"":" disabled")+'><span class="flap"></span><span class="wax">'+esc((NAMES[x.from]||"?").charAt(0))+"</span><small>"+(open?(read?"Opened · read again":"Tap to open"):"Opens "+nice(d.date))+"</small></button>";
+    }).join("")+"</div>";
+  }else n+='<div class="dmeta">No notes waiting for you yet.</div>';
+  if(days.length){
+    n+='<div class="lab">Leave one for '+esc(O)+'</div><select id="snday">'+days.map(function(d){return'<option value="'+d.n+'"'+(String(DRAFT.snday||"")===String(d.n)?" selected":"")+">Opens "+nice(d.date)+" · "+esc(d.city)+"</option>";}).join("")+'</select><textarea id="sntext" maxlength="1500" placeholder="'+esc(O)+" can't read this until that day\">"+esc(DRAFT.sn||"")+'</textarea><button class="go" id="snsend">Seal it</button>';
+  }
+  if(sent.length)n+='<div class="lab">Sealed by you</div>'+sent.map(function(x){var read=T["sp.op."+x.rest];return'<div class="pk"><span>'+nice(DAYS[x.day-1].date)+" · "+esc(x.d.text.slice(0,28))+(x.d.text.length>28?"…":"")+'</span><span class="by" style="color:'+(read?"var(--saff)":"var(--mute)")+';font-size:.78rem">'+(read?"Opened ♥":"Sealed")+"</span>"+(read?"":'<button class="x" data-delsn="'+x.id+'" aria-label="Delete">×</button>')+"</div>";}).join("");
+  $("notes").innerHTML=n;
+}
+$("s-us").addEventListener("input",function(e){
+  var t=e.target;if(t.getAttribute("data-pc"))DRAFT["pc"+t.getAttribute("data-pc")]=t.value;else if(t.id==="sntext")DRAFT.sn=t.value;else if(t.id==="snday")DRAFT.snday=t.value;
+});
+$("s-us").addEventListener("change",function(e){if(e.target.id==="snday")DRAFT.snday=e.target.value;});
+$("s-us").addEventListener("focusout",function(){setTimeout(function(){if(usDirty&&TAB==="us")drawUs();},150);});
+$("s-us").addEventListener("click",function(e){
+  var t=e.target,b;
+  if((b=t.closest("[data-st]"))){if(!need())return;var i=b.getAttribute("data-st"),id="sp.st."+i+"."+ME;if(T[id])return;lastStamp=i+ME;put(id,{at:Date.now()});var both=T["sp.st."+i+"."+other()];drawUs();if(both)confetti();setTimeout(function(){lastStamp=null;},900);return;}
+  if((b=t.closest("[data-sendpc]"))){if(!need())return;var k=b.getAttribute("data-sendpc"),v=(DRAFT["pc"+k]||"").trim();if(!v)return;delete DRAFT["pc"+k];put("sp.pc."+k+"."+ME,{text:v.slice(0,500),at:Date.now()});drawUs();return;}
+  if((b=t.closest("[data-unpc]"))){if(!need())return;var k2=b.getAttribute("data-unpc"),cur=T["sp.pc."+k2+"."+ME];if(cur)DRAFT["pc"+k2]=cur.text;put("sp.pc."+k2+"."+ME,null);drawUs();return;}
+  if(t.id==="snsend"){if(!need())return;var tx=(DRAFT.sn||"").trim(),dy=+($("snday").value);if(!tx||!dy)return;put("sp.sn."+dy+"."+ME+"."+Date.now().toString(36),{text:tx.slice(0,1500),at:Date.now()});DRAFT.sn="";drawUs();toast("Sealed until "+nice(DAYS[dy-1].date));return;}
+  if((b=t.closest("[data-delsn]"))){if(!need())return;put(b.getAttribute("data-delsn"),null);drawUs();return;}
+  if((b=t.closest("[data-env]"))){
+    var id2=b.getAttribute("data-env"),p=id2.split("."),d=DAYS[+p[2]-1],doc=T[id2];if(!doc||TODAY<d.date)return;
+    var first=!T["sp.op."+p.slice(2).join(".")];
+    sheet('<div class="letter"><small>'+nice(d.date)+" · "+esc(d.city)+'</small><p>'+esc(doc.text)+'</p><div class="sig">'+esc(NAMES[p[3]]||"")+'</div></div><button class="go" id="shclose">Close</button>');
+    if(first){put("sp.op."+p.slice(2).join("."),{at:Date.now()});confetti();}
+    drawUs();
+  }
+});
 /* ---------- tabs ---------- */
-var TABS=["trip","days","pack","prep"];
+var TABS=["trip","days","pack","us","prep"];
 function drawAll(){
   $("mebtn").innerHTML=ME?av(ME)+esc(NAMES[ME]):"Who's this?";
   if(TAB==="trip"){drawAllBooked();drawPicks();}
   else if(TAB==="days"){drawChips();drawBooked();drawIdeas();syncNote();}
   else if(TAB==="pack")drawPack();
+  else if(TAB==="us")drawUs();
   else drawPrep();
+  var td=$("usdot");if(td)td.style.display=usTodo()?"block":"none";
 }
 function show(t){
   if(TABS.indexOf(t)<0)t="trip";
