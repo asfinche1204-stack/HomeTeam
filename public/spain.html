@@ -694,6 +694,7 @@ html{overscroll-behavior-y:contain}
       <p class="lead">Sold through Gate 1. Prices are in your tour documents.</p>
       <ul class="plain">
         <li><b>Flamenco, Thu Nov 26:</b> booked yourselves. Manuela Carrasco (Hija) at Teatro Cajasol, 8:30 PM, so skip the Gate 1 flamenco option.</li>
+        <li><b>Hammam, Fri Nov 27:</b> booked yourselves. Hammam Al Ándalus in Granada, changing room at 5:30 PM.</li>
         <li><b>Skipping:</b> Toledo (Nov 24) and Montserrat (Dec 1). That keeps Tuesday afternoon free in Madrid and the Sagrada Família morning clear.</li>
       </ul>
     </div>
@@ -781,7 +782,8 @@ var DAYS=[
        ["Restaurante Oliver","Seafood on Plaza Pescadería beside the Cathedral. He ate steamed mussels, clams, and fried eggplant with honey.","eat","b"],
        ["Bar Gallardo","Neighborhood bar on Calle Pintor Rodríguez Acosta: cheese, lamb chops, fried pastry. Well off the tourist track.","eat","b"],
        ["Café Casa Pasteles","Pastry café up in the Albaicín. Pairs with the walk down from Mirador de San Nicolás.","eat","b"]],
- tip:"Coldest night of the trip, often near freezing. This is the hat-and-gloves stop. You'll need your passport for Alhambra entry."},
+ booked:[["17:30","Hammam Al Ándalus","Be in the changing room by 5:30 PM sharp; the baths start at 6:00. Calle Santa Ana 16, just off Plaza Nueva at the start of the Carrera del Darro. Booked by Nat for the two of you, €165 paid online. They are strict about the changing-room time, so if the Alhambra visit runs late, head straight there. Bring swimsuits.\nBefore you go: sign the online check-in (liability, health and consent form) and add your details as her companion, using the links in Nat's confirmation email. Keep that email handy on arrival."]],
+ tip:"Coldest night of the trip, often near freezing. This is the hat-and-gloves stop. You'll need your passport for Alhambra entry. The hammam at 5:30 is a warm way to end it."},
 {n:7,date:"2026-11-28",dow:"Sat",city:"Valencia",title:"North to Valencia",stay:"Valencia",hotel:"Exe Rey Don Jaime or Sercotel Sorolla Palace",meals:["Breakfast","Dinner"],drive:"Longest coach day (about 5–6 hrs)",
  set:["Drive north to Valencia","Hotel check-in","Dinner included"],
  free:"A little time before dinner, and after.",
@@ -903,7 +905,7 @@ var PERSON=[
   ["Scarf","Warmth, style, and Spain wears them"],
   ["Light gloves and a beanie","For Granada"],
   ["Underwear ×10"],["Socks ×10","Wool blend for the walking days"],
-  ["Sleepwear"],["Sunglasses"],["Swimsuit","Only if a hotel pool or spa tempts you"]]],
+  ["Sleepwear"],["Sunglasses"],["Swimsuit","For the hammam in Granada, Fri Nov 27"]]],
  ["Shoes",[
   ["Broken-in walking shoes","3–4 hours a day on cobblestones. Not new ones."],
   ["Second pair that can dress up","Still walkable; gives the first pair a day off"],
@@ -1188,7 +1190,8 @@ function sid(n,i,p){return"sp.star."+n+"."+i+"."+p;}
 function stars(n,i){var o=[];if(T[sid(n,i,"a")])o.push("a");if(T[sid(n,i,"b")])o.push("b");return o;}
 /* ideas: main list at 0.., reserve at 100..; sp.add.<day>.<i> reveals a reserve idea, sp.no.<day>.<i> dismisses one (both shared) */
 function idea(n,i){var d=DAYS[n-1];return i<100?d.open[i]:(MORE[n]||[])[i-100];}
-function ideaIds(n){var o=DAYS[n-1].open.map(function(x,i){return i;});(MORE[n]||[]).forEach(function(x,j){o.push(100+j);});return o;}
+var BOOKEDIDEA={"6.103":1}; /* reserve ideas we've since booked: kept in MORE so the ids after them don't shift */
+function ideaIds(n){var o=DAYS[n-1].open.map(function(x,i){return i;});(MORE[n]||[]).forEach(function(x,j){if(!BOOKEDIDEA[n+"."+(100+j)])o.push(100+j);});return o;}
 function gone(n,i){return T["sp.no."+n+"."+i];}
 function shown(n,i){return(i<100||!!T["sp.add."+n+"."+i])&&!gone(n,i);}
 function spare(n){return ideaIds(n).filter(function(i){return i>=100&&!T["sp.add."+n+"."+i]&&!gone(n,i);});}
@@ -2162,6 +2165,7 @@ var STOPS=[["Madrid",[2,3],2],["Córdoba",[4],0],["Seville",[5],4],["Granada",[6
 var MPL={ /* built-in places: [icon, name, Google Maps search, lat, lng]; coordinates are the entrance or the building, to within a block */
   Madrid:[],
   Seville:[["🏰","Real Alcázar, Lion Gate","Real Alcázar de Sevilla",37.3841,-5.9913],["💃","Teatro Cajasol (flamenco)","Teatro Cajasol, Calle Chicarreros 1, Sevilla",37.3895,-5.9947]],
+  Granada:[["♨️","Hammam Al Ándalus","Hammam Al Ándalus, Calle Santa Ana 16, Granada",37.1771,-3.5952]],
   Valencia:[["🥘","La Pepica","La Pepica, Valencia",39.4657,-0.3237]],
   Barcelona:[["⛪","Sagrada Família, Carrer de la Marina entrance","Basílica de la Sagrada Família, Barcelona",41.4038,2.1751]]
 };
