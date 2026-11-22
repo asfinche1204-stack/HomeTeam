@@ -458,6 +458,34 @@ html{overscroll-behavior-y:contain}
 .who2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .who2 button{padding:16px 8px;border-radius:16px;border:1px solid var(--line);background:rgba(255,255,255,.06);font-weight:500;display:flex;gap:8px;align-items:center;justify-content:center}
 .go{width:100%;margin-top:12px;padding:12px;border-radius:14px;background:var(--teal);color:#04201d;font-weight:600}
+/* offline maps */
+.mback{display:flex;align-items:center;gap:12px;width:100%;padding:14px;border-radius:18px;background:linear-gradient(120deg,var(--saff),var(--terra));color:#2a1206;font-weight:600;text-align:left;margin:4px 0 6px}
+.mback b{font-size:1.5rem;line-height:1}.mback span{display:block;font-weight:400;font-size:.8rem;opacity:.85}
+.msteps{margin:6px 0 4px;padding-left:20px;color:var(--mute);font-size:.88rem;line-height:1.5}.msteps b{color:var(--cream);font-weight:500}
+.omr{display:flex;align-items:center;gap:8px;padding:9px 0;border-top:1px solid var(--line)}
+.omr .nm{flex:1;min-width:0;font-weight:500}
+.omr a.pill{flex:0 0 auto}
+.omt{display:inline-flex;align-items:center;gap:4px;font-size:.72rem;padding:5px 9px;border-radius:99px;border:1px dashed var(--line);color:var(--mute)}
+.omt.y{border-style:solid;border-color:var(--teal);color:var(--teal2);background:rgba(26,167,155,.14)}
+.omt.me{cursor:pointer}.omt:not(.me){cursor:default}
+.mcity{border-top:1px solid var(--line);padding:2px 0}
+.mcity summary{list-style:none;cursor:pointer;padding:11px 0;font-weight:600;display:flex;align-items:center;gap:8px}
+.mcity summary::-webkit-details-marker{display:none}
+.mcity summary::after{content:"›";margin-left:auto;color:var(--mute);transition:.2s;font-size:1.2rem}.mcity[open] summary::after{transform:rotate(90deg)}
+.mcity summary small{font-weight:400;color:var(--mute);font-size:.78rem}
+.mpl{display:flex;align-items:center;gap:8px;padding:8px 0 8px 4px}
+.mpl i.ic{font-style:normal;width:26px;text-align:center;flex:0 0 auto}
+.mpl .nm{flex:1;min-width:0;font-size:.92rem;line-height:1.3}.mpl .nm span{display:block;font-size:.74rem;color:var(--mute)}
+.mpl .pill{padding:5px 10px;flex:0 0 auto}
+.mpl .x{color:var(--mute);font-size:1.1rem;padding:0 4px}
+.mpin{display:flex;gap:8px;margin:6px 0 10px 34px}.mpin .pill{cursor:pointer}
+.cmp{position:relative;width:min(64vw,230px);aspect-ratio:1;margin:8px auto 4px}
+.cmp svg{width:100%;height:100%;overflow:visible}
+.cmp .dial,.cmp .arw{transform-origin:100px 100px;transition:transform .25s linear}
+.cmpd{text-align:center;font-family:var(--serif);font-size:1.7rem;font-weight:700;color:#fff;line-height:1.15}
+.cmpd small{display:block;font-family:inherit;font-size:.95rem;font-weight:400;color:var(--saff);margin-top:4px}
+#cmpm{text-align:center;margin-top:6px}
+.sheet input.pinnm{width:100%;margin-top:8px}
 .err{color:var(--terra);font-size:.82rem;min-height:1.2em;margin-top:6px}
 .toast{position:fixed;left:50%;bottom:96px;transform:translate(-50%,20px);opacity:0;pointer-events:none;z-index:90;background:#f7f0e3;color:#081428;padding:10px 16px;border-radius:99px;font-size:.85rem;font-weight:500;transition:.3s;max-width:90vw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;box-shadow:0 10px 30px rgba(0,0,0,.4)}
 .toast.on{opacity:1;transform:translate(-50%,0)}
@@ -490,6 +518,10 @@ html{overscroll-behavior-y:contain}
       <h2>Right now in Spain</h2>
       <div id="nowes"></div>
     </div>
+    </div>
+    <div class="card oonly" id="maps">
+      <h2>Maps, even with no signal</h2>
+      <div id="mapsbody"></div>
     </div>
     <div class="card vonly" id="vdays">
       <h2>Day by day</h2>
@@ -1042,10 +1074,11 @@ function announce(id,data,had){
   else if(p[1]==="sn"&&data&&!had&&p[3]!==ME)toast(NAMES[p[3]]+" left you a sealed note");
   else if(p[1]==="op"&&data&&!had&&p[3]===ME)toast(NAMES[other()]+" opened your note ♥");
   else if(p[1]==="cu"&&data&&!had&&data.by&&data.by!==ME)toast(NAMES[data.by]+" added "+data.text);
+  else if(p[1]==="pin"&&data&&!had&&data.by&&data.by!==ME)toast(NAMES[data.by]+" pinned "+(data.name||"a spot")+" on the map card");
 }
 /* ---------- sheets ---------- */
 function sheet(h){$("sheet").innerHTML=h;$("ov").classList.add("on");}
-function closeSheet(){$("ov").classList.remove("on");$("sheet").innerHTML="";}
+function closeSheet(){if(typeof stopFind==="function")stopFind();$("ov").classList.remove("on");$("sheet").innerHTML="";}
 function whoSheet(){sheet('<h2>Whose phone is this?</h2><p class="lead">So stars and check-offs carry your name.</p><div class="who2"><button data-me="a">'+av("a")+esc(NAMES.a)+'</button><button data-me="b">'+av("b")+esc(NAMES.b)+"</button></div>");}
 function loginSheet(){sheet('<h2>Home Team passphrase</h2><p class="lead">The same one you use for the app.</p><input type="password" id="pw" autocomplete="current-password" placeholder="Passphrase"><div class="err" id="pwerr"></div><button class="go" id="pwgo">Unlock</button>');}
 function tryLogin(){
@@ -2118,9 +2151,155 @@ document.addEventListener("click",function(e){
 });
 /* ---------- tabs ---------- */
 var TABS=["trip","days","pack","us","prep"];
+/* ---------- offline maps ----------
+   Google Maps itself can't run inside this page, so each phone saves the six cities in the Google Maps app
+   (that works with no data), and this card keeps a one-tap link to every place we're going.
+   Walking directions need data in Google Maps, so "Find" here is a GPS compass that works offline:
+   an arrow and the distance to the place.
+   sp.om.<city>.<a|b>   {at}                               city saved for offline use on that phone
+   sp.pin.<id>          {name,city,lat,lng,acc,by,at}      a spot pinned from GPS ("h-…" = a hotel, "c-…" = anything else) */
+var STOPS=[["Madrid",[2,3],2],["Córdoba",[4],0],["Seville",[5],4],["Granada",[6],6],["Valencia",[7,8],7],["Barcelona",[9,10,11],9]];
+var MPL={ /* built-in places: [icon, name, Google Maps search, lat, lng]; coordinates are the entrance or the building, to within a block */
+  Madrid:[],
+  Seville:[["🏰","Real Alcázar, Lion Gate","Real Alcázar de Sevilla",37.3841,-5.9913],["💃","Teatro Cajasol (flamenco)","Teatro Cajasol, Calle Chicarreros 1, Sevilla",37.3895,-5.9947]],
+  Valencia:[["🥘","La Pepica","La Pepica, Valencia",39.4657,-0.3237]],
+  Barcelona:[["⛪","Sagrada Família, Carrer de la Marina entrance","Basílica de la Sagrada Família, Barcelona",41.4038,2.1751]]
+};
+var HGEO={"Hotel Riu Plaza España":[40.4236,-3.7118]};
+function mq(t){t=String(t).replace(/\s+(at|by)\s+(golden hour|night|dusk|sunset)$/i,"");var m=/^.*?\b(?:at|in)\s+([A-ZÁÉÍÓÚÑ].*)$/.exec(t);return m?m[1]:t;}
+function gmq(q){return"https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(q);}
+function gmll(a,b){return"https://www.google.com/maps/search/?api=1&query="+a.toFixed(6)+"%2C"+b.toFixed(6);}
+function stopNow(){
+  /* which city we're in today; before the trip it's Madrid, after it nothing */
+  if(TODAY<"2026-11-23")return 0;if(TODAY>"2026-12-02")return -1;
+  var d=DAYS.filter(function(x){return x.date===TODAY;})[0];if(!d)return -1;
+  for(var i=0;i<STOPS.length;i++)if(STOPS[i][1].indexOf(d.n)>=0)return d.n===4?2:i; /* Córdoba day ends at the Seville hotel */
+  return -1;
+}
+function hotelsOf(si){var n=STOPS[si][2];if(!n)return[];return String(DAYS[n-1].hotel||"").split(/\s+or\s+/).filter(Boolean);}
+function hpin(name){return T["sp.pin.h-"+slug(name)];}
+function hotelPlace(si){
+  /* the hotel to walk back to: a pinned one wins; otherwise the built-in spot; otherwise nothing */
+  var hs=hotelsOf(si);for(var i=0;i<hs.length;i++){var p=hpin(hs[i]);if(p)return{name:hs[i],lat:p.lat,lng:p.lng,q:hs[i]+", "+STOPS[si][0]};}
+  for(var j=0;j<hs.length;j++){var g=HGEO[hs[j]];if(g)return{name:hs[j],lat:g[0],lng:g[1],q:hs[j]+", "+STOPS[si][0]};}
+  return null;
+}
+var FINDS=[];
+function findBtn(p){FINDS.push(p);return'<button class="pill" data-find="'+(FINDS.length-1)+'">🧭 Find</button>';}
+function mplRow(ic,name,sub,url,place,extra){
+  return'<div class="mpl"><i class="ic">'+ic+'</i><div class="nm">'+esc(name)+(sub?"<span>"+esc(sub)+"</span>":"")+'</div>'+(place?findBtn(place):"")+'<a class="pill" href="'+url+'" target="_blank" rel="noopener">Maps ↗</a>'+(extra||"")+"</div>";
+}
+function drawMaps(){
+  var el=$("mapsbody");if(!el||VIS)return;FINDS=[];
+  var si=stopNow(),h="",hp=si>=0?hotelPlace(si):null;
+  if(hp){FINDS.push({name:hp.name,lat:hp.lat,lng:hp.lng,q:hp.q});h+='<button class="mback" data-find="'+(FINDS.length-1)+'"><b>🏨</b><div>Back to the hotel<span>'+esc(hp.name)+' · arrow and distance, no data needed</span></div></button>';}
+  else if(si>0&&hotelsOf(si).length)h+='<div class="dmeta" style="margin-bottom:6px">At check-in in '+esc(STOPS[si][0])+', pin the hotel below and the "Back to the hotel" button appears here.</div>';
+  /* 1. save the cities in Google Maps */
+  var cnt={a:0,b:0};STOPS.forEach(function(s){["a","b"].forEach(function(p){if(T["sp.om."+slug(s[0])+"."+p])cnt[p]++;});});
+  h+='<div class="lab">1 · Save each city in Google Maps</div>';
+  h+='<p class="lead" style="margin:0 0 4px">Do this on Wi-Fi before you go. A saved city works with no data: the map, your blue dot, searching for places and driving directions. Each phone needs its own copy.</p>';
+  h+='<ol class="msteps"><li>Tap <b>Open</b>. Google Maps shows the city.</li><li>On the card at the bottom, swipe right to <b>More</b> (⋯), tap <b>Download offline map</b>, then <b>Download</b>.</li><li>Come back here and tap your name.</li></ol>';
+  h+='<div class="dmeta" style="margin:2px 0 6px">'+esc(NAMES.a)+"'s phone: "+cnt.a+' of 6 · '+esc(NAMES.b)+"'s phone: "+cnt.b+" of 6</div>";
+  STOPS.forEach(function(s){
+    var c=slug(s[0]);
+    h+='<div class="omr"><div class="nm">'+esc(s[0])+'</div>'+["a","b"].map(function(p){var y=!!T["sp.om."+c+"."+p],me=p===ME;return'<button class="omt'+(y?" y":"")+(me?" me":"")+'"'+(me?' data-om="'+c+'"':' tabindex="-1"')+'>'+(y?"✓ ":"")+esc(NAMES[p])+"</button>";}).join("")+'<a class="pill" href="'+gmq(s[0]+", Spain")+'" target="_blank" rel="noopener">Open ↗</a></div>';
+  });
+  /* 2. every place, by city */
+  h+='<div class="lab">2 · Every place we\'re going</div>';
+  h+='<p class="lead" style="margin:0 0 4px"><b>Maps</b> opens the spot in Google Maps. Walking directions there need data, so <b>Find</b> points an arrow at the spot and shows how far it is, using GPS only.</p>';
+  STOPS.forEach(function(s,i){
+    var rows="",n=0,city=s[0];
+    hotelsOf(i).forEach(function(nm){
+      var p=hpin(nm),g=HGEO[nm],pl=p?{name:nm,lat:p.lat,lng:p.lng,q:nm+", "+city}:(g?{name:nm,lat:g[0],lng:g[1],q:nm+", "+city}:null);
+      rows+=mplRow("🏨",nm,p?"Pinned by "+NAMES[p.by]+(p.acc?" · within "+Math.round(p.acc)+" m":""):(hotelsOf(i).length>1?"One of these two":"Hotel"),gmq(nm+", "+city),pl,
+        '<button class="pill" data-pinh="'+esc(nm)+'" data-city="'+esc(city)+'" title="Pin from GPS">📍'+(p?"":" Pin")+"</button>");n++;
+    });
+    (MPL[city]||[]).forEach(function(m){rows+=mplRow(m[0],m[1],"Booked",gmq(m[2]),{name:m[1],lat:m[3],lng:m[4],q:m[2]});n++;});
+    s[1].forEach(function(dn){
+      bookings(dn).forEach(function(b){if(!b.id)return;rows+=mplRow("🎟️",b.title,"Booked by "+NAMES[b.by],gmq(mq(b.title)+", "+city),null);n++;});
+      ideaIds(dn).forEach(function(ii){
+        if(!T[sid(dn,ii,"a")]&&!T[sid(dn,ii,"b")])return;var o=idea(dn,ii);if(!o||o[2]==="do")return;
+        rows+=mplRow(o[2]==="eat"?"🍽️":"⭐",o[0],"Starred",gmq(mq(o[0])+", "+city),null);n++;
+      });
+    });
+    Object.keys(T).forEach(function(id){
+      if(id.indexOf("sp.pin.c-")!==0)return;var p=T[id];if(!p||p.city!==city)return;
+      rows+=mplRow("📍",p.name||"Pinned spot","Pinned by "+NAMES[p.by],gmll(p.lat,p.lng),{name:p.name||"Pinned spot",lat:p.lat,lng:p.lng},'<button class="x" data-unpin="'+id+'" aria-label="Remove pin">×</button>');n++;
+    });
+    rows+='<div class="mpin"><button class="pill" data-pinc="'+esc(city)+'">📍 Pin where we are</button></div>';
+    h+='<details class="mcity"'+(i===Math.max(si,0)?" open":"")+'><summary>'+esc(city)+' <small>'+n+" place"+(n===1?"":"s")+"</small></summary>"+rows+"</details>";
+  });
+  h+='<div class="dmeta" style="margin-top:10px">Pin the coach meeting point, a café you liked, anywhere. Pins show up on both phones. This page also opens without data, with the plans from the last time it synced.</div>';
+  el.innerHTML=h;
+}
+/* --- pins from GPS --- */
+function gps(fn){
+  if(!navigator.geolocation){toast("This phone can't share its location here.");return;}
+  toast("Getting your location…");
+  navigator.geolocation.getCurrentPosition(function(p){fn(p.coords);},function(e){toast(e&&e.code===1?"Location is off for this page. Allow it in Settings, then try again.":"Couldn't get a GPS fix. Step outside and try again.");},{enableHighAccuracy:true,timeout:20000,maximumAge:0});
+}
+function pinSheet(city){
+  sheet('<h2>Pin where we are</h2><p class="lead">Saves this spot in '+esc(city)+' on both phones, with a Find arrow back to it.</p><input type="text" class="pinnm" id="pinnm" maxlength="60" placeholder="Name it: coach stop, café, viewpoint"><button class="go" id="pinsave" data-city="'+esc(city)+'">Pin it</button><button class="ghost" id="shclose">Cancel</button>');
+  setTimeout(function(){var i=$("pinnm");if(i)i.focus();},50);
+}
+/* --- the Find compass --- */
+var FD={p:null,pos:null,head:null,watch:null,ori:null};
+function rad(x){return x*Math.PI/180;}
+function geoDist(a,b,c,d){var R=6371000,x=rad(c-a),y=rad(d-b),s=Math.sin(x/2)*Math.sin(x/2)+Math.cos(rad(a))*Math.cos(rad(c))*Math.sin(y/2)*Math.sin(y/2);return 2*R*Math.asin(Math.sqrt(s));}
+function geoBear(a,b,c,d){var y=Math.sin(rad(d-b))*Math.cos(rad(c)),x=Math.cos(rad(a))*Math.sin(rad(c))-Math.sin(rad(a))*Math.cos(rad(c))*Math.cos(rad(d-b));return(Math.atan2(y,x)*180/Math.PI+360)%360;}
+function fmtDist(m){var ft=m*3.281;if(ft<1000)return Math.max(10,Math.round(ft/10)*10)+" ft";var mi=m/1609.34;return(mi<10?mi.toFixed(1):Math.round(mi))+" mi";}
+var DIRS=["north","northeast","east","southeast","south","southwest","west","northwest"];
+function askHeading(){
+  /* iPhone asks permission for the compass, and only straight from a tap */
+  try{if(window.DeviceOrientationEvent&&typeof DeviceOrientationEvent.requestPermission==="function")return DeviceOrientationEvent.requestPermission().catch(function(){return"denied";});}catch(e){}
+  return Promise.resolve("granted");
+}
+function onOri(e){
+  var h=null;
+  if(typeof e.webkitCompassHeading==="number"&&!isNaN(e.webkitCompassHeading))h=e.webkitCompassHeading;
+  else if(e.absolute&&e.alpha!=null)h=360-e.alpha;
+  if(h==null)return;
+  var so=(screen.orientation&&typeof screen.orientation.angle==="number")?screen.orientation.angle:(window.orientation||0);
+  FD.head=(h+so+360)%360;drawFind();
+}
+function openFind(p){
+  stopFind();FD.p=p;FD.pos=null;FD.head=null;
+  var ticks="";for(var k=0;k<12;k++)ticks+='<line x1="100" y1="12" x2="100" y2="'+(k%3?20:26)+'" transform="rotate('+k*30+' 100 100)" stroke="rgba(255,255,255,.35)" stroke-width="2"/>';
+  sheet('<h2 style="margin-bottom:2px">'+esc(p.name)+'</h2><div class="cmp"><svg viewBox="0 0 200 200"><circle cx="100" cy="100" r="92" fill="rgba(0,0,0,.25)" stroke="rgba(255,255,255,.18)" stroke-width="2"/><g class="dial" id="cmpdial">'+ticks+'<text x="100" y="44" text-anchor="middle" fill="#e8765c" font-size="18" font-weight="700" font-family="Outfit,sans-serif">N</text></g><g class="arw" id="cmparw" style="opacity:.25"><path d="M100 30 L128 118 L100 104 L72 118 Z" fill="url(#cmpg)"/><circle cx="100" cy="100" r="6" fill="#fff"/></g><defs><linearGradient id="cmpg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f5b942"/><stop offset="1" stop-color="#e8765c"/></linearGradient></defs></svg></div><div class="cmpd" id="cmpd">Finding you…</div><div class="dmeta" id="cmpm">Getting a GPS fix. Works with no data.</div><a class="go" style="display:block;text-align:center;text-decoration:none" href="'+(p.q?gmq(p.q):gmll(p.lat,p.lng))+'" target="_blank" rel="noopener">Open in Google Maps</a><button class="ghost" id="shclose">Done</button>');
+  if(!navigator.geolocation){$("cmpm").textContent="This phone can't share its location here.";return;}
+  FD.watch=navigator.geolocation.watchPosition(function(pos){FD.pos=pos.coords;drawFind();},function(e){var m=$("cmpm");if(m)m.textContent=e&&e.code===1?"Location is off for this page. Turn it on in Settings, then tap Find again.":"Still looking for GPS. Open sky helps.";},{enableHighAccuracy:true,maximumAge:5000,timeout:30000});
+  var evn="ondeviceorientationabsolute" in window?"deviceorientationabsolute":"deviceorientation";
+  FD.ori=evn;window.addEventListener(evn,onOri);
+}
+function stopFind(){
+  if(FD.watch!=null&&navigator.geolocation)navigator.geolocation.clearWatch(FD.watch);FD.watch=null;
+  if(FD.ori)window.removeEventListener(FD.ori,onOri);FD.ori=null;FD.p=null;
+}
+function drawFind(){
+  var p=FD.p,c=FD.pos,d=$("cmpd"),m=$("cmpm"),dial=$("cmpdial"),arw=$("cmparw");if(!p||!d)return;
+  if(dial)dial.style.transform="rotate("+(FD.head==null?0:-FD.head)+"deg)";
+  if(!c)return;
+  var dist=geoDist(c.latitude,c.longitude,p.lat,p.lng),br=geoBear(c.latitude,c.longitude,p.lat,p.lng);
+  if(arw){arw.style.opacity=1;arw.style.transform="rotate("+(FD.head==null?br:br-FD.head)+"deg)";}
+  if(dist<35){d.innerHTML="You're here<small>within about "+Math.round(dist)+" m</small>";}
+  else{var min=Math.max(1,Math.round(dist*1.3/80));d.innerHTML=fmtDist(dist)+"<small>"+(dist<6000?"about "+min+" min walk · ":"")+"head "+DIRS[Math.round(br/45)%8]+"</small>";}
+  m.textContent=(FD.head==null?"N on the dial is north. Hold the phone flat; if the dial doesn't turn, line the N up with north yourself. ":"Hold the phone flat and walk where the arrow points. ")+"Straight-line distance; streets add some. GPS within "+Math.round(c.accuracy||0)+" m.";
+}
+document.addEventListener("click",function(e){
+  var b=e.target.closest("[data-om],[data-find],[data-pinh],[data-pinc],[data-unpin],#pinsave");if(!b)return;
+  if(b.hasAttribute("data-om")){if(!need())return;var id="sp.om."+b.getAttribute("data-om")+"."+ME;put(id,T[id]?null:{at:Date.now()});drawMaps();return;}
+  if(b.hasAttribute("data-find")){var p=FINDS[+b.getAttribute("data-find")];if(!p)return;askHeading().then(function(){openFind(p);});return;}
+  if(b.hasAttribute("data-pinh")){if(!need())return;var nm=b.getAttribute("data-pinh"),city=b.getAttribute("data-city"),had=hpin(nm);
+    if(had&&!confirm("Re-pin "+nm+" to where you're standing now?"))return;
+    gps(function(c){put("sp.pin.h-"+slug(nm),{name:nm,city:city,lat:+c.latitude.toFixed(6),lng:+c.longitude.toFixed(6),acc:Math.round(c.accuracy||0),by:ME,at:Date.now()});toast("Hotel pinned. Back to the hotel works from anywhere now.");drawMaps();});return;}
+  if(b.hasAttribute("data-pinc")){if(!need())return;pinSheet(b.getAttribute("data-pinc"));return;}
+  if(b.hasAttribute("data-unpin")){var pid=b.getAttribute("data-unpin"),pp=T[pid];if(pp&&confirm("Remove the pin "+(pp.name||"")+"?")){put(pid,null);drawMaps();}return;}
+  if(b.id==="pinsave"){var nm2=($("pinnm").value||"").trim().slice(0,60)||"Pinned spot",city2=b.getAttribute("data-city");b.disabled=true;b.textContent="Getting your location…";
+    navigator.geolocation?navigator.geolocation.getCurrentPosition(function(pos){var c=pos.coords;put("sp.pin.c-"+Date.now().toString(36),{name:nm2,city:city2,lat:+c.latitude.toFixed(6),lng:+c.longitude.toFixed(6),acc:Math.round(c.accuracy||0),by:ME,at:Date.now()});closeSheet();toast("Pinned "+nm2);drawMaps();},function(er){b.disabled=false;b.textContent="Pin it";toast(er&&er.code===1?"Location is off for this page. Allow it in Settings, then try again.":"Couldn't get a GPS fix. Try again outside.");},{enableHighAccuracy:true,timeout:20000,maximumAge:0}):toast("This phone can't share its location here.");}
+});
 function drawAll(){
   $("mebtn").innerHTML=ME?av(ME)+esc(NAMES[ME]):"Who's this?";
-  if(TAB==="trip"){drawUpdates();drawPhotos();if(VIS){drawVis();drawVDays();drawNow();drawBingo();}drawToday();drawFlights();drawAllBooked();drawPicks();}
+  if(TAB==="trip"){drawUpdates();drawPhotos();if(VIS){drawVis();drawVDays();drawNow();drawBingo();}drawToday();drawFlights();drawAllBooked();drawPicks();drawMaps();}
   else if(TAB==="days"){drawChips();drawBooked();drawIdeas();syncNote();drawRate();drawDayPhotos();}
   else if(TAB==="pack")drawPack();
   else if(TAB==="us"){drawUs();drawBingo();drawGames();drawLevels();drawPaint();var rc=rchart();$("rchart").innerHTML=rc.h+(rc.any?"":'<div class="dmeta">No days rated by both of you yet.</div>');}
@@ -2196,6 +2375,8 @@ if(!UI.day||UI.day<1||UI.day>11){var td=DAYS.filter(function(x){return x.date===
 tick();setInterval(function(){tick();if(TAB==="trip"){drawToday();drawFlights();if(VIS)drawNow();}},30000);drawMap();drawWx();setNet("load");
 var h0="";try{h0=location.hash.slice(1);}catch(e){}
 show(h0||"trip");
+/* keep the page and the last synced plans available with no data */
+if(!VIS&&"serviceWorker" in navigator)navigator.serviceWorker.register("/sw.js").catch(function(){});
 if(VIS){document.body.classList.add("visitor");var tx0="";try{tx0=localStorage.getItem("spain26-tx")||"";}catch(e){}setTextSize(tx0);}
 load();loadWx();if(!VIS){splash();setTimeout(function(){psst(location.hash==="#psst");},7000);}
 })();
