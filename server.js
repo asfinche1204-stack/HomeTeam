@@ -280,7 +280,7 @@ async function handle(req, res) {
   // Public, read-only feed for the visitors page (/follow). Only what is safe to share:
   // posted updates, passport stamps, places ticked off, game results and level progress. Never bookings, notes, postcards or packing.
   if (p === '/api/trip-public' && m === 'GET') {
-    const pub = {}, keep = /^sp\.(pub|st|dn|gm|bk)\./;
+    const pub = {}, keep = /^sp\.(pub|st|dn|gm|bk|fb)\./;
     Object.keys(DB.trip || {}).forEach(id => {
       const d = DB.trip[id]; if (!d) return;
       if (keep.test(id) || (id.startsWith('sp.ph.') && d.pub === true)) pub[id] = d;
@@ -400,6 +400,24 @@ async function handle(req, res) {
   if (/^\/(ex\/)?[A-Za-z0-9._-]*$/.test(p) && !p.includes('..')) return serveStatic(req, res, p);
   return send(res, 404, { error: 'not found' });
 }
+
+/* ---------- Spain trip reminders: the planner publishes its schedule as sp.rem.list; each item is sent once ---------- */
+async function tripReminders() {
+  const list = (DB.trip['sp.rem.list'] || {}).items; if (!push.enabled || !Array.isArray(list)) return;
+  const sent = Object.assign({}, (DB.trip['sp.rem.sent'] || {}).ids || {}), now = Date.now(); let changed = false;
+  for (const it of list) {
+    if (!it || typeof it.id !== 'string' || typeof it.at !== 'number' || sent[it.id]) continue;
+    if (it.at <= now && now - it.at < 15 * 60e3) {
+      for (const person of ['a', 'b']) {
+        const opt = DB.trip['sp.remopt.' + person]; if (opt && opt.on === false) continue;
+        await push.sendTo(person, { title: String(it.title || '').slice(0, 90), body: String(it.body || '').slice(0, 240), tag: 'trip-' + it.id.slice(0, 40), url: '/spain#days' }, pushSubs(), dropSub);
+      }
+      sent[it.id] = now; changed = true;
+    }
+  }
+  if (changed) { Object.keys(sent).forEach(k => { if (now - sent[k] > 14 * 86400e3) delete sent[k]; }); await storePut('trip', 'sp.rem.sent', { ids: sent }); }
+}
+setInterval(() => tripReminders().catch(e => console.warn('[trip reminders]', e.message)), 60e3).unref();
 
 storeInit().then(photoInit).then(() => {
   http.createServer((req, res) => handle(req, res).catch(e => { console.error('[http]', e); try { send(res, 500, { error: 'server error' }); } catch (x) {} })).listen(PORT, () => {
