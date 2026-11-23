@@ -481,6 +481,12 @@ html{overscroll-behavior-y:contain}
 .sjdone{position:absolute;left:0;right:0;top:10px;margin:0;background:rgba(8,20,40,.92)}
 .bkleg{display:flex;flex-wrap:wrap;gap:6px 10px;justify-content:center;margin:8px 4px 0;font-size:.72rem;color:var(--mute)}
 .bkleg span{display:inline-flex;align-items:center;gap:4px}.bkleg i{font-style:normal;font-weight:700;font-size:.6rem;color:#10213a;padding:2px 6px;border-radius:99px}
+.sch{margin:0 0 6px;border-radius:14px;background:rgba(245,185,66,.08);border:1px solid rgba(245,185,66,.3);padding:4px 12px}
+.sch>div{display:flex;gap:10px;padding:7px 0;font-size:.9rem;line-height:1.35}.sch>div+div{border-top:1px solid var(--line)}
+.sch b{flex:0 0 68px;color:var(--saff);font-weight:600;font-variant-numeric:tabular-nums}.sch span{flex:1;min-width:0}
+.tips details{border-top:1px solid var(--line)}.tips summary{list-style:none;cursor:pointer;padding:11px 0;font-weight:600;display:flex;gap:8px;align-items:center}
+.tips summary::-webkit-details-marker{display:none}.tips summary::after{content:"›";margin-left:auto;color:var(--mute);font-size:1.2rem;transition:.2s}.tips details[open] summary::after{transform:rotate(90deg)}
+.tips ul{margin:0 0 12px;padding-left:20px;font-size:.9rem;line-height:1.5;color:var(--cream)}.tips li{margin-bottom:5px}
 .mback{display:flex;align-items:center;gap:12px;width:100%;padding:14px;border-radius:18px;background:linear-gradient(120deg,var(--saff),var(--terra));color:#2a1206;font-weight:600;text-align:left;margin:4px 0 6px}
 .mback b{font-size:1.5rem;line-height:1}.mback span{display:block;font-weight:400;font-size:.8rem;opacity:.85}
 .msteps{margin:6px 0 4px;padding-left:20px;color:var(--mute);font-size:.88rem;line-height:1.5}.msteps b{color:var(--cream);font-weight:500}
@@ -704,8 +710,60 @@ html{overscroll-behavior-y:contain}
   <section id="s-prep">
     <div class="card">
       <h2>Phone reminders</h2>
-      <p class="lead">An 8 AM summary each day, a heads-up an hour before every booking, and nudges before each flight. Bookings either of you add are included.</p>
+      <p class="lead">A morning summary each day, a heads-up an hour before every booking, nudges before coach departures and bags-out when the tour director gives us times, and before each flight. Bookings either of you add are included.</p>
       <div id="remcard"></div>
+    </div>
+    <div class="card oonly tips">
+      <h2>From the tour director</h2>
+      <p class="lead">The Gate 1 info sheets from the hotel, so the paper can stay in the suitcase.</p>
+      <details open><summary>🎒 Pickpockets and valuables</summary><ul>
+        <li>Never leave anything unattended, including in hotel lobbies and dining rooms.</li>
+        <li>Use inside pockets or a bag worn across your chest. Avoid outside pockets, handbags and fanny packs, and keep the bag on the side away from the curb.</li>
+        <li>Don't keep money, cards, passports and phones all in one place.</li>
+        <li>Keep copies of your passports and card numbers, and save each card's international emergency number on your phone.</li>
+        <li>If a group of strangers surrounds you, leave right away.</li>
+        <li>No banking on public Wi-Fi.</li>
+        <li>If something is stolen, report it to the police and keep a copy of the report for insurance.</li>
+      </ul></details>
+      <details><summary>🏨 At the hotel</summary><ul>
+        <li>Check-in is 3 PM or later. Check-out is usually 12 noon.</li>
+        <li>Use the room safe, keep the door locked, and don't open it to strangers.</li>
+        <li>Carry the hotel's address whenever you go out. (The Maps card on the Trip tab has every hotel.)</li>
+        <li>Check the room before leaving so nothing gets left behind.</li>
+        <li>Tap water is safe to drink in Spain. Skip the tap water at coach rest stops.</li>
+        <li>No wake-up calls: set your own alarms.</li>
+      </ul></details>
+      <details><summary>🚌 On the coach</summary><ul>
+        <li>Seats rotate every day. The tour manager organises it, and it's mandatory.</li>
+        <li>Rest stop about every two hours. Everyone gets off at each stop, and the coach is locked while we're there.</li>
+        <li>The on-board bathroom is for emergencies only.</li>
+        <li>Stay seated while moving, wear the seat belt, and keep the aisle clear. Nothing heavy in the overhead racks.</li>
+        <li>Don't leave valuables on the coach. Watch for traffic when stepping off.</li>
+        <li>On travel days, keep medication in your day bag and not in the suitcase.</li>
+        <li>Always bring your radios (whispers) on tours.</li>
+      </ul></details>
+      <details><summary>💶 Money</summary><ul>
+        <li>Getting euros: take them from a bank ATM with a debit card. Avoid Euronet ATMs, which charge very high fees.</li>
+        <li>Don't change dollars for euros. Banks won't do it, and exchange offices give poor rates.</li>
+        <li>Paying: credit card is best, though not for ATM withdrawals. Some shops have a €10 to €20 card minimum.</li>
+        <li>If the card machine asks dollars or euros, choose euros.</li>
+        <li>Tips for the tour manager and driver are at your discretion, in euros or dollars. Gate 1's guideline sheet has suggested amounts.</li>
+      </ul></details>
+      <details><summary>🚻 Bathrooms</summary><ul>
+        <li>Public bathrooms are rare. Use the one wherever you stop for lunch or a coffee.</li>
+        <li>Keep a 50 cent coin and some tissues on you for public ones.</li>
+      </ul></details>
+      <details><summary>🔌 Electricity</summary><ul>
+        <li>Spain runs on 220 volts; the US on 120. The sheet says to bring a converter.</li>
+        <li>Check the small print on each charger first. Anything marked "100–240V", which covers most phone and laptop chargers, needs only the plug adapter. Hair tools marked 120V only do need a converter.</li>
+      </ul></details>
+      <details><summary>🛍️ Tax-free shopping</summary><ul>
+        <li>In some shops you can get up to 10.5% back when you spend €90 or more in one shop on one bill. Perishables don't count.</li>
+        <li>Ask for the duty-free receipt when you pay.</li>
+      </ul></details>
+      <details><summary>🩺 If you feel unwell</summary><ul>
+        <li>Tell the tour manager, and follow any health rules they give the group.</li>
+      </ul></details>
     </div>
     <div class="card">
       <h2>Book before you fly</h2>
@@ -766,8 +824,9 @@ var DAYS=[
        ["Hotel rooftop","The Riu's sky bar has a 360° view over the city if you'd rather not wander far.","do"]],
  tip:"Stay awake until after dinner, even if it hurts. Sunlight and walking today fix the rest of the week."},
 {n:3,date:"2026-11-24",dow:"Tue",city:"Madrid",title:"Madrid",stay:"Madrid",hotel:"Hotel Riu Plaza España",meals:["Breakfast"],drive:"",
- set:["Morning city tour: Plaza de Cibeles, Royal Palace, Prado Museum"],
- free:"Afternoon and evening.",
+ set:["9:00 AM: Coach leaves for the Madrid city tour and the Prado Museum","Day at leisure after the Prado (we're skipping the Toledo optional)"],
+ sched:[["07:00","Breakfast opens. No wake-up call, so set your own alarm."],["09:00","Coach leaves the hotel for the city tour and the Prado. Bring your radios (whispers).",30],["13:30","About now the Toledo group leaves. We're free from the end of the Prado visit."],["18:30","About now the Toledo group is back in Madrid."]],
+ free:"From the end of the Prado visit, through the afternoon and evening.",
  open:[["Retiro Park","Rowboats on the lake, the Crystal Palace, late autumn colour. Ten minutes from the Prado.","see"],
        ["Thyssen-Bornemisza","If the Prado left you wanting more. Note the Reina Sofía (Guernica) is closed on Tuesdays.","see"],
        ["Tapas crawl on Cava Baja","La Latina's tapas street. One drink and one plate per bar, then move on.","eat"],
@@ -777,15 +836,17 @@ var DAYS=[
        ["Christmas lights walk","Madrid's holiday lights usually go on in late November. Sol to Plaza Mayor to Gran Vía after dark.","do"],
        ["Casa Salvador","Bullfighting tavern in Chueca, open since 1941 and a short walk from the hotel. Known for oxtail stew. Reserve; they keep a table in his honor.","eat","b"],
        ["Taberna San Mamés","Old-school Madrid cooking north of the center; tripe stew (callos) is the house dish. A taxi ride, and worth booking.","eat","b"]],
- tip:"With Toledo skipped, the whole afternoon and evening are yours. Retiro and a museum first, then the tapas crawl."},
-{n:4,date:"2026-11-25",dow:"Wed",city:"Córdoba → Seville",title:"Córdoba, then Seville",stay:"Seville",hotel:"Hotel Sevilla Center",meals:["Breakfast","Dinner"],drive:"Long coach day (about 5–6 hrs total)",
- set:["Drive south through La Mancha","Mezquita de Córdoba","Walking tour of the Jewish Quarter and 14th-century synagogue","Continue to Seville; dinner included"],
- free:"Lunch on your own in Córdoba, plus the evening in Seville after dinner.",
+ tip:"Prado rules: better not to bring a backpack, no photos of the paintings, no food (water is fine). With Toledo skipped, the day is yours once the Prado visit ends. Retiro is ten minutes away, then the tapas crawl. Pack tonight: bags go out at 7:00 AM tomorrow."},
+{n:4,date:"2026-11-25",dow:"Wed",city:"Córdoba → Seville",title:"Córdoba, then Seville",stay:"Seville",hotel:"Hotel Sevilla Center",meals:["Breakfast","Dinner"],drive:"Long coach morning: about 6 hrs to Córdoba with one stop, then on to Seville",
+ set:["8:00 AM: Coach leaves for Córdoba, about 6 hours with one stop","Around 2:00 PM: arrive in Córdoba, lunch break","3:00 PM: Córdoba tour and Mosque visit","Continue to Seville and check in","Evening: group dinner at a local restaurant (included)"],
+ sched:[["07:00","Breakfast opens, and bags out: suitcases outside your door by 7:00.",20],["08:00","Coach leaves for Córdoba. About 6 hours including one stop.",20],["14:00","Arrive in Córdoba (approx). Lunch break: you have about an hour."],["15:00","Córdoba tour: Mosque visit."],["","After the visit, on to Seville and check in at Hotel Sevilla Center."],["19:50","Meet in the lobby to walk to dinner at Puerta Caleta.",20]],
+ wake:"06:15",
+ free:"About an hour for lunch in Córdoba, plus the evening in Seville after dinner.",
  open:[["Salmorejo and flamenquín for lunch","Córdoba's two signatures: thick chilled tomato soup, and a fried ham-and-pork roll. Add berenjenas con miel (fried eggplant with honey).","eat"],
        ["Calleja de las Flores","The flower-pot alley with the Mezquita tower framed at the end. Two minutes from the tour route.","see"],
        ["Roman Bridge","Walk halfway across for the postcard view back to the Mezquita.","see"],
        ["Seville night walk","After dinner, walk to the Cathedral and Giralda lit up. Orange trees everywhere.","do"]],
- tip:"Eat lunch near the Mezquita rather than hunting. Time in Córdoba is short."},
+ tip:"Lunch is only about an hour before the 3:00 Mosque tour, so eat near the Mezquita rather than hunting. Dinner at Puerta Caleta is included; the main is pork cheek stew with fries, or baked hake loin with vegetable chanfaina. Vegetarian option: ratatouille with white rice and baked potatoes, fried egg optional. Keep medication and chargers in your day bag, since the suitcases ride under the coach."},
 {n:5,date:"2026-11-26",dow:"Thu",city:"Seville",title:"Seville",stay:"Seville",hotel:"Hotel Sevilla Center",meals:["Breakfast"],drive:"",
  set:["City tour: Plaza de España, María Luisa Park, Barrio Santa Cruz","Seville Cathedral and the Giralda","Evening: flamenco show"],
  free:"Rest of the day after the tour.",
@@ -1240,6 +1301,7 @@ function drawDay(){
   if(d.stay)h+='<span class="tag">Sleep: '+esc(d.stay)+"</span>";
   if(wxFor(d.date))h+='<span class="tag d" id="wxtag">'+wxLine(d.date)+"</span>";
   h+='</div><div class="lab o">Booked</div><div id="booked"></div><div class="bkadd"><input type="time" id="evtime" aria-label="Time"><textarea id="evtitle" maxlength="600" rows="2" placeholder="Add a ticket or reservation. First line is the title; add details on the lines below."></textarea><button id="evadd">Add</button></div>';
+  h+=schedHtml(d);
   h+='<div class="lab">Set by the tour</div><ul class="tl">'+d.set.map(function(s){return"<li"+(s.indexOf("Optional")===0?' class="op"':"")+">"+esc(s)+"</li>";}).join("")+"</ul>";
   if(d.free)h+='<div class="lab o">Open time</div><div style="font-size:.93rem">'+esc(d.free)+"</div>";
   h+='<div class="lab e">Ideas · tap to star, × to dismiss</div><div id="ideas"></div>';
@@ -1499,6 +1561,7 @@ function drawToday(){
   function steps(x){
     var bs=VIS?[]:bookings(x.n),s="";
     if(bs.length)s+=bs.map(function(b){return bkRow(b,false);}).join("");
+    if(!VIS)s+=schedHtml(x);
     return s+'<ul class="tl">'+x.set.map(function(t){if(VIS)t=t.replace(/Check in at Hotel[^.]*\./,"Check in at the hotel.");return"<li"+(t.indexOf("Optional")===0?' class="op"':"")+">"+esc(t)+"</li>";}).join("")+"</ul>";
   }
   var cur=d||(pre?DAYS[0]:null),nxt=cur&&DAYS[cur.n];
@@ -2435,12 +2498,18 @@ document.addEventListener("click",function(e){var b=e.target.closest("[data-vd]"
    The planner publishes the schedule as sp.rem.list; the server sends each item once to every phone with notifications on.
    sp.remopt.<a|b> {on:false} turns them off for one person. */
 var PUSHCFG=null;
+/* the tour director's printed sheet for the day: exact times, owners only (it names the hotel and where we eat) */
+function schedHtml(d){
+  if(VIS||!d.sched)return"";
+  return'<div class="lab">Tour director\'s times</div><div class="sch">'+d.sched.map(function(x){return'<div><b>'+(x[0]?t12(x[0]):"then")+"</b><span>"+esc(x[1])+"</span></div>";}).join("")+"</div>";
+}
 function remItems(){
   var o=[];
   DAYS.forEach(function(d){
-    var off=d.n===1?-5:1,bs=bookings(d.n).filter(function(b){return b.t;}),mt=d.n===1?"09:00":d.n===11?"06:30":"08:00";
+    var off=d.n===1?-5:1,bs=bookings(d.n).filter(function(b){return b.t;}),mt=d.wake||(d.n===1?"09:00":d.n===11?"06:30":"08:00");
     var plan=bs.length?bs.map(function(b){return t12(b.t)+" "+b.title;}).join(" · "):d.set[0].replace(/^\d{1,2}(:\d\d)? ?(AM|PM): /,"");
     o.push({id:"m"+d.n,at:flMs(d.date+"T"+mt,off),title:(d.n===1?"Travel day! ":d.n===11?"Going home today · ":"Buenos días · ")+"Day "+d.n+": "+d.title,body:plan.slice(0,220)});
+    (d.sched||[]).forEach(function(x){if(x[0]&&x[2])o.push({id:"s"+d.n+"-"+x[0].replace(":",""),at:flMs(d.date+"T"+x[0],off)-x[2]*6e4,title:t12(x[0])+" in "+x[2]+" minutes",body:x[1].slice(0,220)});});
     bs.forEach(function(b){o.push({id:"b"+d.n+"-"+b.t.replace(":","")+"-"+slug(b.title).slice(0,24),at:flMs(d.date+"T"+b.t,off)-36e5,title:b.title.slice(0,70)+" in 1 hour",body:(b.d||"Starts at "+t12(b.t)+".").split("\n")[0].slice(0,220)});});
   });
   flights().forEach(function(f){
