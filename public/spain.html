@@ -104,7 +104,7 @@ section.on{display:block}
 .wx .t b{color:#fff;font-weight:500}
 ul.plain{margin:0;padding-left:18px}ul.plain li{margin:6px 0;font-size:.93rem}
 /* day scroller */
-.chips{display:flex;gap:8px;overflow-x:auto;padding:6px 2px 12px;margin:0 -4px;scrollbar-width:none;position:sticky;top:0;z-index:5}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:10px 6px 12px;margin:0 -6px;scroll-padding:0 6px;scrollbar-width:none;position:sticky;top:0;z-index:5}
 .chips::-webkit-scrollbar{display:none}
 .chip{flex:0 0 auto;min-width:62px;padding:8px 10px;border-radius:16px;text-align:center;background:rgba(13,32,64,.85);border:1px solid var(--line);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);transition:.25s}
 .chip small{display:block;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
@@ -365,7 +365,7 @@ html{overscroll-behavior-y:contain}
 .todo{fill:none;stroke:var(--mute);stroke-width:1.6;stroke-dasharray:4 5;opacity:.75}
 .pin.been circle.c{fill:var(--saff)}.pin.cur circle.c{fill:#fff;stroke:var(--saff);stroke-width:2.5}.pin.cur text.n{fill:#fff}
 .pin.sel circle.c{fill:var(--teal);stroke:#fff;stroke-width:2.5;r:7}.pin.sel text{fill:var(--teal2)}.pin.sel circle.h{fill:var(--teal);animation-duration:1.4s}
-#vdays .chips{position:static;margin:0 -4px 6px;padding-top:2px;background:none}#vdays .chip{background:rgba(255,255,255,.05);backdrop-filter:none;-webkit-backdrop-filter:none}#vdays .chip.on{background:linear-gradient(160deg,var(--teal),#178f86)}
+#vdays .chips{position:static;margin:0 -6px 6px;padding-top:10px;background:none}#vdays .chip{background:rgba(255,255,255,.05);backdrop-filter:none;-webkit-backdrop-filter:none}#vdays .chip.on{background:linear-gradient(160deg,var(--teal),#178f86)}
 .vdt{font-family:var(--serif);font-weight:700;font-size:1.3rem}
 .plane{fill:#f7f0e3;stroke:#081428;stroke-width:1.2}.air{filter:drop-shadow(0 2px 3px rgba(0,0,0,.5))}.fly{fill:none;stroke:rgba(247,240,227,.35);stroke-width:1.1;stroke-dasharray:2 5}
 .coach circle{fill:rgba(8,20,40,.85);stroke:var(--saff);stroke-width:1.5}.coach text{font-size:10px}
