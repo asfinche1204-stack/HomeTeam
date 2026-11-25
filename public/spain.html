@@ -483,6 +483,14 @@ html{overscroll-behavior-y:contain}
 .sjlv span{font-size:.6rem;color:var(--mute)}.sjlv:disabled{opacity:.35}.sjlv.open{border-color:var(--teal);background:rgba(46,196,182,.14)}.sjlv.open small{color:var(--teal2)}.sjlv.won{background:rgba(245,185,66,.12);border-color:rgba(245,185,66,.45)}
 .sjlv>i.av{position:absolute;top:-6px;right:-6px}
 .sjdone{position:absolute;left:0;right:0;top:10px;margin:0;background:rgba(8,20,40,.92)}
+.av.v{background:var(--saff);color:#2a1206;font-size:.6rem}
+.cbtools{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:10px}
+.cbtools button{font-size:.8rem;padding:8px 12px;border-radius:99px;border:1px solid var(--line);color:var(--cream);background:rgba(255,255,255,.05)}
+.cbtools button.on{border-color:var(--teal);color:var(--teal2)}#cbfin{border-color:rgba(245,185,66,.6);color:var(--saff)}
+#cbwrap.zoom{overflow:auto;max-height:62vh;border-radius:12px;-webkit-overflow-scrolling:touch}
+#cbwrap.zoom svg{width:230%;max-width:none;touch-action:pan-x pan-y;border-radius:0}
+#cbsvg path.hint{animation:cbh .5s ease-in-out 4;fill:#ff8a3d}
+@keyframes cbh{50%{fill:#fff3c4}}
 .bkleg{display:flex;flex-wrap:wrap;gap:6px 10px;justify-content:center;margin:8px 4px 0;font-size:.72rem;color:var(--mute)}
 .bkleg span{display:inline-flex;align-items:center;gap:4px}.bkleg i{font-style:normal;font-weight:700;font-size:.6rem;color:#10213a;padding:2px 6px;border-radius:99px}
 .sch{margin:0 0 6px;border-radius:14px;background:rgba(245,185,66,.08);border:1px solid rgba(245,185,66,.3);padding:4px 12px}
@@ -616,6 +624,16 @@ html{overscroll-behavior-y:contain}
       <p class="lead">The sixteen dishes they're trying to eat their way through.</p>
       <div id="vbingo"></div>
     </div>
+    <div class="card vonly">
+      <h2>Juega con nosotros</h2>
+      <p class="lead">The three games we're playing on the trip. Play along: your progress stays on your phone, and the bars show how far each of us has got.</p>
+      <div class="lab">Ladrillos · Spanish brick breaker</div>
+      <div id="vlevels"></div>
+      <div class="lab">¡Salta! · jump through the six cities</div>
+      <div id="vsalta"></div>
+      <div class="lab">Pinta España · paint by number</div>
+      <div id="vpaint"></div>
+    </div>
     <div class="card oonly">
       <h2>Booked</h2>
       <p class="lead">Tickets and reservations with fixed times. Add your own from any day.</p>
@@ -680,7 +698,7 @@ html{overscroll-behavior-y:contain}
     </div>
     <div class="card">
       <h2>Ladrillos</h2>
-      <p class="lead">Brick breaker with thirty levels. Slide your finger to move the paddle, keep the ball up, clear the bricks. Broken bricks drop power-ups: multi-ball, wide paddle, lasers, fireball, sticky paddle, slow ball and extra lives. Stars for lives left; race each other up the levels.</p>
+      <p class="lead">Brick breaker, Spanish style. Thirty levels of azulejo tiles laid out as the flag, a fan, the Mezquita arches, a bull, a paella and more, over each city's skyline. Slide the churro, keep the orange up, clear the tiles. Broken tiles drop power-ups: three oranges, a bigger churro, lasers, fuego, honey, siesta and extra lives. Stars for lives left; race each other up the levels.</p>
       <div id="levels"></div>
     </div>
     <div class="card">
@@ -690,7 +708,7 @@ html{overscroll-behavior-y:contain}
     </div>
     <div class="card">
       <h2>Pinta España</h2>
-      <p class="lead">Paint by number: six illustrated landmarks, one from each city. Your progress saves as you go.</p>
+      <p class="lead">Paint by number: a landmark from each city, plus a panel of azulejos, a flamenco fan and a paella. Zoom in for the small areas, ask for a hint, and your progress saves as you go.</p>
       <div id="paint"></div>
     </div>
     <div class="card">
@@ -1146,6 +1164,14 @@ function put(id,data){
   Q[id]=data;saveSync();setNet(NET);flush();
 }
 function need(){if(VIS)return false;if(ME)return true;whoSheet();return false;}
+/* Visitors can play Ladrillos, ¡Salta! and Pinta too. They can't write to the trip, so their progress
+   stays on their own phone (localStorage) under the player key "v". */
+var VL={};try{VL=JSON.parse(lsGet("spain26-vgames")||"{}")||{};}catch(e){VL={};}
+function GP(){return VIS?"v":ME;}
+function canPlay(){return VIS||need();}
+function gdoc(id){return /\.v$/.test(id)?VL[id]:T[id];}
+function gput(id,data){if(!VIS){put(id,data);return;}VL[id]=data;lsSet("spain26-vgames",JSON.stringify(VL));}
+function gbars(fn){var h="";(VIS?["v","a","b"]:["a","b"]).forEach(function(p){var x=fn(p);h+='<div class="lvbar">'+(p==="v"?'<i class="av v">Tú</i>':av(p))+'<div class="bar"><i style="width:'+Math.round(x[0]*100)+'%"></i></div><span>'+x[1]+"</span></div>";});return h;}
 function announce(id,data,had){
   var p=id.split(".");
   if(p[1]==="star"){var who=p[4];if(!data||who===ME)return;var d=DAYS[+p[2]-1],o=d&&idea(d.n,+p[3]);if(o)toast(NAMES[who]+" starred "+o[0]);}
@@ -1839,8 +1865,44 @@ function miTap(i){
 }
 /* ---------- Pinta: paint-by-number illustrations ----------  sp.cv.<picture>.<a|b> {f:"0101…",done,at} */
 var ART=[{"n":"Puerta de Alcalá","c":"Madrid","p":["#5aa9e6","#9fd0f5","#ffffff","#efe3c8","#cdbb97","#9c8a68","#3f7fb8","#4f9e52","#3b7f42","#e2504a","#f2c14e"],"s":[[0,"M0 0h320v90h-320z"],[1,"M0 90h320v95h-320z"],[1,"M0 185h320v95h-320z"],[2,"M20 60a14 14 0 0 1 26 -6a18 18 0 0 1 32 2a12 12 0 0 1 8 22h-70a11 11 0 0 1 4 -18z"],[2,"M215 95a11.200000000000001 11.200000000000001 0 0 1 20.8 -4.800000000000001a14.4 14.4 0 0 1 25.6 1.6a9.600000000000001 9.600000000000001 0 0 1 6.4 17.6h-56.0a8.8 8.8 0 0 1 3.2 -14.4z"],[4,"M28 150h264v128h-264z"],[3,"M40 150h240v128h-240z"],[5,"M22 140h276v12h-276z"],[3,"M22 128h276v12h-276z"],[4,"M108 96h104v32h-104z"],[3,"M118 96h84v32h-84z"],[5,"M100 88h120v8h-120z"],[4,"M132 88L160 62L188 88z"],[5,"M150 70h20v18h-20z"],[3,"M40 152h10v126h-10z"],[3,"M88 152h10v126h-10z"],[3,"M136 152h10v126h-10z"],[3,"M184 152h10v126h-10z"],[3,"M232 152h10v126h-10z"],[3,"M270 152h10v126h-10z"],[6,"M52 196h30v82h-30z"],[6,"M238 196h30v82h-30z"],[6,"M100 278v-89.0a15.0 15.0 0 0 1 30 0v89.0z"],[6,"M145 278v-89.0a15.0 15.0 0 0 1 30 0v89.0z"],[6,"M190 278v-89.0a15.0 15.0 0 0 1 30 0v89.0z"],[7,"M0 278h320v40h-320z"],[8,"M0 318h320v42h-320z"],[9,"M13.0 330a9 9 0 1 0 18 0a9 9 0 1 0 -18 0z"],[10,"M47.5 330a9 9 0 1 0 18 0a9 9 0 1 0 -18 0z"],[9,"M82.0 330a9 9 0 1 0 18 0a9 9 0 1 0 -18 0z"],[10,"M116.5 330a9 9 0 1 0 18 0a9 9 0 1 0 -18 0z"],[9,"M151.0 330a9 9 0 1 0 18 0a9 9 0 1 0 -18 0z"],[10,"M185.5 330a9 9 0 1 0 18 0a9 9 0 1 0 -18 0z"],[9,"M220.0 330a9 9 0 1 0 18 0a9 9 0 1 0 -18 0z"],[10,"M254.5 330a9 9 0 1 0 18 0a9 9 0 1 0 -18 0z"],[9,"M289.0 330a9 9 0 1 0 18 0a9 9 0 1 0 -18 0z"]]},{"n":"Mezquita arches","c":"Córdoba","p":["#2b1b12","#4a3020","#c8382c","#f3e6c8","#b9a79a","#8f7d70","#e0b04a","#c9a56b","#a88550"],"s":[[0,"M0 0h320v360h-320z"],[1,"M0 0h320v60h-320z"],[2,"M152.0 150.0A72 72 0 0 0 147.7 125.4L121.3 135.0A44 44 0 0 1 124.0 150.0z"],[3,"M147.7 125.4A72 72 0 0 0 135.2 103.7L113.7 121.7A44 44 0 0 1 121.3 135.0z"],[2,"M135.2 103.7A72 72 0 0 0 116.0 87.6L102.0 111.9A44 44 0 0 1 113.7 121.7z"],[3,"M116.0 87.6A72 72 0 0 0 92.5 79.1L87.6 106.7A44 44 0 0 1 102.0 111.9z"],[2,"M92.5 79.1A72 72 0 0 0 67.5 79.1L72.4 106.7A44 44 0 0 1 87.6 106.7z"],[3,"M67.5 79.1A72 72 0 0 0 44.0 87.6L58.0 111.9A44 44 0 0 1 72.4 106.7z"],[2,"M44.0 87.6A72 72 0 0 0 24.8 103.7L46.3 121.7A44 44 0 0 1 58.0 111.9z"],[3,"M24.8 103.7A72 72 0 0 0 12.3 125.4L38.7 135.0A44 44 0 0 1 46.3 121.7z"],[2,"M12.3 125.4A72 72 0 0 0 8.0 150.0L36.0 150.0A44 44 0 0 1 38.7 135.0z"],[1,"M36 150a44 44 0 0 1 88 0z"],[2,"M144.0 262.0A64 64 0 0 0 140.1 240.1L117.6 248.3A40 40 0 0 1 120.0 262.0z"],[3,"M140.1 240.1A64 64 0 0 0 129.0 220.9L110.6 236.3A40 40 0 0 1 117.6 248.3z"],[2,"M129.0 220.9A64 64 0 0 0 112.0 206.6L100.0 227.4A40 40 0 0 1 110.6 236.3z"],[3,"M112.0 206.6A64 64 0 0 0 91.1 199.0L86.9 222.6A40 40 0 0 1 100.0 227.4z"],[2,"M91.1 199.0A64 64 0 0 0 68.9 199.0L73.1 222.6A40 40 0 0 1 86.9 222.6z"],[3,"M68.9 199.0A64 64 0 0 0 48.0 206.6L60.0 227.4A40 40 0 0 1 73.1 222.6z"],[2,"M48.0 206.6A64 64 0 0 0 31.0 220.9L49.4 236.3A40 40 0 0 1 60.0 227.4z"],[3,"M31.0 220.9A64 64 0 0 0 19.9 240.1L42.4 248.3A40 40 0 0 1 49.4 236.3z"],[2,"M19.9 240.1A64 64 0 0 0 16.0 262.0L40.0 262.0A40 40 0 0 1 42.4 248.3z"],[1,"M40 262a40 40 0 0 1 80 0z"],[2,"M312.0 150.0A72 72 0 0 0 307.7 125.4L281.3 135.0A44 44 0 0 1 284.0 150.0z"],[3,"M307.7 125.4A72 72 0 0 0 295.2 103.7L273.7 121.7A44 44 0 0 1 281.3 135.0z"],[2,"M295.2 103.7A72 72 0 0 0 276.0 87.6L262.0 111.9A44 44 0 0 1 273.7 121.7z"],[3,"M276.0 87.6A72 72 0 0 0 252.5 79.1L247.6 106.7A44 44 0 0 1 262.0 111.9z"],[2,"M252.5 79.1A72 72 0 0 0 227.5 79.1L232.4 106.7A44 44 0 0 1 247.6 106.7z"],[3,"M227.5 79.1A72 72 0 0 0 204.0 87.6L218.0 111.9A44 44 0 0 1 232.4 106.7z"],[2,"M204.0 87.6A72 72 0 0 0 184.8 103.7L206.3 121.7A44 44 0 0 1 218.0 111.9z"],[3,"M184.8 103.7A72 72 0 0 0 172.3 125.4L198.7 135.0A44 44 0 0 1 206.3 121.7z"],[2,"M172.3 125.4A72 72 0 0 0 168.0 150.0L196.0 150.0A44 44 0 0 1 198.7 135.0z"],[1,"M196 150a44 44 0 0 1 88 0z"],[2,"M304.0 262.0A64 64 0 0 0 300.1 240.1L277.6 248.3A40 40 0 0 1 280.0 262.0z"],[3,"M300.1 240.1A64 64 0 0 0 289.0 220.9L270.6 236.3A40 40 0 0 1 277.6 248.3z"],[2,"M289.0 220.9A64 64 0 0 0 272.0 206.6L260.0 227.4A40 40 0 0 1 270.6 236.3z"],[3,"M272.0 206.6A64 64 0 0 0 251.1 199.0L246.9 222.6A40 40 0 0 1 260.0 227.4z"],[2,"M251.1 199.0A64 64 0 0 0 228.9 199.0L233.1 222.6A40 40 0 0 1 246.9 222.6z"],[3,"M228.9 199.0A64 64 0 0 0 208.0 206.6L220.0 227.4A40 40 0 0 1 233.1 222.6z"],[2,"M208.0 206.6A64 64 0 0 0 191.0 220.9L209.4 236.3A40 40 0 0 1 220.0 227.4z"],[3,"M191.0 220.9A64 64 0 0 0 179.9 240.1L202.4 248.3A40 40 0 0 1 209.4 236.3z"],[2,"M179.9 240.1A64 64 0 0 0 176.0 262.0L200.0 262.0A40 40 0 0 1 202.4 248.3z"],[1,"M200 262a40 40 0 0 1 80 0z"],[5,"M2 150h10v112h-10z"],[6,"M-18 138h36v14h-36z"],[6,"M-18 250h36v14h-36z"],[5,"M2 262h10v64h-10z"],[8,"M-18 322h36v10h-36z"],[4,"M148 150h24v112h-24z"],[5,"M162 150h10v112h-10z"],[6,"M142 138h36v14h-36z"],[6,"M142 250h36v14h-36z"],[4,"M148 262h24v64h-24z"],[5,"M162 262h10v64h-10z"],[8,"M142 322h36v10h-36z"],[4,"M308 150h24v112h-24z"],[6,"M302 138h36v14h-36z"],[6,"M302 250h36v14h-36z"],[4,"M308 262h24v64h-24z"],[8,"M302 322h36v10h-36z"],[7,"M0 330h320v30h-320z"],[8,"M0 360L60 330L120 330L100 360z"],[8,"M200 360L190 330L250 330L290 360z"]]},{"n":"La Giralda","c":"Seville","p":["#4aa3e0","#8fcdf3","#ffffff","#e6c48a","#c79c5e","#7a5536","#f5efe0","#d8cdb4","#e0b04a","#3f8f4a","#2f6f3a","#f08a24","#d96a4a"],"s":[[0,"M0 0h320v110h-320z"],[1,"M0 110h320v192h-320z"],[2,"M18 70a14 14 0 0 1 26 -6a18 18 0 0 1 32 2a12 12 0 0 1 8 22h-70a11 11 0 0 1 4 -18z"],[2,"M222 120a11.200000000000001 11.200000000000001 0 0 1 20.8 -4.800000000000001a14.4 14.4 0 0 1 25.6 1.6a9.600000000000001 9.600000000000001 0 0 1 6.4 17.6h-56.0a8.8 8.8 0 0 1 3.2 -14.4z"],[8,"M248 50a22 22 0 1 0 44 0a22 22 0 1 0 -44 0z"],[6,"M0 214h96v66h-96z"],[12,"M-6 214L48 188L102 214z"],[5,"M20 236h16v44h-16z"],[6,"M226 224h94v56h-94z"],[12,"M220 224L273 200L326 224z"],[3,"M128 116h34v164h-34z"],[4,"M162 116h30v164h-30z"],[4,"M134 128h22v34h-22z"],[5,"M168 128h18v34h-18z"],[5,"M140 158v-17.0a5.0 5.0 0 0 1 10 0v17.0z"],[4,"M134 178h22v34h-22z"],[5,"M168 178h18v34h-18z"],[5,"M140 208v-17.0a5.0 5.0 0 0 1 10 0v17.0z"],[4,"M134 228h22v34h-22z"],[5,"M168 228h18v34h-18z"],[5,"M140 258v-17.0a5.0 5.0 0 0 1 10 0v17.0z"],[7,"M122 104h76v12h-76z"],[6,"M132 70h56v34h-56z"],[5,"M138 104v-20.0a4.0 4.0 0 0 1 8 0v20.0z"],[5,"M156 104v-20.0a4.0 4.0 0 0 1 8 0v20.0z"],[5,"M174 104v-20.0a4.0 4.0 0 0 1 8 0v20.0z"],[7,"M128 62h64v8h-64z"],[6,"M144 34h32v28h-32z"],[5,"M155 62v-15.0a5.0 5.0 0 0 1 10 0v15.0z"],[3,"M150 28L160 8L170 28z"],[8,"M155 6a5 5 0 1 0 10 0a5 5 0 1 0 -10 0z"],[5,"M51 278h10v36h-10z"],[10,"M26 262a30 30 0 1 0 60 0a30 30 0 1 0 -60 0z"],[9,"M30 254a18 18 0 1 0 36 0a18 18 0 1 0 -36 0z"],[11,"M37 268a5 5 0 1 0 10 0a5 5 0 1 0 -10 0z"],[11,"M61 250a5 5 0 1 0 10 0a5 5 0 1 0 -10 0z"],[11,"M65 272a5 5 0 1 0 10 0a5 5 0 1 0 -10 0z"],[11,"M47 246a5 5 0 1 0 10 0a5 5 0 1 0 -10 0z"],[11,"M51 274a5 5 0 1 0 10 0a5 5 0 1 0 -10 0z"],[10,"M238 268a30 30 0 1 0 60 0a30 30 0 1 0 -60 0z"],[9,"M242 260a18 18 0 1 0 36 0a18 18 0 1 0 -36 0z"],[11,"M249 274a5 5 0 1 0 10 0a5 5 0 1 0 -10 0z"],[11,"M273 256a5 5 0 1 0 10 0a5 5 0 1 0 -10 0z"],[11,"M277 278a5 5 0 1 0 10 0a5 5 0 1 0 -10 0z"],[11,"M259 252a5 5 0 1 0 10 0a5 5 0 1 0 -10 0z"],[11,"M263 280a5 5 0 1 0 10 0a5 5 0 1 0 -10 0z"],[3,"M0 300h320v60h-320z"],[4,"M0 300h320v10h-320z"],[7,"M0 360L20 322L40 360z"],[7,"M40 360L60 322L80 360z"],[7,"M80 360L100 322L120 360z"],[7,"M120 360L140 322L160 360z"],[7,"M160 360L180 322L200 360z"],[7,"M200 360L220 322L240 360z"],[7,"M240 360L260 322L280 360z"],[7,"M280 360L300 322L320 360z"]]},{"n":"The Alhambra","c":"Granada","p":["#f58a3c","#f8b26a","#f6cfa8","#ffe08a","#7a78b8","#565490","#ffffff","#c0553a","#9b3f2b","#3e2a2a","#3d7a45","#2a5a33","#6fa85a"],"s":[[0,"M0 0h320v60h-320z"],[1,"M0 60h320v50h-320z"],[2,"M0 110h320v60h-320z"],[3,"M224 58a24 24 0 1 0 48 0a24 24 0 1 0 -48 0z"],[4,"M-30 190L60.0 96L60.0 190z"],[5,"M60.0 190L60.0 96L150 190z"],[6,"M44.0 114L60.0 96L76.0 114L67.0 109L60.0 116L53.0 109z"],[4,"M90 190L175.0 82L175.0 190z"],[5,"M175.0 190L175.0 82L260 190z"],[6,"M159.0 100L175.0 82L191.0 100L182.0 95L175.0 102L168.0 95z"],[4,"M200 190L275.0 104L275.0 190z"],[5,"M275.0 190L275.0 104L350 190z"],[6,"M259.0 122L275.0 104L291.0 122L282.0 117L275.0 124L268.0 117z"],[12,"M0 190L320 190L320 250L0 250z"],[10,"M0 222L80 206L170 216L260 202L320 214L320 270L0 270z"],[7,"M30 196h264v40h-264z"],[8,"M30 226h264v10h-264z"],[7,"M34 188h12v8h-12z"],[7,"M106 188h12v8h-12z"],[7,"M130 188h12v8h-12z"],[7,"M178 188h12v8h-12z"],[7,"M202 188h12v8h-12z"],[7,"M274 188h12v8h-12z"],[7,"M44 150h27.599999999999998v86h-27.599999999999998z"],[8,"M71.6 150h18.400000000000002v86h-18.400000000000002z"],[7,"M44.0 141h9.2v9h-9.2z"],[7,"M61.69230769230769 141h9.2v9h-9.2z"],[7,"M79.38461538461539 141h9.2v9h-9.2z"],[9,"M52.8 194v-15.0a5.0 5.0 0 0 1 10 0v15.0z"],[9,"M53.8 208h8v10h-8z"],[7,"M138 164h24.0v72h-24.0z"],[8,"M162.0 164h16.0v72h-16.0z"],[7,"M138.0 155h8.0v9h-8.0z"],[7,"M153.3846153846154 155h8.0v9h-8.0z"],[7,"M168.76923076923077 155h8.0v9h-8.0z"],[9,"M145.0 208v-15.0a5.0 5.0 0 0 1 10 0v15.0z"],[9,"M146.0 222h8v10h-8z"],[7,"M228 146h30.0v90h-30.0z"],[8,"M258.0 146h20.0v90h-20.0z"],[7,"M228.0 137h10.0v9h-10.0z"],[7,"M247.23076923076923 137h10.0v9h-10.0z"],[7,"M266.46153846153845 137h10.0v9h-10.0z"],[9,"M238.0 190v-15.0a5.0 5.0 0 0 1 10 0v15.0z"],[9,"M239.0 204h8v10h-8z"],[9,"M104 236v-15.0a7.0 7.0 0 0 1 14 0v15.0z"],[9,"M196 236v-15.0a7.0 7.0 0 0 1 14 0v15.0z"],[10,"M0 236h320v60h-320z"],[11,"M0 296h320v64h-320z"],[11,"M14 250L23 180L32 250z"],[11,"M84 250L93 196L102 250z"],[11,"M182 250L191 190L200 250z"],[11,"M292 250L301 174L310 250z"],[11,"M120 250L129 210L138 250z"],[10,"M14 300a26 26 0 1 0 52 0a26 26 0 1 0 -52 0z"],[12,"M80 316a30 30 0 1 0 60 0a30 30 0 1 0 -60 0z"],[12,"M162 302a28 28 0 1 0 56 0a28 28 0 1 0 -56 0z"],[12,"M230 318a32 32 0 1 0 64 0a32 32 0 1 0 -64 0z"],[10,"M298 296a22 22 0 1 0 44 0a22 22 0 1 0 -44 0z"]]},{"n":"City of Arts and Sciences","c":"Valencia","p":["#3f9fe0","#8ecbf2","#cfeaf8","#ffd34d","#ffffff","#dfe6ea","#1f5d6b","#2f7f8f","#1fa7a5","#49c5bf","#9fe6dd","#3f8f4a"],"s":[[0,"M0 0h320v70h-320z"],[1,"M0 70h320v60h-320z"],[2,"M0 130h320v80h-320z"],[3,"M36 52a22 22 0 1 0 44 0a22 22 0 1 0 -44 0z"],[4,"M196 58a12.6 12.6 0 0 1 23.400000000000002 -5.4a16.2 16.2 0 0 1 28.8 1.8a10.8 10.8 0 0 1 7.2 19.8h-63.0a9.9 9.9 0 0 1 3.6 -16.2z"],[5,"M20 210Q160 60 300 210z"],[4,"M20 210Q160 84 300 210L270 210Q160 112 50 210z"],[6,"M50 210L50 210.0L67.0 196.0L84 184.4L84 210z"],[7,"M84 210L84 184.4L101.0 175.1L118 168.1L118 210z"],[6,"M118 210L118 168.1L139.0 162.8L160 161.0L160 210z"],[7,"M160 210L160 161.0L181.0 162.8L202 168.1L202 210z"],[6,"M202 210L202 168.1L219.0 175.1L236 184.4L236 210z"],[7,"M236 210L236 184.4L253.0 196.0L270 210.0L270 210z"],[4,"M155 138h10v72h-10z"],[8,"M0 210h320v50h-320z"],[9,"M0 260h320v50h-320z"],[8,"M0 310h320v50h-320z"],[10,"M40 210Q160 300 280 210z"],[9,"M96 210Q160 262 224 210z"],[11,"M22 150L-4.4 127.8L-12.6 140.0z"],[11,"M298 150L271.6 127.8L263.4 140.0z"]]},{"n":"Sagrada Família","c":"Barcelona","p":["#4aa3e0","#8fcdf3","#ffffff","#e3c79b","#c4a171","#8a6a45","#f4c542","#4d9a52","#35743d","#5b3b24","#7fc6e8"],"s":[[0,"M0 0h320v100h-320z"],[1,"M0 100h320v212h-320z"],[2,"M14 54a12.6 12.6 0 0 1 23.400000000000002 -5.4a16.2 16.2 0 0 1 28.8 1.8a10.8 10.8 0 0 1 7.2 19.8h-63.0a9.9 9.9 0 0 1 3.6 -16.2z"],[2,"M232 84a11.200000000000001 11.200000000000001 0 0 1 20.8 -4.800000000000001a14.4 14.4 0 0 1 25.6 1.6a9.600000000000001 9.600000000000001 0 0 1 6.4 17.6h-56.0a8.8 8.8 0 0 1 3.2 -14.4z"],[3,"M67.0 250L71.0 146L84 96L84 250z"],[4,"M84 250L84 96L97.0 146L101.0 250z"],[6,"M77 112L84 86L91 112z"],[6,"M79 84a5 5 0 1 0 10 0a5 5 0 1 0 -10 0z"],[5,"M80 140h8v18h-8z"],[5,"M80 174h8v18h-8z"],[3,"M109.0 250L113.0 90L128 40L128 250z"],[4,"M128 250L128 40L143.0 90L147.0 250z"],[6,"M121 56L128 30L135 56z"],[6,"M123 28a5 5 0 1 0 10 0a5 5 0 1 0 -10 0z"],[5,"M124 84h8v18h-8z"],[5,"M124 118h8v18h-8z"],[5,"M124 152h8v18h-8z"],[3,"M173.0 250L177.0 90L192 40L192 250z"],[4,"M192 250L192 40L207.0 90L211.0 250z"],[6,"M185 56L192 30L199 56z"],[6,"M187 28a5 5 0 1 0 10 0a5 5 0 1 0 -10 0z"],[5,"M188 84h8v18h-8z"],[5,"M188 118h8v18h-8z"],[5,"M188 152h8v18h-8z"],[3,"M219.0 250L223.0 146L236 96L236 250z"],[4,"M236 250L236 96L249.0 146L253.0 250z"],[6,"M229 112L236 86L243 112z"],[6,"M231 84a5 5 0 1 0 10 0a5 5 0 1 0 -10 0z"],[5,"M232 140h8v18h-8z"],[5,"M232 174h8v18h-8z"],[3,"M60 214h100v96h-100z"],[4,"M160 214h100v96h-100z"],[4,"M104 214L160 150L160 214z"],[3,"M160 214L160 150L216 214z"],[6,"M142 206a18 18 0 1 0 36 0a18 18 0 1 0 -36 0z"],[10,"M150 206a10 10 0 1 0 20 0a10 10 0 1 0 -20 0z"],[9,"M138 310v-52.0a22.0 22.0 0 0 1 44 0v52.0z"],[5,"M150 310v-40.0a10.0 10.0 0 0 1 20 0v40.0z"],[5,"M78 300v-29.0a7.0 7.0 0 0 1 14 0v29.0z"],[5,"M104 300v-29.0a7.0 7.0 0 0 1 14 0v29.0z"],[5,"M202 300v-29.0a7.0 7.0 0 0 1 14 0v29.0z"],[5,"M228 300v-29.0a7.0 7.0 0 0 1 14 0v29.0z"],[5,"M70 226h12v12h-12z"],[5,"M96 226h12v12h-12z"],[5,"M122 226h12v12h-12z"],[5,"M184 226h12v12h-12z"],[5,"M210 226h12v12h-12z"],[5,"M236 226h12v12h-12z"],[7,"M0 310h320v50h-320z"],[8,"M0 334h320v26h-320z"],[8,"M-6 292a30 30 0 1 0 60 0a30 30 0 1 0 -60 0z"],[7,"M0 284a18 18 0 1 0 36 0a18 18 0 1 0 -36 0z"],[8,"M264 294a32 32 0 1 0 64 0a32 32 0 1 0 -64 0z"],[7,"M272 286a18 18 0 1 0 36 0a18 18 0 1 0 -36 0z"]]}];
+/* three more pictures, drawn by code */
+(function(){
+  function f(n){return(+n).toFixed(1);}
+  function circ(x,y,r,ry){ry=ry||r;return"M"+f(x-r)+" "+f(y)+"a"+f(r)+" "+f(ry)+" 0 1 0 "+f(2*r)+" 0a"+f(r)+" "+f(ry)+" 0 1 0 "+f(-2*r)+" 0z";}
+  function pt(cx,cy,r,a){a=a*Math.PI/180;return f(cx+Math.cos(a)*r)+" "+f(cy+Math.sin(a)*r);}
+  function sector(cx,cy,r1,r2,a0,a1){return"M"+pt(cx,cy,r1,a0)+"L"+pt(cx,cy,r2,a0)+"A"+r2+" "+r2+" 0 0 1 "+pt(cx,cy,r2,a1)+"L"+pt(cx,cy,r1,a1)+"A"+r1+" "+r1+" 0 0 0 "+pt(cx,cy,r1,a0)+"z";}
+  function rot(cx,cy,w,h,a){a=a*Math.PI/180;var c=Math.cos(a),s2=Math.sin(a),q=[[-w/2,-h/2],[w/2,-h/2],[w/2,h/2],[-w/2,h/2]].map(function(p){return f(cx+p[0]*c-p[1]*s2)+" "+f(cy+p[0]*s2+p[1]*c);});return"M"+q.join("L")+"z";}
+  /* 1. Azulejo: a 3×3 panel of tiles with a border */
+  var s=[],x,y,i,T3=320/3;
+  for(i=0;i<8;i++){s.push([i%2?5:1,"M"+i*40+" 0h40v20h-40z"]);s.push([i%2?1:5,"M"+i*40+" 340h40v20h-40z"]);}
+  for(y=0;y<3;y++)for(x=0;x<3;x++){var X=x*T3,Y=20+y*T3,cx=X+T3/2,cy=Y+T3/2,alt=(x+y)%2;
+    s.push([alt?2:0,"M"+f(X)+" "+f(Y)+"h"+f(T3)+"v"+f(T3)+"h"+f(-T3)+"z"]);
+    [[X,Y,0,90],[X+T3,Y,90,180],[X+T3,Y+T3,180,270],[X,Y+T3,270,360]].forEach(function(q,j){s.push([(j+alt)%2?4:3,"M"+f(q[0])+" "+f(q[1])+"L"+pt(q[0],q[1],30,q[2])+"A30 30 0 0 1 "+pt(q[0],q[1],30,q[3])+"z"]);});
+    s.push([1,"M"+f(cx)+" "+f(Y+8)+"L"+f(X+T3-8)+" "+f(cy)+"L"+f(cx)+" "+f(Y+T3-8)+"L"+f(X+8)+" "+f(cy)+"z"]);
+    s.push([5,circ(cx,cy,24)]);s.push([alt?4:3,circ(cx,cy,10)]);}
+  ART.push({n:"Azulejos de Triana",c:"Azulejos",p:["#f7f0e3","#1f5fae","#bfe0f2","#c8704a","#4f9e52","#f6c21c"],s:s});
+  /* 2. Abanico: a flamenco fan */
+  s=[[0,"M0 0h320v130h-320z"],[1,"M0 130h320v120h-320z"],[2,"M0 250h320v110h-320z"]];
+  var N=14,a0=196,st=(344-196)/N;
+  for(i=0;i<N;i++){var A=a0+i*st,B2=A+st;
+    s.push([i%2?4:3,sector(160,310,96,214,A,B2)]);
+    s.push([i%2?5:6,sector(160,310,214,246,A,B2)]);
+    s.push([i%2?7:8,sector(160,310,24,96,A+st*.14,B2-st*.14)]);
+    var m=(A+B2)/2*Math.PI/180;s.push([i%2?6:5,circ(160+Math.cos(m)*160,310+Math.sin(m)*160,9)]);}
+  s.push([9,circ(160,310,13)]);s.push([5,circ(160,310,5)]);
+  ART.push({n:"El abanico",c:"Abanico",p:["#f3d9b8","#f0c7a0","#e7b48a","#c8102e","#8f0f24","#f6c21c","#ffffff","#8a5a35","#6b4226","#2b2b2b"],s:s});
+  /* 3. Paella */
+  s=[];for(y=0;y<4;y++)for(x=0;x<4;x++)s.push([(x+y)%2?1:0,"M"+x*80+" "+y*90+"h80v90h-80z"]);
+  s.push([2,"M2 168h60v34h-60z"]);s.push([2,"M258 168h60v34h-60z"]);
+  s.push([3,circ(160,185,132)]);s.push([4,circ(160,185,116)]);
+  [[160,95],[160,275],[72,185],[248,185]].forEach(function(q,j){s.push([5,circ(q[0],q[1],19)]);s.push([10,circ(q[0],q[1],9)]);});
+  [[110,135,30],[210,135,-30],[105,235,-35],[215,235,35],[160,150,90],[160,222,90]].forEach(function(q){s.push([6,rot(q[0],q[1],46,13,q[2])]);});
+  [[128,178,-20],[192,178,20],[160,186,0]].forEach(function(q){s.push([7,circ(q[0],q[1],17,10)]);s.push([8,circ(q[0],q[1],9,5)]);});
+  [[90,160],[230,160],[92,212],[228,212],[135,112],[185,112],[136,258],[184,258],[160,124],[160,248]].forEach(function(q){s.push([9,circ(q[0],q[1],7)]);});
+  ART.push({n:"Paella valenciana",c:"Paella",p:["#c8102e","#ffffff","#5d6470","#2b2b2b","#f2b632","#f6e05e","#d7382d","#22272f","#e9a08a","#5aa04a","#fff7c2"],s:s});
+})();
 var PB=null,pbT=null;
-function cbDoc(i,p){return T["sp.cv."+i+"."+p];}
+function cbDoc(i,p){return gdoc("sp.cv."+i+"."+p);}
 function cbFill(i,p){var d=cbDoc(i,p),f=[];for(var k=0;k<ART[i].s.length;k++)f.push(!!(d&&d.f&&d.f.charAt(k)==="1"));return f;}
 function cbSvg(i,f,paint,sel){
   var c=ART[i],s="";
@@ -1852,16 +1914,16 @@ function cbSvg(i,f,paint,sel){
   return'<svg viewBox="0 0 320 360"'+(paint?' id="cbsvg"':"")+">"+s+(paint?'<g id="cblab"></g>':"")+"</svg>";
 }
 function drawPaint(){
-  var el=$("paint");if(!el)return;var me=ME||"a";
+  var el=$(VIS?"vpaint":"paint");if(!el)return;var me=GP()||"a";
   el.innerHTML='<div class="cbgal">'+ART.map(function(c,i){
     var f=cbFill(i,me),n=f.filter(Boolean).length,pct=n===f.length?100:n?Math.min(99,Math.max(1,Math.round(n/f.length*100))):0,od=ME&&cbDoc(i,other());
     return'<button class="cbt'+(pct===100?" fin":"")+'" data-cb="'+i+'">'+cbSvg(i,f,false)+"<b>"+esc(c.c)+"</b><small>"+(pct===100?"Finished":pct?pct+"%":"Start")+"</small>"+(od&&od.done?'<i class="av '+other()+'">'+esc(NAMES[other()].charAt(0))+"</i>":"")+"</button>";
   }).join("")+"</div>";
 }
 function cbOpen(i){
-  if(!need())return;PB={i:i,f:cbFill(i,ME),sel:0,down:false,dirty:false};G=null;bkStop();clearInterval(gtick);
+  if(!canPlay())return;PB={i:i,f:cbFill(i,GP()),sel:0,down:false,dirty:false,zoom:false};sjStop();G=null;bkStop();clearInterval(gtick);
   $("game").classList.add("on");
-  $("game").innerHTML='<div class="ghead"><b>'+esc(ART[i].n)+'</b><span id="cbpct"></span><button id="gquit" aria-label="Close">×</button></div><div class="gsub">Pick a colour below. Its areas light up in yellow: tap them, or drag across several.</div><div id="gbody"><div id="cbwrap"></div><div class="cbpal" id="cbpal"></div></div>';
+  $("game").innerHTML='<div class="ghead"><b>'+esc(ART[i].n)+'</b><span id="cbpct"></span><button id="gquit" aria-label="Close">×</button></div><div class="gsub">Pick a colour below. Its areas light up in yellow: tap them, or drag across several.</div><div id="gbody"><div id="cbwrap"></div><div class="cbtools" id="cbtools"></div><div class="cbpal" id="cbpal"></div></div>';
   cbDraw();
 }
 function cbLabels(){
@@ -1878,16 +1940,19 @@ function cbDraw(){
   c.s.forEach(function(sh,k){if(!PB.f[k])left[sh[0]]++;});
   var done=PB.f.every(Boolean);
   if(!done&&!left[PB.sel])for(var j=0;j<left.length;j++)if(left[j]){PB.sel=j;break;}
-  $("cbwrap").innerHTML=cbSvg(PB.i,PB.f,true,PB.sel);if(!done)cbLabels();
+  var w=$("cbwrap"),sl=w.scrollLeft,stp=w.scrollTop;w.classList.remove("zoom");
+  w.innerHTML=cbSvg(PB.i,PB.f,true,PB.sel);if(!done)cbLabels();
+  if(PB.zoom&&!done){w.classList.add("zoom");w.scrollLeft=sl;w.scrollTop=stp;}
+  $("cbtools").innerHTML=done?"":'<button id="cbzoom" class="'+(PB.zoom?"on":"")+'">'+(PB.zoom?"🔍 Zoom out":"🔍 Zoom in")+'</button><button id="cbhint">💡 Show me one</button>'+(left[PB.sel]&&left[PB.sel]<=3?'<button id="cbfin">✨ Finish colour '+(PB.sel+1)+"</button>":"");
   $("cbpal").innerHTML=c.p.map(function(col,j){return'<button class="cbc'+(j===PB.sel?" on":"")+(left[j]?"":" out")+'" data-col="'+j+'" style="background:'+col+'"><b>'+(left[j]?j+1:"✓")+"</b>"+(left[j]?"<small>"+left[j]+"</small>":"")+"</button>";}).join("");
   $("cbpct").textContent=Math.round(PB.f.filter(Boolean).length/PB.f.length*100)+"%";
   if(done&&!PB.won){PB.won=true;cbSave(true);buzz([30,40,30]);confetti();
-    var nx=-1;for(var q=1;q<ART.length;q++){var t=(PB.i+q)%ART.length,d=cbDoc(t,ME);if(!(d&&d.done)){nx=t;break;}}
+    var nx=-1;for(var q=1;q<ART.length;q++){var t=(PB.i+q)%ART.length,d=cbDoc(t,GP());if(!(d&&d.done)){nx=t;break;}}
     $("gbody").insertAdjacentHTML("beforeend",'<div class="gdone"><h2>'+esc(c.n)+"</h2><p>"+esc(c.c)+"</p>"+(nx>=0?'<button class="go gold" data-cb="'+nx+'">Paint '+esc(ART[nx].n)+"</button>":"<p>That's all six. ¡Artista!</p>")+'<button class="go" id="gquit2">Done</button></div>');}
 }
 function cbSave(now){
-  clearTimeout(pbT);if(!PB||!ME)return;
-  var go=function(){if(!PB||!PB.dirty)return;PB.dirty=false;put("sp.cv."+PB.i+"."+ME,{f:PB.f.map(function(v){return v?"1":"0";}).join(""),done:PB.f.every(Boolean),at:Date.now()});};
+  clearTimeout(pbT);if(!PB||!GP())return;
+  var go=function(){if(!PB||!PB.dirty)return;PB.dirty=false;gput("sp.cv."+PB.i+"."+GP(),{f:PB.f.map(function(v){return v?"1":"0";}).join(""),done:PB.f.every(Boolean),at:Date.now()});};
   if(now)go();else pbT=setTimeout(go,1500);
 }
 function cbAt(x,y){
@@ -1895,52 +1960,81 @@ function cbAt(x,y){
   var c=ART[PB.i],v=c.s[+k][0];if(v!==PB.sel)return;
   PB.f[+k]=true;PB.dirty=true;PB.touched=true;el.removeAttribute("data-k");el.setAttribute("fill",c.p[v]);el.setAttribute("stroke",c.p[v]);el.setAttribute("stroke-width",".7");
 }
-$("game").addEventListener("pointerdown",function(e){if(PB&&e.target.closest("#cbwrap")){PB.down=true;cbAt(e.clientX,e.clientY);}});
+$("game").addEventListener("pointerdown",function(e){if(PB&&!PB.zoom&&e.target.closest("#cbwrap")){PB.down=true;cbAt(e.clientX,e.clientY);}});
+/* zoomed in, a drag scrolls the picture, so painting is tap only */
+$("game").addEventListener("click",function(e){
+  if(!PB)return;var t=e.target;
+  if(PB.zoom&&t.closest("#cbwrap")){cbAt(e.clientX,e.clientY);if(PB.touched){PB.touched=false;buzz(6);cbDraw();cbSave();}return;}
+  if(t.id==="cbzoom"){PB.zoom=!PB.zoom;cbDraw();if(PB.zoom){var w=$("cbwrap");w.scrollLeft=(w.scrollWidth-w.clientWidth)/2;w.scrollTop=(w.scrollHeight-w.clientHeight)/2;cbHint(true);}return;}
+  if(t.id==="cbhint"){cbHint();return;}
+  if(t.id==="cbfin"){ART[PB.i].s.forEach(function(sh,k){if(sh[0]===PB.sel)PB.f[k]=true;});PB.dirty=true;buzz(10);cbDraw();cbSave();}
+});
+function cbHint(quiet){
+  var c=ART[PB.i],el=null;[].forEach.call($("cbsvg").querySelectorAll("path[data-k]"),function(x){if(!el&&c.s[+x.getAttribute("data-k")][0]===PB.sel)el=x;});
+  if(!el)return;if(!quiet)el.classList.add("hint");
+  if(PB.zoom){var w=$("cbwrap"),r=el.getBoundingClientRect(),wr=w.getBoundingClientRect();w.scrollLeft+=r.left+r.width/2-(wr.left+wr.width/2);w.scrollTop+=r.top+r.height/2-(wr.top+wr.height/2);}
+}
 $("game").addEventListener("pointermove",function(e){if(PB&&PB.down)cbAt(e.clientX,e.clientY);if(BK&&BK.run){var r=BK.cv.getBoundingClientRect();BK.px=Math.max(BK.pw/2,Math.min(320-BK.pw/2,(e.clientX-r.left)/r.width*320));}});
 ["pointerup","pointercancel","pointerleave"].forEach(function(ev){$("game").addEventListener(ev,function(){if(PB&&PB.down){PB.down=false;if(PB.touched){PB.touched=false;buzz(6);cbDraw();cbSave();}}});});
 /* ---------- Ladrillos: brick breaker with 30 levels ----------  sp.bk.<a|b> {l:{level:stars},at} */
 var BKN=30,BK=null;
-function bkProg(p){var d=T["sp.bk."+p];return(d&&d.l)||{};}
+function bkProg(p){var d=gdoc("sp.bk."+p);return(d&&d.l)||{};}
 function bkNext(p){var l=bkProg(p),n=1;while(n<=BKN&&l[n])n++;return n;}
 function bkStars(p){var l=bkProg(p),s=0;Object.keys(l).forEach(function(k){s+=l[k];});return s;}
 function bkStop(){if(BK){BK.run=false;BK=null;}}
 function drawLevels(){
-  var el=$("levels");if(!el)return;var h="",me=ME||"a",l=bkProg(me),nx=bkNext(me),onx=ME?bkNext(other()):0;
-  ["a","b"].forEach(function(p){var n=bkNext(p)-1;h+='<div class="lvbar">'+av(p)+'<div class="bar"><i style="width:'+(n/BKN*100)+'%"></i></div><span>Level '+Math.min(n+1,BKN)+" · "+bkStars(p)+"★</span></div>";});
-  h+='<button class="go gold" data-bk="'+Math.min(nx,BKN)+'">'+(nx>BKN?"All 30 cleared. Replay any level":nx===1?"Start level 1":"Continue: level "+nx)+'</button><div class="lvgrid">';
+  var el=$(VIS?"vlevels":"levels");if(!el)return;var h="",me=GP()||"a",l=bkProg(me),nx=bkNext(me),onx=ME?bkNext(other()):0;
+  h+=gbars(function(p){var n=bkNext(p)-1;return[n/BKN,"Nivel "+Math.min(n+1,BKN)+" · "+bkStars(p)+"★"];});
+  h+='<button class="go gold" data-bk="'+Math.min(nx,BKN)+'">'+(nx>BKN?"All 30 cleared. Replay any level":nx===1?"¡Vamos! Nivel 1":"Continue: nivel "+nx+" · "+BKM[(nx-1)%BKM.length][0])+'</button><div class="lvgrid">';
   for(var L=1;L<=BKN;L++){var d=l[L],open=L<=nx;h+='<button class="lv'+(d?" won":open?" open":"")+'" data-bk="'+L+'"'+(open?"":" disabled")+"><b>"+L+"</b><small>"+(d?"★★★".slice(0,d):open?"play":"")+"</small>"+(ME&&onx===L&&onx<=BKN?'<i class="av '+other()+'">'+esc(NAMES[other()].charAt(0))+"</i>":"")+"</button>";}
   el.innerHTML=h+"</div>";
 }
+/* Each level is a Spanish motif built from azulejo-style tiles, set against one of the six city skylines. */
+var BKC={R:"#c8102e",Y:"#f6c21c",W:"#f7f0e3",B:"#1f5fae",O:"#f28c28",G:"#4f9e52",T:"#c8704a",P:"#f29bb0",N:"#8a5a35",K:"#3a3f4b",C:"#2ec4b6"};
+var BKM=[
+ ["La bandera",[".RRRRRRRR.",".YYYYYYYY.",".YYYYYYYY.",".RRRRRRRR."]],
+ ["Azulejos",["B.B.B.B.B.",".W.W.W.W.W","B.C.B.C.B.",".W.W.W.W.W","B.B.B.B.B."]],
+ ["El sol",["...Y..Y...","Y..OOOO..Y","..OYYYYO..","..OYYYYO..","Y..OOOO..Y","...Y..Y..."]],
+ ["El abanico",["..RRRRRR..",".RPRYYRPR.","RPRPRRPRPR",".RPRPPRPR.","...RPPR...","....NN...."]],
+ ["Los arcos",[".RWR..RWR.","R...RR...R","W...WW...W","R...RR...R","W...WW...W","T...TT...T"]],
+ ["El corazón",[".RR....RR.","RRRR..RRRR","RRPRRRRRRR",".RRRRRRRR.","..RRRRRR..","...RRRR...","....RR...."]],
+ ["El castillo",["T.T.TT.T.T","TTTTTTTTTT","TTWTTTTWTT","TTTTKKTTTT","TTTTKKTTTT"]],
+ ["El toro",["N........N","NN......NN",".NNNNNNNN.","..NWNNWN..","..NNNNNN..","...NPPN..."]],
+ ["El naranjo",["...GGGG...","..GOGGOG..",".GGGOGGGG.","..GOGGOG..","....NN....","....NN...."]],
+ ["¡Olé!",["........R.","YYY.Y..RRR","Y.Y.Y..R..","Y.Y.Y..RR.","Y.Y.Y..R..","YYY.YY.RRR"]],
+ ["La paella",["..NNNNNN..",".NYYYYYYN.","NYYRYYGYYN","NYGYYRYYYN",".NYYYYYYN.","..NNNNNN.."]]
+];
+function bkCity(L){return SJC[(L-1)%SJC.length];}
 function bkLayout(L){
-  var r=rng("bk"+L),rows=Math.min(8,3+Math.floor((L-1)/3)),pat=(L-1)%6,tough=Math.min(.5,(L-1)*.035),o=[],COL=["#e8765c","#f5b942","#2ec4b6","#8ab8ff","#f7f0e3","#c98bdb","#7fd18a","#ff9db0"];
-  for(var y=0;y<rows;y++)for(var x=0;x<8;x++){
-    var mid=(rows-1)/2,on=pat===0?true:pat===1?(x+y)%2===0:pat===2?Math.abs(x-3.5)<=(rows-y)*.9:pat===3?x%2===0||y===0:pat===4?Math.abs(x-3.5)+Math.abs(y-mid)*1.4<=4:(x===0||x===7||y===0||y===rows-1||(x>2&&x<5));
-    if(on)o.push({x:8+x*38,y:44+y*20,w:36,h:16,hp:r()<tough?2:1,c:COL[y%COL.length]});
-  }
+  var r=rng("bk"+L),m=BKM[(L-1)%BKM.length][1],tier=Math.floor((L-1)/BKM.length),tough=Math.min(.45,.04+tier*.16+(L-1)*.006),o=[],rows=[],y,x;
+  for(y=0;y<tier;y++)rows.push(y%2?".B.W.B.W.B":"B.W.B.W.B.");   /* later laps add rows of azulejos on top */
+  rows=rows.concat(m);
+  for(y=0;y<rows.length;y++)for(x=0;x<10;x++){var ch=rows[y].charAt(x);if(ch===".")continue;
+    o.push({x:11+x*30,y:38+y*17,w:28,h:14,hp:ch==="K"||r()<tough?2:1,c:BKC[ch]||"#f7f0e3",k:ch});}
   return o;
 }
 /* power-ups drop from broken bricks; catch the capsule with the paddle.
    Timed ones show as chips at the top of the board with a shrinking bar. */
 var PU={
-  multi:{lab:"×3",c:"#2ec4b6",w:22,name:"Multi-ball"},
-  wide:{lab:"WIDE",c:"#f5b942",w:20,t:14,name:"Wide paddle"},
-  laser:{lab:"LASER",c:"#ff6b6b",w:12,t:9,name:"Lasers"},
-  fire:{lab:"FIRE",c:"#ff8a3d",w:10,t:8,name:"Fireball"},
-  glue:{lab:"GLUE",c:"#7fd18a",w:11,t:15,name:"Sticky paddle"},
-  slow:{lab:"SLOW",c:"#8ab8ff",w:12,t:10,name:"Slow ball"},
-  life:{lab:"+♥",c:"#ff9db0",w:5,name:"Extra life"},
-  mini:{lab:"MINI",c:"#9a3d4a",w:8,t:10,name:"Mini paddle",bad:1}
+  multi:{lab:"×3",c:"#2ec4b6",w:22,name:"three oranges",es:"¡Tres naranjas"},
+  wide:{lab:"ANCHO",c:"#f5b942",w:20,t:14,name:"wide churro",es:"¡Churro grande"},
+  laser:{lab:"LÁSER",c:"#ff6b6b",w:12,t:9,name:"lasers",es:"¡Láser"},
+  fire:{lab:"FUEGO",c:"#ff8a3d",w:10,t:8,name:"fireball",es:"¡Fuego"},
+  glue:{lab:"MIEL",c:"#e6b84f",w:11,t:15,name:"honey: sticky paddle",es:"¡Miel"},
+  slow:{lab:"SIESTA",c:"#8ab8ff",w:12,t:10,name:"slow ball",es:"¡Siesta"},
+  life:{lab:"+♥",c:"#ff9db0",w:5,name:"extra life",es:"¡Otra vida"},
+  mini:{lab:"MINI",c:"#9a3d4a",w:8,t:10,name:"tiny churro, dodge it",es:"¡Ay, mini",bad:1}
 };
 function bkPick(){var tot=0,k,ks=Object.keys(PU).filter(function(x){return!(x==="life"&&BK.lives>=5);});ks.forEach(function(x){tot+=PU[x].w;});var r=Math.random()*tot;for(var i=0;i<ks.length;i++){r-=PU[ks[i]].w;if(r<=0)return ks[i];}return ks[0];}
 function bkBase(){return Math.max(46,78-BK.L);}
 function bkBall(x,y,vx,vy,stuck){return{x:x,y:y,vx:vx,vy:vy,stuck:!!stuck,off:0,fl:0};}
 function bkOpen(L){
-  if(!need())return;if(PB){cbSave(true);PB=null;}G=null;clearInterval(gtick);bkStop();
+  if(!canPlay())return;if(PB){cbSave(true);PB=null;}G=null;clearInterval(gtick);bkStop();sjStop();
   $("game").classList.add("on");
-  $("game").innerHTML='<div class="ghead"><b>Ladrillos</b><span id="bkhud"></span><button id="gquit" aria-label="Close">×</button></div><div class="gsub">Level '+L+" of "+BKN+'. Slide to move, tap to launch. Catch the falling power-ups; dodge the dark red MINI.</div><div id="gbody"><canvas id="bkcv" width="640" height="860"></canvas></div><div class="bkleg">'+Object.keys(PU).map(function(k){return'<span><i style="background:'+PU[k].c+(PU[k].bad?';color:#fff':'')+'">'+PU[k].lab+"</i>"+PU[k].name+"</span>";}).join("")+"</div>";
+  $("game").innerHTML='<div class="ghead"><b>Ladrillos</b><span id="bkhud"></span><button id="gquit" aria-label="Close">×</button></div><div class="gsub">Nivel '+L+" de "+BKN+" · "+esc(BKM[(L-1)%BKM.length][0])+" · "+esc(bkCity(L).n)+'. Slide the churro, tap to launch the orange. Catch the falling power-ups; dodge the dark red MINI.</div><div id="gbody"><canvas id="bkcv" width="640" height="860"></canvas></div><div class="bkleg">'+Object.keys(PU).map(function(k){return'<span><i style="background:'+PU[k].c+(PU[k].bad?';color:#fff':'')+'">'+PU[k].lab+"</i>"+PU[k].name+"</span>";}).join("")+"</div>";
   var cv=$("bkcv");
   BK={L:L,cv:cv,cx:cv.getContext("2d"),run:true,br:bkLayout(L),lives:3,pw:Math.max(46,78-L),px:160,sp:250+L*8,last:0,over:false,
-      balls:[],caps:[],shots:[],fx:{},cool:0,flash:null,pops:[]};
+      balls:[],caps:[],shots:[],fx:{},cool:0,flash:{t:1.4,txt:"¡"+BKM[(L-1)%BKM.length][0].replace(/^¡|!$/g,""),c:"#f6c21c"},pops:[]};
   BK.balls.push(bkBall(160,392,0,0,true));
   bkHud();requestAnimationFrame(bkFrame);
 }
@@ -1953,7 +2047,7 @@ function bkLaunch(){
 function bkOn(k){return BK.fx[k]>0;}
 function bkGive(k){
   var B=BK,p=PU[k];buzz(p.bad?[60]:[15,30,15]);
-  B.flash={t:1.1,txt:p.name,c:p.c};
+  B.flash={t:1.1,txt:p.es,c:p.c};
   if(k==="multi"){var add=[];B.balls.forEach(function(b){if(b.stuck)return;var s=Math.hypot(b.vx,b.vy)||B.sp,a=Math.atan2(b.vy,b.vx);[-.45,.45].forEach(function(d){add.push(bkBall(b.x,b.y,Math.cos(a+d)*s,Math.sin(a+d)*s));});});
     if(!add.length){var a0=-90*Math.PI/180;[-.5,.5].forEach(function(d){add.push(bkBall(B.px,392,Math.cos(a0+d)*B.sp,Math.sin(a0+d)*B.sp));});}
     B.balls=B.balls.concat(add).slice(0,12);}
@@ -1977,8 +2071,8 @@ function bkLoseBall(){
 }
 function bkEnd(win){
   var st=Math.min(3,BK.lives),L=BK.L;BK.over=true;BK.run=false;
-  if(win){var l=JSON.parse(JSON.stringify(bkProg(ME)));if(!l[L]||st>l[L]){l[L]=st;put("sp.bk."+ME,{l:l,at:Date.now()});}buzz([30,40,30]);confetti();}
-  $("gbody").insertAdjacentHTML("beforeend",'<div class="gdone">'+(win?'<h2 class="stars">'+"★★★".slice(0,st)+"<i>"+"★★★".slice(st)+"</i></h2><p>Level "+L+" cleared with "+BK.lives+(BK.lives===1?" life":" lives")+" left</p>"+(L<BKN?'<button class="go gold" data-bk="'+(L+1)+'">Level '+(L+1)+"</button>":"<p>That was the last level. ¡Campeón!</p>")+(st<3?'<button class="go" data-bk="'+L+'">Replay for three stars</button>':""):'<h2>Out of lives</h2><button class="go gold" data-bk="'+L+'">Try level '+L+" again</button>")+'<button class="go" id="gquit2">Done</button></div>');
+  if(win){var l=JSON.parse(JSON.stringify(bkProg(GP())));if(!l[L]||st>l[L]){l[L]=st;gput("sp.bk."+GP(),{l:l,at:Date.now()});}buzz([30,40,30]);confetti();}
+  $("gbody").insertAdjacentHTML("beforeend",'<div class="gdone">'+(win?'<h2 class="stars">'+"★★★".slice(0,st)+"<i>"+"★★★".slice(st)+"</i></h2><p>¡Olé! Nivel "+L+" cleared with "+BK.lives+(BK.lives===1?" life":" lives")+" left</p>"+(L<BKN?'<button class="go gold" data-bk="'+(L+1)+'">Nivel '+(L+1)+" · "+esc(BKM[L%BKM.length][0])+"</button>":"<p>That was the last level. ¡Campeón!</p>")+(st<3?'<button class="go" data-bk="'+L+'">Replay for three stars</button>':""):'<h2>¡Ay! Out of lives</h2><button class="go gold" data-bk="'+L+'">Otra vez: nivel '+L+"</button>")+'<button class="go" id="gquit2">Done</button></div>');
 }
 function bkFrame(t){
   var B=BK;if(!B||!B.run)return;var dt=Math.min(.032,B.last?(t-B.last)/1000:.016);B.last=t;
@@ -2029,8 +2123,22 @@ if(/[?&]debug=bk\b/.test(location.search))window.__bk={get:function(){return BK;
 function bkPill(c,x,y,w,h,r){c.beginPath();if(c.roundRect)c.roundRect(x,y,w,h,r);else c.rect(x,y,w,h);}
 function bkDraw(){
   var B=BK,c=B.cx;c.setTransform(2,0,0,2,0,0);c.clearRect(0,0,320,430);
-  c.fillStyle="rgba(0,0,0,.28)";c.fillRect(0,0,320,430);
-  B.br.forEach(function(k){c.fillStyle=k.hit?"#ffffff":k.c;bkPill(c,k.x,k.y,k.w,k.h,4);c.fill();if(k.hp>1){c.strokeStyle="rgba(8,20,40,.85)";c.lineWidth=2;c.strokeRect(k.x+4,k.y+4,k.w-8,k.h-8);}});
+  /* evening sky over the level's city, skyline along the bottom */
+  var ct=bkCity(B.L),sg=c.createLinearGradient(0,0,0,430);sg.addColorStop(0,"#0c1830");sg.addColorStop(.62,"#1d2c52");sg.addColorStop(1,ct.sky[0]);c.fillStyle=sg;c.fillRect(0,0,320,430);
+  c.fillStyle="rgba(255,255,255,.5)";for(var sn=0;sn<22;sn++)c.fillRect((sn*97+B.L*31)%320,(sn*53+B.L*17)%250,1.2,1.2);
+  c.save();c.translate(0,222);c.fillStyle="rgba(6,12,28,.5)";SJBG[ct.bg](c,0);SJBG[ct.bg](c,160);c.restore();
+  c.fillStyle="rgba(6,12,28,.5)";c.fillRect(0,428,320,2);
+  B.br.forEach(function(k){
+    var dk=k.hp>1;c.fillStyle=k.hit?"#ffffff":k.c;bkPill(c,k.x,k.y,k.w,k.h,2.5);c.fill();
+    if(k.hit)return;
+    /* azulejo detail: a diamond with a centre dot, light on dark tiles and dark on light ones */
+    var lite=k.k==="W"||k.k==="Y"||k.k==="P",mx=k.x+k.w/2,my=k.y+k.h/2;
+    c.fillStyle=lite?"rgba(31,95,174,.55)":"rgba(255,255,255,.4)";c.beginPath();c.moveTo(mx,k.y+2);c.lineTo(mx+7,my);c.lineTo(mx,k.y+k.h-2);c.lineTo(mx-7,my);c.fill();
+    c.fillStyle=lite?"rgba(255,255,255,.9)":k.c;c.beginPath();c.arc(mx,my,1.8,0,7);c.fill();
+    c.fillStyle=lite?"rgba(31,95,174,.4)":"rgba(255,255,255,.28)";[[k.x,k.y],[k.x+k.w,k.y],[k.x,k.y+k.h],[k.x+k.w,k.y+k.h]].forEach(function(q){c.beginPath();c.arc(q[0]+(q[0]===k.x?1:-1),q[1]+(q[1]===k.y?1:-1),3,0,7);c.fill();});
+    c.fillStyle="rgba(255,255,255,.25)";c.fillRect(k.x+2,k.y,k.w-4,1);
+    if(dk){c.strokeStyle="rgba(10,14,24,.9)";c.lineWidth=1.6;c.strokeRect(k.x+1.5,k.y+1.5,k.w-3,k.h-3);c.beginPath();c.moveTo(k.x+k.w/3,k.y+1.5);c.lineTo(k.x+k.w/3,k.y+k.h-1.5);c.moveTo(k.x+2*k.w/3,k.y+1.5);c.lineTo(k.x+2*k.w/3,k.y+k.h-1.5);c.stroke();}
+  });
   B.pops.forEach(function(p){var r=(.35-p.t)*60;c.globalAlpha=p.t/.35;c.strokeStyle=p.c;c.lineWidth=2;c.beginPath();c.arc(p.x,p.y,r,0,7);c.stroke();c.globalAlpha=1;});
   /* lasers */
   c.fillStyle="#ff6b6b";B.shots.forEach(function(s){c.fillRect(s.x-1.5,s.y-9,3,10);});
@@ -2040,17 +2148,23 @@ function bkDraw(){
   /* paddle */
   var pl=B.px-B.pw/2,pc=bkOn("glue")?"#7fd18a":bkOn("mini")?"#d77a86":bkOn("wide")?"#f5b942":"#f7f0e3";
   if(bkOn("laser")){c.fillStyle="#ff6b6b";c.fillRect(pl+2,394,6,8);c.fillRect(pl+B.pw-8,394,6,8);}
-  c.fillStyle=pc;bkPill(c,pl,400,B.pw,9,4.5);c.fill();
+  /* the paddle is a churro */
+  c.fillStyle=pc==="#f7f0e3"?"#d9973f":pc;bkPill(c,pl,400,B.pw,9,4.5);c.fill();
+  c.fillStyle="rgba(120,62,14,.55)";for(var rx=pl+6;rx<pl+B.pw-4;rx+=6){c.beginPath();c.moveTo(rx,400.5);c.lineTo(rx-2.5,408.5);c.lineTo(rx-1,408.5);c.lineTo(rx+1.5,400.5);c.fill();}
+  c.fillStyle="rgba(255,255,255,.7)";for(var sx2=pl+9;sx2<pl+B.pw-6;sx2+=11)c.fillRect(sx2,402+((sx2|0)%3),1.2,1.2);
   /* balls */
   var fire=bkOn("fire");
   B.balls.forEach(function(b){
     if(fire){c.fillStyle="rgba(255,138,61,.35)";c.beginPath();c.arc(b.x-b.vx*.02,b.y-b.vy*.02,8,0,7);c.fill();}
-    c.fillStyle=fire?"#ff8a3d":"#f5b942";c.beginPath();c.arc(b.x,b.y,6,0,7);c.fill();
+    /* the ball is a Seville orange */
+    c.fillStyle=fire?"#ff5a2a":"#f28c28";c.beginPath();c.arc(b.x,b.y,6,0,7);c.fill();
+    c.fillStyle="rgba(255,255,255,.45)";c.beginPath();c.arc(b.x-2,b.y-2,1.8,0,7);c.fill();
+    c.fillStyle="#3f8f3a";c.beginPath();c.ellipse(b.x+2.5,b.y-6,3,1.4,-.5,0,7);c.fill();
   });
   /* active power-up chips */
   var x=6;Object.keys(B.fx).forEach(function(k){if(!(B.fx[k]>0))return;var p=PU[k],w=46;c.fillStyle="rgba(8,20,40,.7)";bkPill(c,x,8,w,16,8);c.fill();c.fillStyle=p.c;bkPill(c,x,8,w*Math.min(1,B.fx[k]/p.t),16,8);c.globalAlpha=.55;c.fill();c.globalAlpha=1;c.fillStyle="#fff";c.fillText(p.lab,x+w/2,16.5);x+=w+5;});
-  if(B.flash){c.globalAlpha=Math.min(1,B.flash.t*2);c.fillStyle=B.flash.c;c.font="700 18px sans-serif";c.fillText(B.flash.txt+"!",160,250);c.globalAlpha=1;}
-  if(B.balls.some(function(b){return b.stuck;})&&!B.over){c.fillStyle="rgba(247,240,227,.75)";c.font="500 13px sans-serif";c.fillText("Tap to launch",160,300);}
+  if(B.flash){c.globalAlpha=Math.min(1,B.flash.t*2);c.fillStyle=B.flash.c;c.font="700 18px sans-serif";c.strokeStyle="rgba(6,12,28,.8)";c.lineWidth=3;c.strokeText(B.flash.txt+"!",160,250);c.fillText(B.flash.txt+"!",160,250);c.globalAlpha=1;}
+  if(B.balls.some(function(b){return b.stuck;})&&!B.over){c.fillStyle="rgba(247,240,227,.75)";c.font="500 13px sans-serif";c.fillText("Toca para lanzar · tap to launch",160,300);}
 }
 $("game").addEventListener("click",function(e){
   var t=e.target,b;
@@ -2075,13 +2189,13 @@ var SJC=[
   {n:"Barcelona",sky:["#ff8f63","#ffd9a6"],far:"#f2b08e",near:"rgba(90,40,50,.5)",top:"#d4604a",gr:"#7c3f35",plat:"#e8b48a",bg:"barcelona"}
 ];
 var SJN=SJC.length,SJ=null,SJH=15;
-function sjProg(p){var d=T["sp.sj."+p];return(d&&d.l)||{};}
+function sjProg(p){var d=gdoc("sp.sj."+p);return(d&&d.l)||{};}
 function sjNext(p){var l=sjProg(p),n=1;while(n<=SJN&&l[n])n++;return n;}
 function sjStars(p){var l=sjProg(p),s=0;Object.keys(l).forEach(function(k){s+=l[k].s||0;});return s;}
 function sjMode(){return lsGet("spain26-sjmode")||"easy";}
 function drawSalta(){
-  var el=$("salta");if(!el)return;var me=ME||"a",l=sjProg(me),nx=sjNext(me),onx=ME?sjNext(other()):0,h="";
-  ["a","b"].forEach(function(p){var n=sjNext(p)-1;h+='<div class="lvbar">'+av(p)+'<div class="bar"><i style="width:'+(n/SJN*100)+'%"></i></div><span>'+(n>=SJN?"All 6 cities":n+" of 6")+" · "+sjStars(p)+"★</span></div>";});
+  var el=$(VIS?"vsalta":"salta");if(!el)return;var me=GP()||"a",l=sjProg(me),nx=sjNext(me),onx=ME?sjNext(other()):0,h="";
+  h+=gbars(function(p){var n=sjNext(p)-1;return[n/SJN,(n>=SJN?"All 6 cities":n+" of 6")+" · "+sjStars(p)+"★"];});
   h+='<button class="go gold" data-sj="'+Math.min(nx,SJN)+'">'+(nx>SJN?"All six cleared. Replay any city":nx===1?"Start in Madrid":"Continue: "+SJC[nx-1].n)+'</button><div class="sjgrid">';
   SJC.forEach(function(c,i){var L=i+1,d=l[L],open=L<=nx;
     h+='<button class="sjlv'+(d?" won":open?" open":"")+'" data-sj="'+L+'"'+(open?"":" disabled")+"><b>"+esc(c.n)+"</b><small>"+(d?"★★★".slice(0,d.s)+'<i>'+"★★★".slice(d.s)+"</i>":open?"play":"locked")+"</small>"+(d?'<span>'+d.c+"/"+d.n+" churros · "+sjTime(d.t)+"</span>":"")+(ME&&onx===L?'<i class="av '+other()+'">'+esc(NAMES[other()].charAt(0))+"</i>":"")+"</button>";});
@@ -2136,7 +2250,7 @@ function sjGen(L){
 function sjEnemy(t,x,y,L){return t==="walk"?{t:t,x:x,y:y+.25,w:.9,h:.75,vx:-(1.1+L*.15),vy:0,dead:0,ph:0}:{t:t,x:x,y:y,x0:x,y0:y,w:.9,h:.7,ph:Math.random()*6,dead:0,vx:0,vy:0};}
 function sjStop(){if(SJ){SJ.run=false;SJ=null;}var gm=$("game");if(gm)gm.classList.remove("sj");}
 function sjOpen(L){
-  if(!need())return;if(PB){cbSave(true);PB=null;}G=null;clearInterval(gtick);bkStop();sjStop();
+  if(!canPlay())return;if(PB){cbSave(true);PB=null;}G=null;clearInterval(gtick);bkStop();sjStop();
   var c=SJC[L-1],mode=sjMode();
   $("game").classList.add("on","sj");
   $("game").innerHTML='<div class="ghead"><b>¡Salta! · '+esc(c.n)+'</b><button class="sjmode" id="sjmode">'+(mode==="easy"?"Easy":"Classic")+'</button><button id="gquit" aria-label="Close">×</button></div>'+
@@ -2202,8 +2316,8 @@ function sjFall(){
 function sjEnd(win){
   var S=SJ;if(S.over)return;S.over=true;S.run=false;
   var st=win?1+(S.got>=Math.ceil(S.lv.total*.6)?1:0)+(S.lost===0?1:0):0,L=S.L;
-  if(win){var l=JSON.parse(JSON.stringify(sjProg(ME))),o=l[L];
-    if(!o||st>o.s||(st===o.s&&(S.got>o.c||(S.got===o.c&&S.t<o.t)))){l[L]={s:st,c:S.got,n:S.lv.total,t:Math.round(S.t)};put("sp.sj."+ME,{l:l,at:Date.now()});}
+  if(win){var l=JSON.parse(JSON.stringify(sjProg(GP()))),o=l[L];
+    if(!o||st>o.s||(st===o.s&&(S.got>o.c||(S.got===o.c&&S.t<o.t)))){l[L]={s:st,c:S.got,n:S.lv.total,t:Math.round(S.t)};gput("sp.sj."+GP(),{l:l,at:Date.now()});}
     buzz([30,40,30]);confetti();}
   var cpOK=!win&&S.lit;
   $("gbody").insertAdjacentHTML("beforeend",'<div class="gdone sjdone">'+(win?'<h2 class="stars">'+"★★★".slice(0,st)+"<i>"+"★★★".slice(st)+"</i></h2><p>"+esc(S.c.n)+" done in "+sjTime(S.t)+" · "+S.got+" of "+S.lv.total+" churros"+(S.lost?"":" · no hearts lost")+"</p>"+(L<SJN?'<button class="go gold" data-sj="'+(L+1)+'">On to '+esc(SJC[L].n)+"</button>":"<p>Barcelona's paella! That's the whole trip. ¡Campeón!</p>")+(st<3?'<button class="go" data-sj="'+L+'">Play '+esc(S.c.n)+" again for three stars</button>":"")
@@ -2783,7 +2897,7 @@ document.addEventListener("click",function(e){
 });
 function drawAll(){
   $("mebtn").innerHTML=ME?av(ME)+esc(NAMES[ME]):"Who's this?";
-  if(TAB==="trip"){drawUpdates();drawPhotos();if(VIS){drawVis();drawVDays();drawNow();drawBingo();}drawToday();drawFlights();drawAllBooked();drawPicks();drawMaps();}
+  if(TAB==="trip"){drawUpdates();drawPhotos();if(VIS){drawVis();drawVDays();drawNow();drawBingo();drawLevels();drawSalta();drawPaint();}drawToday();drawFlights();drawAllBooked();drawPicks();drawMaps();}
   else if(TAB==="days"){drawChips();drawBooked();drawIdeas();syncNote();drawRate();drawDayPhotos();}
   else if(TAB==="pack")drawPack();
   else if(TAB==="us"){drawUs();drawBingo();drawGames();drawLevels();drawSalta();drawPaint();var rc=rchart();$("rchart").innerHTML=rc.h+(rc.any?"":'<div class="dmeta">No days rated by both of you yet.</div>');}
