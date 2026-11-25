@@ -347,6 +347,7 @@ async function handle(req, res) {
       if (!isJpeg(thumb) || !isJpeg(full)) return send(res, 400, { error: 'not a jpeg' });
       const day = Number(mt.day);
       const meta = { day: day >= 1 && day <= 11 ? Math.round(day) : 1, cap: String(mt.cap || '').slice(0, 140), pub: mt.pub === true, by: ['a', 'b'].includes(mt.by) ? mt.by : 'a', w: Number(mt.w) || 0, h: Number(mt.h) || 0, at: Date.now() };
+      if (['Madrid', 'Córdoba', 'Seville', 'Granada', 'Valencia', 'Barcelona', 'On the way', 'Heading home'].includes(mt.city)) meta.city = mt.city;
       await photoPut(id, thumb, full); await storePut('trip', 'sp.ph.' + id, meta); broadcast({ t: 'doc', coll: 'trip', id: 'sp.ph.' + id, data: meta });
       return send(res, 200, { ok: true, meta });
     }
