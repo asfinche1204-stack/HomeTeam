@@ -246,6 +246,10 @@ html.tx-xl .count div{min-width:0;flex:1}html.tx-xl .count{gap:6px}
 .phg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:6px 0 10px}
 .pht{position:relative;aspect-ratio:1;border-radius:10px;overflow:hidden;background:rgba(255,255,255,.06)}
 .pht img{width:100%;height:100%;object-fit:cover;display:block}.pht .lk{position:absolute;top:4px;right:4px;font-style:normal;font-size:.7rem;background:rgba(8,20,40,.75);border-radius:99px;padding:2px 5px}
+.phplus{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;border:1.5px dashed rgba(46,196,182,.6)!important;background:rgba(46,196,182,.08)!important;color:var(--teal2)}
+.phplus b{font-size:1.6rem;line-height:1;font-weight:400}.phplus span{font-size:.72rem}
+.lbmv{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:.82rem;color:var(--mute)}
+.lbmv select{flex:1;font:inherit;color:var(--cream);background:rgba(0,0,0,.35);border:1px solid var(--line);border-radius:10px;padding:8px;color-scheme:dark}
 .phup{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;margin-top:10px}
 .phup select{width:100%;font:inherit;color:var(--cream);background:rgba(0,0,0,.25);border:1px solid var(--line);border-radius:12px;padding:10px;color-scheme:dark;min-width:0}
 .phup label{grid-column:1/-1;font-size:.86rem;display:flex;align-items:center;gap:8px}.phup label input{width:18px;height:18px;accent-color:var(--teal)}
@@ -573,10 +577,10 @@ html{overscroll-behavior-y:contain}
     </div>
     <div class="card">
       <h2>Photos</h2>
-      <p class="lead oonly">Pictures from each city. They go into the recap, and visitors see the ones you share.</p>
+      <p class="lead oonly">Pictures from each city. They go into the recap, and visitors see the ones you share. Tap + under any place to add to it, including places we've already left.</p>
       <div id="phlist"></div>
       <div class="oonly">
-        <div class="phup"><select id="phday" aria-label="Which day"></select><button class="go" id="phadd">Add photos</button><label><input type="checkbox" id="phpub" checked> Share with visitors</label></div>
+        <div class="phup"><select id="phday" aria-label="Which place"></select><button class="go" id="phadd">Add photos</button><label><input type="checkbox" id="phpub" checked> Share with visitors</label></div>
         <div class="phprog"></div>
       </div>
     </div>
@@ -1151,7 +1155,7 @@ function announce(id,data,had){
   else if(p[1]==="gm"&&data&&!had&&p[4]!==ME)toast(NAMES[p[4]]+" played "+gname(p[2])+" round "+(p[3].split("~")[1]||1));
   else if(p[1]==="vc"&&data&&!had&&data.by!==ME)toast((data.name||"Someone")+" commented: "+String(data.text||"").slice(0,50));
   else if(p[1]==="vk"&&data&&(data.n||0)>((had&&had.n)||0))toast("♥ New like on "+(p[2]==="ph"?"a photo":"your update"));
-  else if(p[1]==="ph"&&data&&!had&&data.by&&data.by!==ME)toast(NAMES[data.by]+" added a photo from "+phCity(data.day));
+  else if(p[1]==="ph"&&data&&!had&&data.by&&data.by!==ME)toast(NAMES[data.by]+" added a photo from "+pcity(data));
   else if(p[1]==="pub"&&data&&!had&&data.by&&data.by!==ME)toast(NAMES[data.by]+" posted an update for visitors");
   else if(p[1]==="jk"&&data&&!had&&ME==="a")toast(NAMES.b+" just read a private message. Nothing to worry about.");
   else if(p[1]==="fl"&&data&&!had&&data.by&&data.by!==ME)toast(NAMES[data.by]+" added flight "+data.n);
@@ -2377,12 +2381,21 @@ function photos(){var o=[];Object.keys(T).forEach(function(k){if(k.indexOf("sp.p
 function phSrc(id,s){return"/api/photo/"+encodeURIComponent(id)+"/"+(s||"t");}
 function phCity(d){var c=DAYS[d-1].city;return c==="Fly"?"On the way":c==="Home"?"Heading home":c.split(" → ").pop();}
 function phTile(p,i){var lk=p.m.pub?likes("ph."+p.id):0,cm=p.m.pub?comments("ph."+p.id).length:0;return'<button class="pht" data-ph="'+i+'"><img loading="lazy" src="'+phSrc(p.id)+'" alt="">'+(lk||cm?'<i class="phs">'+(lk?"♥"+lk:"")+(lk&&cm?" ":"")+(cm?"💬"+cm:"")+"</i>":"")+(!VIS&&!p.m.pub?'<i class="lk" title="Only the two of you">🔒</i>':"")+"</button>";}
-function phGroups(list){var g=[],cur=null;list.forEach(function(p,i){var c=phCity(p.m.day);if(!cur||cur.c!==c){cur={c:c,items:[]};g.push(cur);}cur.items.push([p,i]);});return g;}
+/* photos belong to a place, not only a day, so a city we've already left (or Córdoba, which shares a day with Seville) can still get photos */
+var PLACES=["On the way","Madrid","Córdoba","Seville","Granada","Valencia","Barcelona","Heading home"];
+function pcity(m){return m.city||phCity(m.day);}
+function placeDays(c){var o=[];DAYS.forEach(function(d){if(c==="Córdoba"?d.n===4:c==="Seville"?(d.n===4||phCity(d.n)===c):phCity(d.n)===c)o.push(d.n);});return o;}
+function placeDay(c){var ds=placeDays(c),td=dayToday(),n=td?td.n:(TODAY>"2026-12-02"?11:1),best=ds[0];ds.forEach(function(x){if(x<=n)best=x;});return best;}
+function placeNow(){var td=dayToday();if(!td)return TODAY>"2026-12-02"?"Barcelona":"On the way";if(td.n===4)return new Date().getHours()<17?"Córdoba":"Seville";return phCity(td.n);}
+function placePast(c){var td=dayToday(),n=td?td.n:(TODAY>"2026-12-02"?12:0),ds=placeDays(c);return c!==placeNow()&&(ds[ds.length-1]<n||(c==="Córdoba"&&n===4));}
+function placeReached(c){var td=dayToday(),n=td?td.n:(TODAY>"2026-12-02"?11:0);return placeDays(c)[0]<=n;}
+function phGroups(list){var g=[];PLACES.forEach(function(c){var it=[];list.forEach(function(p,i){if(pcity(p.m)===c)it.push([p,i]);});if(it.length||(!VIS&&placeReached(c)&&c!=="Heading home"))g.push({c:c,items:it});});return g;}
 var PHL=[];
 function drawPhotos(){
   var el=$("phlist");if(!el)return;PHL=photos();
-  if(!VIS){var td=dayToday(),cur=PH.day||(td?td.n:1);$("phday").innerHTML=DAYS.map(function(d){return'<option value="'+d.n+'"'+(d.n===+cur?" selected":"")+">Day "+d.n+" · "+esc(phCity(d.n))+"</option>";}).join("");$("phpub").checked=PH.pub;}
-  el.innerHTML=PHL.length?phGroups(PHL).map(function(g){return'<div class="lab o">'+esc(g.c)+'</div><div class="phg">'+g.items.map(function(x){return phTile(x[0],x[1]);}).join("")+"</div>";}).join(""):'<div class="dmeta">'+(VIS?"Photos will appear here as they share them.":"No photos yet. Add some from any city and they show up here, in the recap and, if you choose, for visitors.")+"</div>";
+  if(!VIS){var cur=PH.sel||placeNow();$("phday").innerHTML=PLACES.map(function(c){return'<option value="'+esc(c)+'"'+(c===cur?" selected":"")+">"+esc(c)+(placePast(c)?" (already visited)":"")+"</option>";}).join("");$("phpub").checked=PH.pub;}
+  var G=phGroups(PHL);
+  el.innerHTML=G.length?G.map(function(g){return'<div class="lab o">'+esc(g.c)+(g.items.length?"":' <small style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--mute)">· no photos yet</small>')+'</div><div class="phg">'+g.items.map(function(x){return phTile(x[0],x[1]);}).join("")+(VIS?"":'<button class="pht phplus" data-phplace="'+esc(g.c)+'" aria-label="Add photos from '+esc(g.c)+'"><b>+</b><span>Add</span></button>')+"</div>";}).join(""):'<div class="dmeta">'+(VIS?"Photos will appear here as they share them.":"No photos yet. Add some from any city and they show up here, in the recap and, if you choose, for visitors.")+"</div>";
 }
 function drawDayPhotos(){
   var el=$("dayph");if(!el)return;PHL=photos();var mine=[];PHL.forEach(function(p,i){if(p.m.day===UI.day)mine.push([p,i]);});
@@ -2396,14 +2409,14 @@ function shrink(file,max,q){
   });
 }
 function uploadPhotos(files){
-  if(!need()||PH.busy||!files.length)return;PH.busy=true;var list=[].slice.call(files,0,30),n=0,bad=0,day=+PH.day||(dayToday()?dayToday().n:1),pub=PH.pub,cap=PH.cap||"";PH.cap="";
+  if(!need()||PH.busy||!files.length)return;PH.busy=true;var list=[].slice.call(files,0,30),n=0,bad=0,day=+PH.day||(dayToday()?dayToday().n:1),city=PH.city||"",pub=PH.pub,cap=PH.cap||"";PH.cap="";PH.city="";
   function prog(t){[].forEach.call(document.querySelectorAll(".phprog"),function(e){e.textContent=t;});}
   (function next(){
     if(!list.length){PH.busy=false;prog(bad?n+" added, "+bad+" couldn't be read":"");toast(n===1?"Photo added":n+" photos added");drawAll();return;}
     var f=list.shift();prog("Adding photo "+(n+bad+1)+" of "+(n+bad+1+list.length)+"…");
     Promise.all([shrink(f,1600,.82),shrink(f,480,.72)]).then(function(r){
       var id=Date.now().toString(36)+ME+Math.random().toString(36).slice(2,6);
-      return fetch("/api/photo",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({id:id,full:r[0].d,thumb:r[1].d,meta:{day:day,cap:cap,pub:pub,by:ME,w:r[0].w,h:r[0].h}})}).then(function(x){if(!x.ok)throw 0;return x.json();}).then(function(j){T["sp.ph."+id]=j.meta;n++;});
+      return fetch("/api/photo",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({id:id,full:r[0].d,thumb:r[1].d,meta:{day:day,city:city,cap:cap,pub:pub,by:ME,w:r[0].w,h:r[0].h}})}).then(function(x){if(!x.ok)throw 0;return x.json();}).then(function(j){T["sp.ph."+id]=j.meta;n++;});
     }).catch(function(){bad++;}).then(next);
   })();
 }
@@ -2415,8 +2428,8 @@ function lbDraw(){
   el.innerHTML='<button class="lbx" id="lbclose" aria-label="Close">×</button><div class="lbimg"><img src="'+phSrc(p.id,"t")+'" alt=""><img class="hi" src="'+phSrc(p.id,"f")+'" alt="" onload="this.classList.add(\'ok\')"></div>'+
     (LB.i>0?'<button class="lbn l" id="lbprev" aria-label="Previous">‹</button>':"")+(LB.i<PHL.length-1?'<button class="lbn r" id="lbnext" aria-label="Next">›</button>':"")+
     '<div class="lbmeta">'+(VIS?(m.cap?"<p>"+esc(m.cap)+"</p>":""):'<input type="text" id="lbcap" maxlength="140" placeholder="Add a caption" value="'+esc(m.cap||"")+'">')+
-    "<small>"+av(m.by)+" "+esc(NAMES[m.by]||"")+" · Day "+m.day+", "+esc(phCity(m.day))+" · "+(LB.i+1)+" of "+PHL.length+"</small>"+
-    (m.pub?socHtml("ph."+p.id):"")+(VIS?"":'<div class="lbbtn"><button id="lbpub" class="'+(m.pub?"on":"")+'">'+(m.pub?"✓ Visitors can see this":"🔒 Only the two of you")+'</button><button id="lbdel">'+(LB.del?"Tap again to delete":"Delete")+"</button></div>")+"</div>";
+    "<small>"+av(m.by)+" "+esc(NAMES[m.by]||"")+" · Day "+m.day+", "+esc(pcity(m))+" · "+(LB.i+1)+" of "+PHL.length+"</small>"+
+    (m.pub?socHtml("ph."+p.id):"")+(VIS?"":'<div class="lbbtn"><button id="lbpub" class="'+(m.pub?"on":"")+'">'+(m.pub?"✓ Visitors can see this":"🔒 Only the two of you")+'</button><button id="lbdel">'+(LB.del?"Tap again to delete":"Delete")+'</button></div><label class="lbmv">Place <select id="lbmove">'+PLACES.map(function(c){return"<option"+(c===pcity(m)?" selected":"")+">"+esc(c)+"</option>";}).join("")+"</select></label>")+"</div>";
 }
 function lbClose(){if(LB&&$("lbcap"))lbCap();LB=null;SOC=null;$("lb").classList.remove("on");$("lb").innerHTML="";drawPhotos();drawDayPhotos();}
 function lbCap(){var p=PHL[LB.i],v=$("lbcap").value.trim().slice(0,140);if(p&&v!==(p.m.cap||"")&&need())put("sp.ph."+p.id,Object.assign({},p.m,{cap:v}));}
@@ -2432,10 +2445,11 @@ $("lb").addEventListener("keydown",function(e){if(e.key==="Enter"&&e.target.id==
 (function(){var x0=null;$("lb").addEventListener("touchstart",function(e){x0=e.target.tagName==="INPUT"?null:e.touches[0].clientX;},{passive:true});$("lb").addEventListener("touchend",function(e){if(x0==null)return;var dx=e.changedTouches[0].clientX-x0;if(Math.abs(dx)>60)lbGo(dx<0?1:-1);x0=null;},{passive:true});})();
 document.addEventListener("click",function(e){
   var t=e.target.closest("[data-ph]");if(t){PHL=photos();lbOpen(+t.getAttribute("data-ph"));return;}
-  var a=e.target.closest("[data-phadd]");if(a){if(!need())return;PH.day=+a.getAttribute("data-phadd");$("phin").click();return;}
-  if(e.target.id==="phadd"){if(!need())return;PH.day=+$("phday").value;PH.pub=$("phpub").checked;$("phin").click();}
+  var a=e.target.closest("[data-phadd]");if(a){if(!need())return;PH.day=+a.getAttribute("data-phadd");PH.city="";$("phin").click();return;}
+  var pl=e.target.closest("[data-phplace]");if(pl){if(!need())return;var c0=pl.getAttribute("data-phplace");PH.city=c0;PH.day=placeDay(c0);PH.pub=$("phpub").checked;$("phin").click();return;}
+  if(e.target.id==="phadd"){if(!need())return;var c1=$("phday").value;PH.city=c1;PH.day=placeDay(c1);PH.pub=$("phpub").checked;$("phin").click();}
 });
-document.addEventListener("change",function(e){if(e.target.id==="phin"){uploadPhotos(e.target.files);e.target.value="";}else if(e.target.id==="phpub")PH.pub=e.target.checked;else if(e.target.id==="phday")PH.day=+e.target.value;});
+document.addEventListener("change",function(e){if(e.target.id==="phin"){uploadPhotos(e.target.files);e.target.value="";}else if(e.target.id==="phpub")PH.pub=e.target.checked;else if(e.target.id==="phday")PH.sel=e.target.value;else if(e.target.id==="lbmove"&&LB&&PHL[LB.i]&&need()){var mp=PHL[LB.i],c2=e.target.value,ds2=placeDays(c2);put("sp.ph."+mp.id,Object.assign({},mp.m,{city:c2,day:ds2.indexOf(mp.m.day)>=0?mp.m.day:placeDay(c2)}));var keep=mp.id;PHL=photos();PHL.forEach(function(x,i){if(x.id===keep)LB.i=i;});lbDraw();toast("Moved to "+c2);}});
 /* text size on the visitors page */
 function setTextSize(s){document.documentElement.classList.remove("tx-l","tx-xl");if(s)document.documentElement.classList.add(s);try{localStorage.setItem("spain26-tx",s||"");}catch(e){}[].forEach.call(document.querySelectorAll("[data-tx]"),function(b){b.classList.toggle("on",b.getAttribute("data-tx")===(s||""));});}
 document.addEventListener("click",function(e){var b=e.target.closest("[data-tx]");if(b)setTextSize(b.getAttribute("data-tx"));});
