@@ -463,6 +463,12 @@ html{overscroll-behavior-y:contain}
 .who2 button{padding:16px 8px;border-radius:16px;border:1px solid var(--line);background:rgba(255,255,255,.06);font-weight:500;display:flex;gap:8px;align-items:center;justify-content:center}
 .go{width:100%;margin-top:12px;padding:12px;border-radius:14px;background:var(--teal);color:#04201d;font-weight:600}
 /* offline maps */
+.game.bk{overflow:hidden;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
+.game.bk #bkcv{width:auto;max-width:100%;max-height:calc(100dvh - 330px);margin:0 auto}
+.game.bk .gsub{font-size:.78rem}
+.bkbar{position:relative;height:64px;margin:10px auto 0;border-radius:20px;background:rgba(255,255,255,.07);border:1px solid var(--line);touch-action:none;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.bkbar span{font-size:.75rem;color:var(--mute);pointer-events:none}
+.bkbar i{position:absolute;top:8px;bottom:8px;width:64px;margin-left:-32px;border-radius:14px;background:linear-gradient(160deg,rgba(245,185,66,.55),rgba(232,118,92,.5));border:1px solid rgba(245,185,66,.7);pointer-events:none}
 .game.sj{overflow:hidden;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 .game.sj .ghead b{font-size:1.25rem}
 #sjcv{display:block;width:100%;height:auto;border-radius:16px;margin-top:10px;touch-action:none;image-rendering:pixelated;box-shadow:0 10px 30px rgba(0,0,0,.35)}
@@ -1990,14 +1996,21 @@ function cbHint(quiet){
   if(!el)return;if(!quiet)el.classList.add("hint");
   if(PB.zoom){var w=$("cbwrap"),r=el.getBoundingClientRect(),wr=w.getBoundingClientRect();w.scrollLeft+=r.left+r.width/2-(wr.left+wr.width/2);w.scrollTop+=r.top+r.height/2-(wr.top+wr.height/2);}
 }
-$("game").addEventListener("pointermove",function(e){if(PB&&PB.down)cbAt(e.clientX,e.clientY);if(BK&&BK.run){var r=BK.cv.getBoundingClientRect();BK.px=Math.max(BK.pw/2,Math.min(320-BK.pw/2,(e.clientX-r.left)/r.width*320));}});
+function bkSteer(e){var r=BK.cv.getBoundingClientRect();BK.px=Math.max(BK.pw/2,Math.min(320-BK.pw/2,(e.clientX-r.left)/r.width*320));}
+$("game").addEventListener("pointermove",function(e){if(PB&&PB.down)cbAt(e.clientX,e.clientY);if(BK&&BK.run)bkSteer(e);});
+/* Ladrillos touch: steer from the board or the bar under it; a quick tap on either launches.
+   touchstart is cancelled there so iOS can't start a text selection or a page scroll mid-game. */
+$("game").addEventListener("touchstart",function(e){if(BK&&e.target.closest("#bkcv,#bkbar"))e.preventDefault();},{passive:false});
+["selectstart","contextmenu","dblclick","gesturestart"].forEach(function(n){$("game").addEventListener(n,function(e){if(BK||SJ)e.preventDefault();});});
+$("game").addEventListener("pointerdown",function(e){if(!BK||!BK.run||!e.target.closest("#bkcv,#bkbar"))return;try{var s=window.getSelection();if(s&&s.removeAllRanges)s.removeAllRanges();}catch(x){}BK.tap={x:e.clientX,t:Date.now()};bkSteer(e);});
+$("game").addEventListener("pointerup",function(e){if(!BK||!BK.tap)return;var tp=BK.tap;BK.tap=null;if(e.target.closest("#bkcv,#bkbar")&&Math.abs(e.clientX-tp.x)<12&&Date.now()-tp.t<400){BK.tapped=Date.now();bkLaunch();}});
 ["pointerup","pointercancel","pointerleave"].forEach(function(ev){$("game").addEventListener(ev,function(){if(PB&&PB.down){PB.down=false;if(PB.touched){PB.touched=false;buzz(6);cbDraw();cbSave();}}});});
 /* ---------- Ladrillos: brick breaker with 30 levels ----------  sp.bk.<a|b> {l:{level:stars},at} */
 var BKN=30,BK=null;
 function bkProg(p){var d=gdoc("sp.bk."+p);return(d&&d.l)||{};}
 function bkNext(p){var l=bkProg(p),n=1;while(n<=BKN&&l[n])n++;return n;}
 function bkStars(p){var l=bkProg(p),s=0;Object.keys(l).forEach(function(k){s+=l[k];});return s;}
-function bkStop(){if(BK){BK.run=false;BK=null;}}
+function bkStop(){if(BK){BK.run=false;BK=null;}var gm=$("game");if(gm)gm.classList.remove("bk");}
 function drawLevels(){
   var el=$(VIS?"vlevels":"levels");if(!el)return;var h="",me=GP()||"a",l=bkProg(me),nx=bkNext(me),onx=ME?bkNext(other()):0;
   h+=gbars(function(p){var n=bkNext(p)-1;return[n/BKN,"Nivel "+Math.min(n+1,BKN)+" · "+bkStars(p)+"★"];});
@@ -2047,7 +2060,8 @@ function bkBall(x,y,vx,vy,stuck){return{x:x,y:y,vx:vx,vy:vy,stuck:!!stuck,off:0,
 function bkOpen(L){
   if(!canPlay())return;if(PB){cbSave(true);PB=null;}G=null;clearInterval(gtick);bkStop();sjStop();
   $("game").classList.add("on");
-  $("game").innerHTML='<div class="ghead"><b>Ladrillos</b><span id="bkhud"></span><button id="gquit" aria-label="Close">×</button></div><div class="gsub">Nivel '+L+" de "+BKN+" · "+esc(BKM[(L-1)%BKM.length][0])+" · "+esc(bkCity(L).n)+'. Slide the churro, tap to launch the orange. Catch the falling power-ups; dodge the dark red MINI.</div><div id="gbody"><canvas id="bkcv" width="640" height="860"></canvas></div><div class="bkleg">'+Object.keys(PU).map(function(k){return'<span><i style="background:'+PU[k].c+(PU[k].bad?';color:#fff':'')+'">'+PU[k].lab+"</i>"+PU[k].name+"</span>";}).join("")+"</div>";
+  $("game").innerHTML='<div class="ghead"><b>Ladrillos</b><span id="bkhud"></span><button id="gquit" aria-label="Close">×</button></div><div class="gsub">Nivel '+L+" de "+BKN+" · "+esc(BKM[(L-1)%BKM.length][0])+" · "+esc(bkCity(L).n)+'. Slide the churro, tap to launch the orange. Catch the falling power-ups; dodge the dark red MINI.</div><div id="gbody"><canvas id="bkcv" width="640" height="860"></canvas><div class="bkbar" id="bkbar"><i id="bkknob"></i><span>Slide here or on the game · tap to launch</span></div></div><div class="bkleg">'+Object.keys(PU).map(function(k){return'<span><i style="background:'+PU[k].c+(PU[k].bad?';color:#fff':'')+'">'+PU[k].lab+"</i>"+PU[k].name+"</span>";}).join("")+"</div>";
+  $("game").classList.add("bk");
   var cv=$("bkcv");
   BK={L:L,cv:cv,cx:cv.getContext("2d"),run:true,br:bkLayout(L),lives:3,pw:Math.max(46,78-L),px:160,sp:250+L*8,last:0,over:false,
       balls:[],caps:[],shots:[],fx:{},cool:0,flash:{t:1.4,txt:"¡"+BKM[(L-1)%BKM.length][0].replace(/^¡|!$/g,""),c:"#f6c21c"},pops:[]};
@@ -2132,7 +2146,7 @@ function bkFrame(t){
   }
   if(!B.br.length){bkDraw();bkEnd(true);return;}
   if(!B.balls.length&&bkLoseBall())return;
-  bkDraw();B.cv.setAttribute("data-bx",Math.round(B.balls[0].x));B.cv.setAttribute("data-balls",B.balls.length);B.cv.setAttribute("data-pw",Math.round(B.pw));requestAnimationFrame(bkFrame);
+  bkDraw();var kb=$("bkknob");if(kb){kb.parentNode.style.width=B.cv.clientWidth+"px";kb.style.left=(B.px/320*100)+"%";kb.style.width=Math.round(B.pw/320*100)+"%";kb.style.marginLeft=(-B.pw/640*100)+"%";}B.cv.setAttribute("data-bx",Math.round(B.balls[0].x));B.cv.setAttribute("data-balls",B.balls.length);B.cv.setAttribute("data-pw",Math.round(B.pw));requestAnimationFrame(bkFrame);
 }
 /* test hook, only with ?debug=bk in the address */
 if(/[?&]debug=bk\b/.test(location.search))window.__bk={get:function(){return BK;},give:function(k){bkGive(k);}};
@@ -2185,7 +2199,7 @@ function bkDraw(){
 $("game").addEventListener("click",function(e){
   var t=e.target,b;
   if(t.id==="gquit"||t.id==="gquit2"){gclose();return;}
-  if(t.id==="bkcv"){bkLaunch();return;}
+  if(t.id==="bkcv"||t.id==="bkbar"){if(BK&&!(BK.tapped&&Date.now()-BK.tapped<500))bkLaunch();return;}
   if((b=t.closest("[data-col]"))&&PB){PB.sel=+b.getAttribute("data-col");cbDraw();return;}
   if(G&&(t.id==="midig"||t.id==="miflag")){G.mode=t.id==="miflag"?"flag":"dig";$("midig").classList.toggle("on",G.mode==="dig");$("miflag").classList.toggle("on",G.mode==="flag");return;}
   if(!G)return;
