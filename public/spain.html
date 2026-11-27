@@ -496,6 +496,7 @@ html{overscroll-behavior-y:contain}
 .sch{margin:0 0 6px;border-radius:14px;background:rgba(245,185,66,.08);border:1px solid rgba(245,185,66,.3);padding:4px 12px}
 .sch>div{display:flex;gap:10px;padding:7px 0;font-size:.9rem;line-height:1.35}.sch>div+div{border-top:1px solid var(--line)}
 .sch b{flex:0 0 68px;color:var(--saff);font-weight:600;font-variant-numeric:tabular-nums}.sch span{flex:1;min-width:0}
+.sch.near b{flex:none;color:var(--cream)}.sch.near>div{align-items:center}.sch.near .pill{flex:0 0 auto}
 .tips details{border-top:1px solid var(--line)}.tips summary{list-style:none;cursor:pointer;padding:11px 0;font-weight:600;display:flex;gap:8px;align-items:center}
 .tips summary::-webkit-details-marker{display:none}.tips summary::after{content:"›";margin-left:auto;color:var(--mute);font-size:1.2rem;transition:.2s}.tips details[open] summary::after{transform:rotate(90deg)}
 .tips ul{margin:0 0 12px;padding-left:20px;font-size:.9rem;line-height:1.5;color:var(--cream)}.tips li{margin-bottom:5px}
@@ -894,19 +895,31 @@ var DAYS=[
        ["Taberna La Tana","Tiny wine bar in the Realejo, Placeta del Agua 3. He had salmon with tomato and caviar. Go early; it fills in minutes.","eat","b"],
        ["Restaurante Oliver","Seafood on Plaza Pescadería beside the Cathedral. He ate steamed mussels, clams, and fried eggplant with honey.","eat","b"],
        ["Bar Gallardo","Neighborhood bar on Calle Pintor Rodríguez Acosta: cheese, lamb chops, fried pastry. Well off the tourist track.","eat","b"],
-       ["Café Casa Pasteles","Pastry café up in the Albaicín. Pairs with the walk down from Mirador de San Nicolás.","eat","b"]],
+       ["Café Casa Pasteles","Pastry café up in the Albaicín. Pairs with the walk down from Mirador de San Nicolás.","eat","b"],
+       ["Royal Chapel (Capilla Real)","Next to the Cathedral: the tombs of Isabella and Ferdinand, the monarchs who unified Spain, plus a small museum of their belongings. Built 1505 to 1517. Entry was €5 in 2025.","see"]],
+ near:{note:"From the tour director. Spanish kitchens open for lunch around 1:00 to 1:30 PM and for dinner around 8:00 to 8:30 PM. Booking may be needed, so check hours first.",list:[
+   ["GastroBar Rincón Don Vicente","Inside the hotel. Granada and Andalusian dishes.","€20–30"],
+   ["El Corte Inglés Arabial cafeteria","Next door. Breakfast, snacks and lunch; known for pancakes and burgers.","€10–20"],
+   ["La Tuttoria","Italian: pizzas and Mediterranean dishes, cozy.","€10–20"],
+   ["Taberna La Zarzamora","Spanish and Mediterranean tavern with healthy options.","€10–20"],
+   ["Antojitos Mexican Food","Mexican and Latin dishes, with vegan options.","€20–30"],
+   ["Restaurante Malahermosa","Contemporary Spanish and Mediterranean, creative dishes.","€20–40"],
+   ["Mesón El Cordobés","Traditional Spanish mesón.","€20–40"]]},
  booked:[["17:30","Hammam Al Ándalus","Be in the changing room by 5:30 PM sharp; the baths start at 6:00. Calle Santa Ana 16, just off Plaza Nueva at the start of the Carrera del Darro. Booked by Nat for the two of you, €165 paid online. They are strict about the changing-room time, so if the Alhambra visit runs late, head straight there. Bring swimsuits.\nBefore you go: sign the online check-in (liability, health and consent form) and add your details as her companion, using the links in Nat's confirmation email. Keep that email handy on arrival."]],
- tip:"The Alhambra needs your ORIGINAL passports, not a photo, so carry them on the coach. Wear good shoes; it's a long walking tour and can be chilly. Check-in is about 2:15, which leaves three hours for lunch and a rest before the hammam. Coldest night of the trip, often near freezing. This is the hat-and-gloves stop. The hammam at 5:30 is a warm way to end it."},
-{n:7,date:"2026-11-28",dow:"Sat",city:"Valencia",title:"North to Valencia",stay:"Valencia",hotel:"Exe Rey Don Jaime or Sercotel Sorolla Palace",meals:["Breakfast","Dinner"],drive:"Longest coach day (about 5–6 hrs)",
- set:["Drive north to Valencia","Hotel check-in","Dinner included"],
- free:"A little time before dinner, and after.",
+ tip:"The Alhambra needs your ORIGINAL passports, not a photo, so carry them on the coach. Wear good shoes; it's a long walking tour and can be chilly. Check-in is about 2:15, which leaves three hours for lunch and a rest before the hammam. The hotel is out by El Corte Inglés Arabial, about 2 km from Plaza Nueva, so take a taxi to the hammam and leave by 5:00. Places to eat near the hotel are on this day's page. Coldest night of the trip, often near freezing. This is the hat-and-gloves stop. The hammam at 5:30 is a warm way to end it."},
+{n:7,date:"2026-11-28",dow:"Sat",city:"Valencia",title:"North to Valencia",stay:"Valencia",hotel:"Exe Rey Don Jaime or Sercotel Sorolla Palace",meals:["Breakfast","Dinner"],drive:"Longest coach day: about 8 hrs with two stops",
+ set:["8:15 AM: Coach leaves for Valencia, about 8 hours with two stops","Late afternoon: arrive in Valencia and check in","Evening: group dinner at a local restaurant (included)"],
+ sched:[["07:00","Breakfast opens, and bags out: suitcases outside your door by 7:00.",20],["08:15","Coach leaves for Valencia. About 8 hours including two stops, so arrival is around 4:15 PM.",20],["","On arrival in Valencia, check in at the hotel."],["19:50","Meet in the lobby to go to dinner at Restaurante Voltreta Casa, Avenida de las Cortes 26. Bring your radios (whispers).",20]],
+ wake:"06:15",
+ free:"A few hours between check-in and the 7:50 PM lobby meet, and after dinner.",
  open:[["Download something for the coach","Podcasts, a show, a shared playlist. Signal drops in the mountains.","do"],
        ["Evening walk in the Turia Gardens","The old riverbed turned into a park that runs through the whole city.","see"],
        ["Agua de Valencia nightcap","Cava, orange juice and a kick. Order a jug to share in the old town.","eat"]],
- tip:"Coach day uniform: comfortable layers, slip-on shoes, snacks, neck pillow."},
+ tip:"Coach day uniform: comfortable layers, slip-on shoes, snacks, neck pillow. Dinner at Voltreta Casa is included: the main is salmon, Iberian pork or pasta, your choice. Vegetarian options are homemade hummus or Japanese vegetable tempura. At check-in, pin the hotel on the Maps card so Back to the hotel works."},
 {n:8,date:"2026-11-29",dow:"Sun",city:"Valencia",title:"Valencia",stay:"Valencia",hotel:"Exe Rey Don Jaime or Sercotel Sorolla Palace",meals:["Breakfast"],drive:"",
- set:["City tour: City Gates, City Hall, Gothic Cathedral","City of Arts and Sciences"],
- free:"Balance of the day.",
+ set:["9:30 AM: Coach leaves for the Valencia city tour","Around 12:00 PM: tour ends near the Central Market in the city centre","Rest of the day at leisure"],
+ sched:[["07:00","Breakfast opens. No wake-up call, so set your own alarm."],["09:30","Coach leaves for the city tour. The printed 9:00 was changed by hand to 9:30. Bring your radios (whispers).",30],["12:00","Tour ends (approx) near the Central Market in the city centre. The rest of the day is ours; La Pepica is at 2:00."]],
+ free:"From about 12:00 PM.",
  open:[["Sunday paella lunch by the beach","Booked: La Pepica at 2:00 PM. Valencia invented paella and Sunday lunch is when locals eat it. Order the Valenciana (chicken and rabbit).","eat"],
        ["Horchata and fartons","Cold tiger-nut milk with a sweet bun for dunking. Horchatería Santa Catalina, beside the Cathedral.","eat"],
        ["Oceanogràfic","Europe's largest aquarium, inside the City of Arts and Sciences.","see"],
@@ -914,7 +927,7 @@ var DAYS=[
        ["Mercado de Colón","Art nouveau market hall full of cafés. Open Sundays, unlike the Mercado Central.","eat"],
        ["Barrio del Carmen street art","Wander the old quarter between the two medieval gate towers.","see"]],
  booked:[["14:00","Paella lunch at La Pepica","Table for two on the beachfront, held until 4:00 PM. Allow about 20 minutes by taxi from the old town. Cancelling inside 24 hours or not showing costs €15 each."]],
- tip:"The Mercado Central is closed Sundays. If you want it, your only window is Saturday before it shuts mid-afternoon, which the coach probably misses."},
+ tip:"The tour ends about noon by the Mercado Central, which is closed Sundays, so there's nothing to see inside. That leaves two hours before La Pepica at 2:00: wander the old town, then allow 20 minutes by taxi to the beach."},
 {n:9,date:"2026-11-30",dow:"Mon",city:"Barcelona",title:"Up the coast to Barcelona",stay:"Barcelona",hotel:"Hotel Negresco Princess",meals:["Breakfast"],drive:"About 4 hrs by coach",
  set:["Drive along the Mediterranean coast","Panoramic tour: Old Harbor, Plaça Catalunya, Casa Batlló","La Sagrada Família (outside only) and Montjuïc Hill"],
  free:"Rest of the day and evening.",
@@ -1334,7 +1347,7 @@ function drawDay(){
   if(d.stay)h+='<span class="tag">Sleep: '+esc(d.stay)+"</span>";
   if(wxFor(d.date))h+='<span class="tag d" id="wxtag">'+wxLine(d.date)+"</span>";
   h+='</div><div class="lab o">Booked</div><div id="booked"></div><div class="bkadd"><input type="time" id="evtime" aria-label="Time"><textarea id="evtitle" maxlength="600" rows="2" placeholder="Add a ticket or reservation. First line is the title; add details on the lines below."></textarea><button id="evadd">Add</button></div>';
-  h+=schedHtml(d);
+  h+=schedHtml(d)+nearHtml(d);
   h+='<div class="lab">Set by the tour</div><ul class="tl">'+d.set.map(function(s){return"<li"+(s.indexOf("Optional")===0?' class="op"':"")+">"+esc(s)+"</li>";}).join("")+"</ul>";
   if(d.free)h+='<div class="lab o">Open time</div><div style="font-size:.93rem">'+esc(d.free)+"</div>";
   h+='<div class="lab e">Ideas · tap to star, × to dismiss</div><div id="ideas"></div>';
@@ -2633,6 +2646,11 @@ var PUSHCFG=null;
 function schedHtml(d){
   if(VIS||!d.sched)return"";
   return'<div class="lab">Tour director\'s times</div><div class="sch">'+d.sched.map(function(x){return'<div><b>'+(x[0]?t12(x[0]):"then")+"</b><span>"+esc(x[1])+"</span></div>";}).join("")+"</div>";
+}
+/* places to eat near the hotel, from the tour director's sheet; owners only since it gives away where we're staying */
+function nearHtml(d){
+  if(VIS||!d.near)return"";
+  return'<div class="lab">Where to eat near the hotel</div><div class="dmeta" style="margin:0 0 6px">'+esc(d.near.note)+'</div><div class="sch near">'+d.near.list.map(function(x){return'<div><span><b>'+esc(x[0])+"</b> · "+esc(x[2])+" each<br>"+esc(x[1])+'</span><a class="pill" href="'+gmq(x[0]+", Granada")+'" target="_blank" rel="noopener">Maps ↗</a></div>';}).join("")+"</div>";
 }
 function remItems(){
   var o=[];
