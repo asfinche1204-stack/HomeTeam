@@ -466,6 +466,8 @@ html{overscroll-behavior-y:contain}
 .game.bk{overflow:hidden;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
 .game.bk #bkcv{width:auto;max-width:100%;max-height:calc(100dvh - 330px);margin:0 auto}
 .game.bk .gsub{font-size:.78rem}
+/* the end screen sits over the board, since this screen cannot scroll */
+.game.bk .gdone{position:absolute;left:8px;right:8px;top:50px;margin:0;background:rgba(8,20,40,.94);z-index:2}
 .bkbar{position:relative;height:64px;margin:10px auto 0;border-radius:20px;background:rgba(255,255,255,.07);border:1px solid var(--line);touch-action:none;display:flex;align-items:center;justify-content:center;overflow:hidden}
 .bkbar span{font-size:.75rem;color:var(--mute);pointer-events:none}
 .bkbar i{position:absolute;top:8px;bottom:8px;width:64px;margin-left:-32px;border-radius:14px;background:linear-gradient(160deg,rgba(245,185,66,.55),rgba(232,118,92,.5));border:1px solid rgba(245,185,66,.7);pointer-events:none}
