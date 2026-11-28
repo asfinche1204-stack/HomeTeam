@@ -280,7 +280,7 @@ async function handle(req, res) {
   // Public, read-only feed for the visitors page (/follow). Only what is safe to share:
   // posted updates, passport stamps, places ticked off, game results and level progress. Never bookings, notes, postcards or packing.
   if (p === '/api/trip-public' && m === 'GET') {
-    const pub = {}, keep = /^sp\.(pub|st|dn|gm|bk|fb|sj|cv)\./;
+    const pub = {}, keep = /^sp\.(pub|st|dn|gm|bk|fb|sj|sjg|sjd|cv)\./;
     Object.keys(DB.trip || {}).forEach(id => {
       const d = DB.trip[id]; if (!d) return;
       if (keep.test(id) || (id.startsWith('sp.ph.') && d.pub === true)) pub[id] = d;
